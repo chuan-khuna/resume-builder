@@ -1,0 +1,44 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+wheels/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+Untitled.ipynb
+Untitled[a-zA-Z0-9]*.ipynb
+Untitled-*.ipynb
+
+# Node
+node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Raw work data: real names and credentials (commit only the example)
+raw/*
+!raw/repository-mapping.example.yml

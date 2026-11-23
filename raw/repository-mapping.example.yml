@@ -1,0 +1,23 @@
+# Copy to raw/<company>/mapping.yml and fill in. That file holds real names and a token:
+# it stays local (raw/ is gitignored except this example).
+
+company: company-a # folder name under raw/ and evidence/
+
+# Commit identity, used to find my commits (case-insensitive; names match as substrings)
+me:
+  names: [jane, jdoe]
+  emails: [jane@company-a.example, jane.personal@example.com]
+
+# Credentials for the script to download tickets assigned to me (optional)
+jira:
+  site: company-a.atlassian.net
+  email: jane@company-a.example
+  api_token: <token> # https://id.atlassian.com/manage-profile/security/api-tokens
+
+projects:
+  - id: retail-shelf-cv # path slug: raw/<company>/<id>/ and evidence/<company>/<yyyy>-<id>.md
+    internal_name: Acme Shelf # real name; never appears in evidence/
+    title: Retail Shelf Computer-Vision Analytics Platform # anonymised name
+    sources:
+      - git@bitbucket.org:company-a/shelf-mono-repo.git
+      - git@bitbucket.org:company-a/shelf-dashboard.git

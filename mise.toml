@@ -1,0 +1,21 @@
+[tools]
+bun = "1.4.4"
+just = "1.59"
+node = "26"
+uv = "0.13"
+
+[tasks.skills]
+description = "Install the vendored agent skills"
+run = [
+  "bunx skills add mattpocock/skills#v1.3.2",
+  "bunx skills add thananon/9arm-skills --skill debug-mantra --skill scrutinize --skill post-mortem --skill management-talk",
+  "bunx skills add cursor/plugins --skill unslop --skill technical-writing",
+]
+
+[tasks.plugins]
+description = "Install the local resume-evidence plugin from .claude-dev (resume-builder-local marketplace)"
+run = [
+  "claude plugin marketplace add ./.claude-dev --scope project",
+  "claude plugin marketplace update resume-builder-local",
+  "claude plugin install resume-evidence@resume-builder-local --scope project",
+]

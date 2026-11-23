@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingest → Ground truth: structure and flow</title>
+  <link rel="stylesheet" href="../shared/globals.css">
+  <script src="../shared/doc.js"></script>
+</head>
+<body data-doc-name="Ingest → Ground truth">
+<main class="doc">
+
+<header class="doc-head">
+  <h1>Ingest → Ground truth: structure and flow</h1>
+  <p class="byline">Draft · 2026-11-23 · Scope: ingest and distill only; resume writing is out of scope</p>
+</header>
+
+<h2 id="structure">Structure</h2>
+<pre><code class="language-text">raw/                                 # commit only the example
+├── repository-mapping.example.yml   # schema with fake values
+└── &lt;company&gt;/                       # real names and the Jira token
+    ├── mapping.yml                  # config, edited by the user
+    ├── jira/&lt;yyyy&gt;.json             # Jira data
+    └── &lt;id&gt;/
+        └── &lt;repo-name&gt;/             # repository data
+evidence/                            # commit all: anonymised data
+└── &lt;company&gt;/&lt;yyyy-project-slug&gt;.md  # ground truth
+scripts/                             # commit all: written by the LLM
+└── …                                # process raw → evidence, query raw Jira data</code></pre>
+
+<table>
+  <thead><tr><th>Folder</th><th>Committed</th><th>Written by</th></tr></thead>
+  <tbody>
+    <tr><td><code>raw/</code></td><td>Only <code>repository-mapping.example.yml</code></td><td>User (<code>mapping.yml</code>), scripts (everything else)</td></tr>
+    <tr><td><code>evidence/</code></td><td>All</td><td>LLM, reviewed by the user</td></tr>
+    <tr><td><code>scripts/</code></td><td>All</td><td>LLM, when a step needs a reusable helper (Python, run with <code>uv</code>)</td></tr>
+  </tbody>
+</table>
+
+<h2 id="mapping">mapping.yml</h2>
+<pre><code class="language-yaml">company: themather
+
+# Commit identity, used to find my commits
+me:
+  names: [altr, chuan, phattharanat]
+  emails: [chuan.khuna@gmail.com, phattharanat@gmail.com]
+
+# Credentials for the script to download tickets (optional)
+jira:
+  site: &lt;site&gt;.atlassian.net
+  email: &lt;login email&gt;
+  api_token: &lt;token&gt;
+
+projects:
+  - id: &lt;project-slug&gt;       # raw/&lt;company&gt;/&lt;id&gt;/ and evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md
+    internal_name: &lt;real name&gt; # stays in raw/; never appears in evidence/
+    title: &lt;anonymised name&gt;
+    sources:
+      - &lt;git repo url&gt;</code></pre>
+
+<h2 id="flow">Flow</h2>
+
+<figure class="diagram" data-diagram data-title="Two steps" data-height="420">
+<script type="text/plain" class="mermaid-src">flowchart LR
+  subgraph S1["1 · Ingest"]
+    C[Update config] --> RP[Load repository data]
+    C --> J[Load Jira data]
+  end
+  subgraph S2["2 · Distill"]
+    RAW[Use data in raw/company] --> T[Distill to ground truth]
+  end
+  RP --> RAW
+  J --> RAW
+  T --> OUT[(evidence/)]
+  class OUT accent
+</script>
+</figure>
+
+<h3>1 · Ingest</h3>
+<ol>
+  <li><strong>Update config.</strong> The user edits <code>raw/&lt;company&gt;/mapping.yml</code>.</li>
+  <li><strong>Load repository data.</strong> The script clones each source into <code>raw/&lt;company&gt;/&lt;id&gt;/&lt;repo-name&gt;/</code>, or fetches it if it is already there.</li>
+  <li><strong>Load Jira data.</strong> If <code>jira:</code> is set, the script downloads all tickets assigned to me into <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>.</li>
+</ol>
+
+<h3>2 · Distill</h3>
+<ol>
+  <li><strong>Use data in <code>raw/&lt;company&gt;</code>.</strong> For one project: my commits (matched by <code>me</code>), the paths I own, dependency files and docs in its repos, and its related Jira tickets.</li>
+  <li><strong>Distill to ground truth.</strong> Write <code>evidence/&lt;company&gt;/&lt;yyyy-project-slug&gt;.md</code>, where <code>yyyy</code> is the year of my first commit in the project. Every What I Did bullet cites its evidence. The user reviews the file once.</li>
+</ol>
+
+<h2 id="truth">Ground truth file</h2>
+<pre><code class="language-markdown">---
+id: &lt;project-slug&gt;
+title: &lt;anonymised name&gt;
+company: &lt;company&gt;
+period: yyyy-mm ~ yyyy-mm | present
+role: &lt;role&gt;
+status: shipped | wip | dropped
+verified:
+  &lt;repo-name&gt;: &lt;sha&gt;      # last commit read; the next distill starts here
+---
+
+## Context
+## What I Did        # every bullet cites [repo:path], [repo@sha], [KEY-123] or [me: date]
+## Numbers           # value | scope | source
+## Tools
+## Architecture
+## Not mine          # parts built by others
+## Open questions</code></pre>
+
+<h2 id="scripts">Scripts</h2>
+<p>The LLM writes scripts into <code>scripts/</code> as it needs them, rather than to a fixed list up front. Scripts read paths and credentials from <code>raw/&lt;company&gt;/mapping.yml</code>, never from hard-coded values, so they hold no client names and are safe to commit. Expected ones:</p>
+<table>
+  <thead><tr><th>Script</th><th>Step</th><th>Does</th></tr></thead>
+  <tbody>
+    <tr><td><code>ingest &lt;company&gt;</code></td><td>1</td><td>Load repository data and Jira data from the config</td></tr>
+    <tr><td><code>jira query &lt;company&gt; …</code></td><td>2</td><td>Filter raw Jira tickets (by text, project, epic, date) for one project</td></tr>
+    <tr><td><code>authorship &lt;company&gt; &lt;id&gt;</code></td><td>2</td><td>Show my commits and the paths I own in a project's repos</td></tr>
+  </tbody>
+</table>
+
+</main>
+</body>
+</html>

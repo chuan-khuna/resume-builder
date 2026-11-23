@@ -1,0 +1,13 @@
+{
+  "name": "resume-builder-local",
+  "description": "Local plugins for resume-builder.",
+  "owner": { "name": "ALTR" },
+  "plugins": [
+    {
+      "name": "resume-evidence",
+      "source": "./",
+      "description": "Turn work repositories and Jira tickets into anonymised, cited evidence: ingest and distill.",
+      "version": "0.1.0"
+    }
+  ]
+}

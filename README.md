@@ -11,17 +11,31 @@ line can be defended in an interview.
 The second output is the **resume**: YAML content typeset into a PDF with
 [Typst](https://typst.app), where every work bullet traces to an evidence file.
 
+## Fastest way to a resume
+
+Edit the resume directly. You need no skill and no evidence file for this:
+
+1. Write the content in [`resume/data/resume.yml`](resume/data/resume.yml): header, skills,
+   experience, projects, education.
+2. To change the layout, edit a template in [`resume/templates/`](resume/templates/):
+   `classic.typ` or `rail.typ`.
+3. Build the PDF: `mise -C resume run build`, then open `resume/build/base/classic.pdf`.
+
+`raw/` and `evidence/` are reference data for you: what you did at work, with proof. Read them
+to find and check your claims, or run `/resume-evidence:steer` to get suggestions backed by
+them. The pipeline below builds that reference data.
+
 ## User manual
 
 The step-by-step guide is
 [`docs/documents/user-manual.html`](docs/documents/user-manual.html). It covers the
 prerequisites, installing the plugin, writing `mapping.yml`, running ingest, distill and
-verify, building the resume with `to-resume` and `review-resume`, and troubleshooting.
+verify, building the resume with `to-resume`, `review-resume` and `steer`, and troubleshooting.
 
 ## How it works
 
-Five steps, each a Claude Code skill in the `resume-evidence` plugin. The first three build the
-evidence; the last two build the resume from it.
+Six steps, each a Claude Code skill in the `resume-evidence` plugin. The first three build the
+evidence; the last three build the resume from it.
 
 | Step | Skill | Output |
 | ---- | ----- | ------ |
@@ -30,12 +44,15 @@ evidence; the last two build the resume from it.
 | 3. Verify | `/resume-evidence:verify <company> <id>` | the same evidence file, Summary confirmed, `reviewed:` set |
 | 4. To resume | `/resume-evidence:to-resume [base \| <slug>]` | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, and the PDF Typst builds in `resume/build/<slug>/` |
 | 5. Review resume | `/resume-evidence:review-resume [slug] [template]` | `resume/review/<slug>.html` (`index.html` for base) |
+| 6. Steer | `/resume-evidence:steer [base \| <slug>] <what to change>` | the target `resume.yml`, changed as you direct |
 
 ```
 mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─▶ evidence (reviewed)
                             ▲                                         │
   no repos: you ─interview──┘                                         │
                      review page ◀─review-resume─ PDF ◀─Typst─ resume.yml ◀─to-resume
+                                                                  ▲
+                                          you ─steer (checked against evidence)
 ```
 
 1. **Ingest** (`/resume-evidence:ingest <company>`)
@@ -74,12 +91,19 @@ mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─�
    - The review checks evidence traceability first, then screening, CV standards,
      readability, format, ATS, contrast and accessibility, and ends with a ranked list of
      fixes.
+6. **Steer** (`/resume-evidence:steer [base | <slug>] <what to change>`)
+   - You name the change: sections and their order, a project, an education line, the
+     experience bullet you want to write.
+   - Your own facts go straight into the YAML. Each work claim is graded backed, stretched or
+     unbacked against evidence, and the agent suggests wording the evidence supports.
+   - An unbacked claim you keep is recorded in evidence with a `[me: yyyy-mm-dd]` citation
+     first.
 
 `/resume-evidence:resume` holds the writing rules the agent applies to every bullet: British
 English, a plain verb first, one result, 25 words or fewer. You can also call it on its own to
 proofread any resume text.
 
-The design of all five steps, with each step's inputs and outputs, is in
+The design of all six steps, with each step's inputs and outputs, is in
 [`docs/documents/resume-generation-workflow.html`](docs/documents/resume-generation-workflow.html).
 The resume layout, YAML keys and build commands are in [`resume/README.md`](resume/README.md).
 
@@ -130,7 +154,9 @@ real names.
    bullets.
 7. Run `/resume-evidence:to-resume` to write the base resume, and approve its plan.
 8. Run `/resume-evidence:review-resume` and apply the fixes you agree with.
-9. For a job application, run `/resume-evidence:to-resume <slug>` with the job ad, then
+9. To change the resume yourself, run `/resume-evidence:steer` with the change you want, or
+   edit `resume/data/resume.yml` directly.
+10. For a job application, run `/resume-evidence:to-resume <slug>` with the job ad, then
    `/resume-evidence:review-resume <slug>`.
 
 To update a project after new work, run distill again. It reads only the commits after the

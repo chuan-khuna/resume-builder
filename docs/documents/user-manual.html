@@ -23,6 +23,18 @@ confirm the <a class="term" href="#term-summary">Summary</a>. Last, it writes th
 from the evidence files and reviews the built PDF. Every resume bullet traces to a cited claim
 in an evidence file.</p>
 
+<blockquote><strong>Fastest way to a resume:</strong> edit the resume directly. You need no skill
+and no evidence file for this.
+<ol>
+  <li>Write the content in <code>resume/data/resume.yml</code>: header, skills, experience, projects, education.</li>
+  <li>To change the layout, edit a template in <code>resume/templates/</code>: <code>classic.typ</code> or <code>rail.typ</code>.</li>
+  <li>Build the PDF: <code>mise -C resume run build</code>.</li>
+  <li>Open <code>resume/build/base/classic.pdf</code>.</li>
+</ol>
+<code>raw/</code> and <code>evidence/</code> are reference data for you: what you did, with proof.
+Read them to find and check your claims, or type <code>/resume-evidence:steer</code> to get
+suggestions backed by them. Steps 1–5 below build that reference data.</blockquote>
+
 <figure class="diagram" data-diagram data-title="From repositories to a reviewed resume" data-height="360">
 <script type="text/plain" class="mermaid-src">flowchart LR
   A["1 · Configure<br/>you edit mapping.yml"] --> I["ingest<br/>LLM loads repos and Jira"]
@@ -33,6 +45,8 @@ in an evidence file.</p>
   V --> R["4 · To resume<br/>LLM writes resume.yml"]
   R --> RV["5 · Review<br/>LLM measures the PDF"]
   RV --> OUT[(resume/build/ PDF)]
+  U([you]) --> ST["6 · Steer<br/>you edit, LLM checks against evidence"]
+  ST --> OUT
   class OUT accent
 </script>
 </figure>
@@ -45,6 +59,7 @@ in an evidence file.</p>
     <tr><td>3 · Verify</td><td>Answer questions, confirm the bullets</td><td>Folds your answers into the file, rewrites the Summary</td><td>Same file, with <code>reviewed:</code> set</td></tr>
     <tr><td>4 · To resume</td><td>Approve the plan, check the bullets</td><td>Writes the resume YAML from the evidence, with a trace comment per bullet, then builds it</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code></td></tr>
     <tr><td>5 · Review</td><td>Read the review, pick the fixes</td><td>Measures the PDF and checks every bullet against its evidence</td><td><code>resume/review/&lt;slug&gt;.html</code></td></tr>
+    <tr><td>6 · Steer</td><td>Name the change you want</td><td>Checks each work claim against the evidence, suggests wording, writes the YAML</td><td>The target <code>resume.yml</code></td></tr>
   </tbody>
 </table>
 
@@ -458,7 +473,7 @@ Add a data-engineering bullet. Suggest the strongest one the evidence supports.<
   <dt id="term-open-question">Open question</dt>
   <dd>A gap in an evidence file that git and Jira cannot answer. Verify asks you each one.</dd>
   <dt id="term-plugin">Plugin</dt>
-  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the six skills.</dd>
+  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the seven skills.</dd>
   <dt id="term-private-note">Private note</dt>
   <dd><code>raw/&lt;company&gt;/notes/&lt;id&gt;.md</code>: the honest account of what held your work back on one project. It stays local and never reaches the resume. It records facts, never blame of others.</dd>
   <dt id="term-skill">Skill</dt>

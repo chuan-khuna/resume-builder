@@ -17,7 +17,7 @@
 
 <h2 id="overview">Overview</h2>
 <p>This project turns your work history into resume bullets you can defend. You give it a
-configuration file for one company. The LLM then loads your repositories, writes one
+configuration file for one company. The LLM then loads your repositories (or interviews you, when there are none), writes one
 <a class="term" href="#term-evidence-file">evidence file</a> per project, and interviews you to
 confirm the <a class="term" href="#term-summary">Summary</a>. Last, it writes the resume YAML
 from the evidence files and reviews the built PDF. Every resume bullet traces to a cited claim
@@ -27,6 +27,8 @@ in an evidence file.</p>
 <script type="text/plain" class="mermaid-src">flowchart LR
   A["1 · Configure<br/>you edit mapping.yml"] --> I["ingest<br/>LLM loads repos and Jira"]
   I --> D["2 · Distill<br/>LLM writes the evidence file"]
+  A -. no repos .-> IN["interview mode<br/>LLM asks about your responsibilities"]
+  IN --> D
   D --> V["3 · Verify<br/>LLM interviews you"]
   V --> R["4 · To resume<br/>LLM writes resume.yml"]
   R --> RV["5 · Review<br/>LLM measures the PDF"]
@@ -39,7 +41,7 @@ in an evidence file.</p>
   <thead><tr><th>Task</th><th>You do</th><th>The LLM does</th><th>Result</th></tr></thead>
   <tbody>
     <tr><td>1 · Configure</td><td>Write <code>mapping.yml</code>, then start ingest</td><td>Clones repos, downloads Jira tickets, counts your commits</td><td><code>raw/&lt;company&gt;/</code></td></tr>
-    <tr><td>2 · Distill</td><td>Start distill for one project, review the file</td><td>Reads your code and tickets, writes a cited, anonymised file with a draft Summary</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code></td></tr>
+    <tr><td>2 · Distill</td><td>Start distill for one project, review the file</td><td>Reads your code and tickets (or, with no repos, interviews you on your responsibilities), writes a cited, anonymised file with a draft Summary</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code></td></tr>
     <tr><td>3 · Verify</td><td>Answer questions, confirm the bullets</td><td>Folds your answers into the file, rewrites the Summary</td><td>Same file, with <code>reviewed:</code> set</td></tr>
     <tr><td>4 · To resume</td><td>Approve the plan, check the bullets</td><td>Writes the resume YAML from the evidence, with a trace comment per bullet, then builds it</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code></td></tr>
     <tr><td>5 · Review</td><td>Read the review, pick the fixes</td><td>Measures the PDF and checks every bullet against its evidence</td><td><code>resume/review/&lt;slug&gt;.html</code></td></tr>
@@ -214,6 +216,18 @@ claim, and no real names. Run it once per project.</p>
 </ol>
 
 <p>You do not need to answer every open question here. Verify asks them later.</p>
+
+<h3>No repositories: interview mode</h3>
+<p>Use interview mode for work you cannot ingest, such as a job where you lost repository access.</p>
+<ol>
+  <li>Add the project to <code>mapping.yml</code> with its <code>id</code>, <code>internal_name</code> and <code>title</code>, and no <code>sources</code>.</li>
+  <li>Type <code>/resume-evidence:distill company-b ops-dashboard</code>.</li>
+  <li>When the LLM finds no repositories, choose the interview.</li>
+  <li>Answer each round of questions: the context, then each of your responsibilities, then outcomes, tools and what held the work back.</li>
+  <li>Describe each responsibility clearly: what you owned, how you built it, and the trade-off. The LLM sends a vague answer to open questions.</li>
+  <li>Continue from step 4 above: read the Summary, correct it, confirm it and commit it.</li>
+</ol>
+<p>Each responsibility becomes a What I Did bullet cited <code>[me: yyyy-mm-dd]</code>. The year in the file name is the first year of the period you give.</p>
 <h4>Example prompts: distill</h4>
 <pre><code class="language-text">/resume-evidence:distill company-a retail-shelf-cv
 
@@ -309,6 +323,7 @@ production latency figures from our monitoring dashboard.</code></pre>
   <li>Say if a number is a guess. The file marks it as estimated or user-reported.</li>
   <li>Say if you only committed work that a teammate designed. Your account overrides git.</li>
   <li>Say if a feature never shipped. The bullet then reads "prototyped" or "evaluated", not "delivered".</li>
+  <li>Say what held the work back: too little time, a skill you lacked then, low interest. The LLM records it in your <a class="term" href="#term-private-note">private note</a>, never in the evidence file.</li>
   <li>Use real names in answers if you need to. The LLM anonymises the file and runs the <a class="term" href="#term-banned-term-search">banned-term search</a> before you confirm.</li>
 </ul>
 <p>Each answer goes into the evidence sections first, cited <code>[me: yyyy-mm-dd]</code>, and only then
@@ -420,6 +435,8 @@ I keep the projects section.</code></pre>
   <dd>A gap in an evidence file that git and Jira cannot answer. Verify asks you each one.</dd>
   <dt id="term-plugin">Plugin</dt>
   <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the six skills.</dd>
+  <dt id="term-private-note">Private note</dt>
+  <dd><code>raw/&lt;company&gt;/notes/&lt;id&gt;.md</code>: the honest account of what held your work back on one project. It stays local and never reaches the resume. It records facts, never blame of others.</dd>
   <dt id="term-skill">Skill</dt>
   <dd>A set of instructions the LLM follows when you type its command, for example <code>/resume-evidence:distill</code>.</dd>
   <dt id="term-trace-comment">Trace comment</dt>

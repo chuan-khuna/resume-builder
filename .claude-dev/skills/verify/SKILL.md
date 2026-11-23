@@ -29,6 +29,8 @@ sections before it reaches a bullet.
      requests, data volume, clients), the money or hours saved, and whether it shipped;
    - every Not mine item whose author is uncertain;
    - every draft Summary bullet: is it correct, is there a number I don't want shown?
+   - one question for the whole file: what held the work back (time, a skill I lacked then,
+     interest, a scope cut)? The answer goes in the private note.
 
    Rank them: questions that decide a bullet (authorship, shipped or not, an outcome number)
    first, then context (role, team size, who asked), then detail.
@@ -44,6 +46,8 @@ sections before it reaches a bullet.
    - a confirmed or corrected claim → its What I Did bullet, Not mine item or frontmatter field;
    - a number → a Numbers row with its scope, marked user-reported;
    - a "don't know" → stays under Open questions, suffixed "(asked yyyy-mm-dd: unknown)";
+   - a limit of my own work → `raw/<company>/notes/<id>.md`, by the Private notes rules in
+     `evidence.md`; if it narrows a bullet's claim, also a neutral caveat Remark;
    - an answer that names a missing repo or Jira project → tell the user what to add to
      `mapping.yml`, and add it to "Projects to add to mapping.yml" in `raw/<company>/TODO.md`.
 
@@ -57,7 +61,8 @@ sections before it reaches a bullet.
    banned-term search. Answers are where new client and person names arrive. _Done when_ the
    search returns zero hits.
 
-7. **Review with the user.** Show the Summary and the diff of the evidence sections.
+7. **Review with the user.** Show the Summary, the diff of the evidence sections and the
+   private note.
    Apply corrections, then set `reviewed:` to today. _Done when_ the user confirms the file.
 
 ## Completion

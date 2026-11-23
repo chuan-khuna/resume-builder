@@ -1,6 +1,6 @@
 ---
 name: distill
-description: Distill one project's raw repositories and Jira tickets into an anonymised, cited evidence file.
+description: Distill one project's raw repositories and Jira tickets, or an interview with the user when there are none, into an anonymised, cited evidence file.
 disable-model-invocation: true
 ---
 
@@ -17,16 +17,35 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 ## Steps
 
 1. **Pick the project.** Take `<company>` and `<id>` from the user's message; if either is
-   missing, list the projects in `raw/<company>/mapping.yml` and ask. If
-   `raw/<company>/repos/<id>/` has no repos, tell the user to run ingest and stop. Each repo
+   missing, list the projects in `raw/<company>/mapping.yml` and ask. Each repo
    folder is named by its `slug` from `mapping.yml`: cite the repo by that slug, in
    citations and in `verified:`.
    - An evidence file matching `evidence/<company>/*-<id>.md` exists: **update** mode. Read it;
      its `verified:` shas mark where the new commits start.
    - None exists: **new** mode.
 
+   If `raw/<company>/repos/<id>/` has no repos, ask the user: run ingest first, or build the
+   file from an interview (**interview mode**, below), for when the user has no repo access or
+   the work left no code. In interview mode, skip steps 2 and 3; step 4 still reads any Jira
+   tickets.
+
    Read the project's items under "Leads for distill" in `raw/<company>/TODO.md`: each is a
    fact to confirm or reject in steps 2–4.
+
+   **Interview mode.** Interview the user on their responsibilities in the project, in rounds of
+   at most four questions, as verify step 3 does. Cover, in this order:
+   - the context: who it was for, the problem, the team and my role in it, the period;
+   - each responsibility: what I owned, decided or built, how, and the trade-off taken;
+   - what others built (Not mine), outcomes and numbers with their scope, the tools I used,
+     and the system's shape (for the Architecture diagram);
+   - what held the work back, for the private note.
+
+   Write each responsibility as one What I Did bullet, citing `[me: yyyy-mm-dd]`. A
+   responsibility the user describes only vaguely goes to Open questions, not to What I Did.
+   For anonymisation, the real names the user gives (employer, client, product) are banned
+   terms. If the project has no `mapping.yml` entry, tell the user to add one with its `id`,
+   `internal_name` and `title` and no `sources`.
+   _Done when_ every responsibility is a cited What I Did bullet or an Open question.
 
 2. **Establish authorship.** Use the authorship script in `scripts/`; write it first if none
    exists. Per repo it reports, with `--all` on every git command:
@@ -62,7 +81,8 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
    only by tickets to Open questions.
 
 5. **Write the evidence file** at `evidence/<company>/<yyyy>-<id>.md`, where `yyyy` is the
-   year of my first commit in the project. Use the schema in `evidence.md`. Write the evidence
+   year of my first commit in the project, or in interview mode the first year of the
+   `period` the user gave. Use the schema in `evidence.md`. Write the evidence
    sections first; in update mode, add new bullets and keep the existing ones as written.
    _Done when_ every What I Did bullet carries at least one citation.
 
@@ -81,7 +101,8 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 
 8. **Review with the user.** Show the Summary first, then the file, and list the Open
    questions. Fold in any account the
-   user gives with a `[me: yyyy-mm-dd]` citation. _Done when_ the user confirms the file; the
+   user gives with a `[me: yyyy-mm-dd]` citation; a limit of my own work goes in the private
+   note, by the Private notes rules in `evidence.md`. _Done when_ the user confirms the file; the
    Open questions left are for `/resume-evidence:verify`.
 
 9. **Update `raw/<company>/TODO.md`.** Move this project's leads to Done, each noting whether
@@ -91,5 +112,5 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 
 The file follows the schema, every What I Did bullet is cited, the draft Summary follows the
 Summary rules, the banned-term search returns
-zero hits, `verified:` holds the HEAD sha read for every repo, the user has confirmed it, and the
-project's leads in `TODO.md` are resolved.
+zero hits, `verified:` holds the HEAD sha read for every repo (empty in interview mode), the
+user has confirmed it, and the project's leads in `TODO.md` are resolved.

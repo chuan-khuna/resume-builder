@@ -1,12 +1,15 @@
 # resume-builder
 
 A format and a standard for letting an LLM agent summarise **what you have done** at work,
-from your repositories and Jira tickets.
+from your repositories and Jira tickets, and turn it into a resume.
 
-The output is **evidence**: one Markdown file per project that states what you built, decided
-or owned. Each claim cites the commit, path or ticket that proves it, and client names are
-anonymised. Evidence is the ground truth you write a resume, CV or portfolio from, and every
+The first output is **evidence**: one Markdown file per project that states what you built,
+decided or owned. Each claim cites the commit, path or ticket that proves it, and client names
+are anonymised. Evidence is the ground truth you write a resume, CV or portfolio from, and every
 line can be defended in an interview.
+
+The second output is the **resume**: YAML content typeset into a PDF with
+[Typst](https://typst.app), where every work bullet traces to an evidence file.
 
 ## User manual
 
@@ -17,7 +20,14 @@ verify, building the resume with `to-resume` and `review-resume`, and troublesho
 
 ## How it works
 
-Three steps, each a Claude Code skill:
+Five steps, each a Claude Code skill in the `resume-evidence` plugin. The first three build the
+evidence; the last two build the resume from it.
+
+```
+mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─▶ evidence (reviewed)
+                                                                      │
+                     review page ◀─review-resume─ PDF ◀─Typst─ resume.yml ◀─to-resume
+```
 
 1. **Ingest** (`/resume-evidence:ingest <company>`)
    - Update the config: you list your projects and their git repos in `mapping.yml`.
@@ -27,16 +37,37 @@ Three steps, each a Claude Code skill:
    - The agent uses the data in `raw/<company>/`. Git authorship decides what is yours; a
      ticket shows assignment, not authorship.
    - The agent writes `evidence/<company>/<yyyy>-<project-id>.md`. Every claim is cited and
-     anonymised, and you review the file once.
+     anonymised.
    - The file opens with a draft `## Summary`: resume bullets, then remarks on what each traces
      to and which numbers to quote.
 3. **Verify** (`/resume-evidence:verify <company> <project-id>`)
    - The agent interviews you on the gaps git cannot answer: outcomes, scale, what shipped.
-   - It folds your answers into the evidence and confirms the `## Summary`: resume bullets,
-     each with a remark on what it traces to.
+   - It folds your answers into the evidence, confirms the `## Summary` and sets `reviewed:`.
+4. **To resume** (`/resume-evidence:to-resume [base | <slug>]`)
+   - `base` writes `resume/data/resume.yml`, the base resume. A slug such as
+     `2026-dec-acme-ml` writes `resume/versions/<slug>/resume.yml`, a version tailored to the
+     job ad saved beside it as `job-ad.md`.
+   - The agent picks the evidence files, asks you for what evidence lacks (employer name, job
+     title, dates), and shows you a plan before it writes anything.
+   - Each bullet starts from an evidence Summary bullet and carries a trace comment, such as
+     `# evidence/<company>/<file>.md B2`. Bullets from unreviewed files are marked `(draft)`.
+   - Skills come only from the evidence `tools:` lines.
+   - The agent greps the YAML for banned terms from `mapping.yml`, checks the YAML against the
+     schema, then compiles the PDF with Typst (`mise -C resume run build`). The build fails if
+     the resume runs past `maxPages` (default 1).
+5. **Review resume** (`/resume-evidence:review-resume [slug] [template]`)
+   - The agent measures the built PDF and writes an HTML review to `resume/review/`.
+   - The review checks evidence traceability first, then screening, CV standards,
+     readability, format, ATS, contrast and accessibility, and ends with a ranked list of
+     fixes.
 
-The full design is in
+`/resume-evidence:resume` holds the writing rules the agent applies to every bullet: British
+English, a plain verb first, one result, 25 words or fewer. You can also call it on its own to
+proofread any resume text.
+
+The full design of steps 1–3 is in
 [`docs/documents/ingest-distill-workflow.html`](docs/documents/ingest-distill-workflow.html).
+The resume layout, YAML keys and build commands are in [`resume/README.md`](resume/README.md).
 
 ## Layout
 
@@ -49,12 +80,20 @@ raw/                                   # local only; commit only the example
     ├── jira/<yyyy>.json
     └── <project-id>/<repo>/
 evidence/<company>/<yyyy>-<id>.md      # committed: anonymised, cited ground truth
+resume/
+├── data/resume.yml                    # the base resume: every work bullet traced to evidence
+├── versions/<slug>/                   # resume.yml overrides and job-ad.md for one application
+├── templates/                         # Typst layouts that typeset the PDF: classic, rail
+├── review/                            # HTML reviews written by review-resume
+└── build/                             # generated PDFs and page images (gitignored)
 scripts/                               # committed: helpers the agent writes as needed
-.claude-dev/                           # the resume-evidence plugin: ingest and distill skills
+docs/documents/                        # user manual and design documents
+.claude-dev/                           # the resume-evidence plugin: skills and shared reference
 ```
 
 `raw/` holds real client names and a Jira token, so it stays on your machine. Only
-`evidence/` and `scripts/` carry your work into git, and both are free of real names.
+`evidence/`, `resume/` and `scripts/` carry your work into git, and all of them are free of
+real names.
 
 ## Get started
 
@@ -62,15 +101,22 @@ scripts/                               # committed: helpers the agent writes as 
    ```bash
    mise install
    mise run plugins
+   mise -C resume trust
+   mise -C resume install    # Typst, pinned in resume/mise.toml
    ```
 2. Copy `raw/repository-mapping.example.yml` to `raw/<company>/mapping.yml`.
 3. Fill in `me` (the names and emails you commit with), `jira`, and one entry per project.
 4. Restart Claude Code, then run `/resume-evidence:ingest <company>`.
 5. Run `/resume-evidence:distill <company> <project-id>` for each project.
-6. Run `/resume-evidence:verify <company> <project-id>` to answer its questions and confirm the bullets.
+6. Run `/resume-evidence:verify <company> <project-id>` to answer its questions and confirm the
+   bullets.
+7. Run `/resume-evidence:to-resume` to write the base resume, and approve its plan.
+8. Run `/resume-evidence:review-resume` and apply the fixes you agree with.
+9. For a job application, run `/resume-evidence:to-resume <slug>` with the job ad, then
+   `/resume-evidence:review-resume <slug>`.
 
 To update a project after new work, run distill again. It reads only the commits after the
-`verified:` sha in the evidence file and adds new bullets.
+`verified:` sha in the evidence file and adds new bullets. Verify it, then run to-resume again.
 
 ## The standard
 
@@ -85,3 +131,13 @@ An evidence file is done when:
 
 Resume wording (which bullets, which numbers to quote) lives in the file's `## Summary` at the
 top: drafted by distill, confirmed with you by verify.
+
+A resume is done when:
+
+- every experience bullet has a trace comment to an evidence Summary bullet, and claims nothing
+  beyond it;
+- every number has the same scope as in the evidence Numbers;
+- every skill comes from an evidence `tools:` line;
+- the banned-term search returns zero hits;
+- it passes `mise -C resume run check` and builds within `maxPages`;
+- you have approved the content.

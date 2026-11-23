@@ -24,7 +24,7 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 `to-resume` and `review-resume` work on the Typst resume in `resume/` (see `resume/README.md`).
 
 All skills are user-invoked. The design is in
-[`docs/documents/ingest-distill-workflow.html`](../docs/documents/ingest-distill-workflow.html).
+[`docs/documents/resume-generation-workflow.html`](../docs/documents/resume-generation-workflow.html).
 
 ## Install
 

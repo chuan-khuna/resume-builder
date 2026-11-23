@@ -18,9 +18,14 @@ projects:
   - id: retail-shelf-cv # path slug: raw/<company>/<id>/ and evidence/<company>/<yyyy>-<id>.md
     internal_name: Acme Shelf # real name; never appears in evidence/
     title: Retail Shelf Computer-Vision Analytics Platform # anonymised name
+    # Git repos. slug: the repo's anonymised name, by its role. Ingest clones the repo into
+    # raw/<company>/repos/<id>/<slug>/, and evidence cites it by slug. Lowercase kebab-case,
+    # unique within the project.
     sources:
-      - git@bitbucket.org:company-a/shelf-mono-repo.git
-      - git@bitbucket.org:company-a/shelf-dashboard.git
+      - url: git@bitbucket.org:company-a/shelf-mono-repo.git
+        slug: shelf-app
+      - url: git@bitbucket.org:company-a/shelf-dashboard.git
+        slug: dashboard
     # Where this project's Jira tickets are (optional). project: key or name; epic: epic title.
     jira:
       - project: SHELF # every ticket in a Jira project (older projects)

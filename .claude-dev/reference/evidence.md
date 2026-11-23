@@ -21,7 +21,7 @@ period: yyyy-mm ~ yyyy-mm | present   # first to last commit of mine, or the use
 role: <role>
 status: shipped | wip | dropped
 verified:
-  <repo-name>: <HEAD sha read>
+  <slug>: <HEAD sha read>              # one per source, by its slug in mapping.yml
 reviewed: yyyy-mm-dd                   # set by verify when the user confirms the file
 ---
 
@@ -94,7 +94,8 @@ Shared by distill (draft) and verify (confirmed).
 | `[<KEY-123>]` | a Jira ticket |
 | `[me: yyyy-mm-dd]` | the user's account, given on that date |
 
-Repo names in citations are the anonymised form used throughout the file. When the user's
+`<repo>` in a citation is the source's `slug` from `mapping.yml`, the anonymised name used
+throughout the file. When the user's
 account differs from git ("I committed it, but a teammate wrote the logic"), the user's account
 wins: record it with a `[me: yyyy-mm-dd]` citation.
 
@@ -102,14 +103,15 @@ wins: record it with a `[me: yyyy-mm-dd]` citation.
 
 Anonymise the label, keep the engineering.
 
-- **Banned terms**: every `internal_name`, repo names, the hosts and org names in source URLs,
+- **Banned terms**: every `internal_name`, real repo names (the last segment of each source
+  `url`), the hosts and org names in source URLs,
   the Jira site, and any client, brand, product or person name found while reading. The
   `<company>` slug is allowed only in the `company:` field and the file path; it is banned
   everywhere else in the file.
 - **Replace** with consistent generic placeholders that keep each thing's role: a client →
   "a retail client"; `shelf-lens.acme.co.th` / `shelf-lens-backend.acme.co.th` →
-  `shelf-app.example.com` / `shelf-api.example.com`; a repo → its role ("the backend repo",
-  `backend`); a person → their role ("a teammate").
+  `shelf-app.example.com` / `shelf-api.example.com`; a repo → its `slug` from `mapping.yml`
+  (`backend`, "the backend repo"); a person → their role ("a teammate").
 - **Remove** infra identifiers: IPs, server hostnames, tunnel IDs, bucket names, account IDs,
   ports, credentials, env values, internal paths.
 - **Round** exact business figures that could identify a client ("1,247 stores" → "1,200+

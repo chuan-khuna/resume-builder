@@ -17,15 +17,21 @@ the mapping schema and the rules for scripts.
 1. **Find the config.** Take `<company>` from the user's message; if it is missing, list the
    folders in `raw/` and ask. If `raw/<company>/mapping.yml` does not exist, copy
    `raw/repository-mapping.example.yml` there, ask the user to fill it in, and stop.
-   _Done when_ `mapping.yml` parses and every project has `id`, `internal_name`, `title` and
-   `sources`. Report each missing field to the user and stop until it is fixed.
+   _Done when_ `mapping.yml` parses, every project has `id`, `internal_name`, `title` and
+   `sources`, and every source has a `url` and a `slug`. Report each missing field to the user
+   and stop until it is fixed. A bare URL in `sources` is the old format: tell the user to
+   rewrite it as `{url, slug}`, and suggest a role slug for it (`backend`, `worker`), never the
+   real repo name.
 
 2. **Load repository data.** Run `uv run scripts/ingest_repos.py <company>`; it does this step
-   and step 4 and writes `raw/<company>/summary.json`. For every source of every project, the target is
-   `raw/<company>/<id>/<repo-name>/`, where `<repo-name>` is the URL's last path segment
-   without `.git`.
+   and step 4 and writes `raw/<company>/commit-summary.json`. It checks every source's `url`
+   and `slug` first and stops on an error. For every source of every project, the target is
+   `raw/<company>/repos/<id>/<slug>/`.
    - Target missing: `git clone <url> <target>`.
-   - Target present: `git -C <target> fetch --all --prune`.
+   - Target present: `git -C <target> fetch --all --prune`, then fast-forward the checked-out
+     branch to its upstream. A fetch alone moves only the remote branches, and blame reads the
+     checked-out one. Skip the fast-forward when the working tree has changes or the branch has
+     diverged, and record why.
    - A clone or fetch fails (auth, wrong URL): record it and continue with the rest.
 
    _Done when_ every source is either cloned and fetched, or recorded as failed with its error.
@@ -53,13 +59,16 @@ the mapping schema and the rules for scripts.
 4. **Check authorship coverage.** For each cloned repo, count my commits:
    `git -C <repo> log --all --format='%an <%ae>'`, matched against `me` as the reference
    describes. `ingest_repos.py` records the counts and date ranges per repo and per project in
-   `raw/<company>/summary.json`, replacing the previous summary.
+   `raw/<company>/commit-summary.json`, replacing the previous summary.
 
-   _Done when_ `summary.json` lists every source in `mapping.yml`.
+   _Done when_ `commit-summary.json` lists every source in `mapping.yml`.
 
-5. **Report** to the user from `summary.json`, as a table per project:
-   - each repo: cloned / fetched / failed, my commit count, date range of my commits;
+5. **Report** to the user from `commit-summary.json`, as a table per project:
+   - each repo, by slug: cloned / fetched / failed, my commit count, date range of my commits;
    - repos with zero commits of mine, flagged: the URL is wrong or `me` lacks a name or email;
+   - repos whose checked-out branch was not fast-forwarded, with the reason;
+   - per repo, the remote branches holding commits of mine the checked-out branch lacks
+     (`branches_ahead`). Distill reads blame from one of them with `--ref`;
    - Jira: ticket count per year and per Jira project, as `ingest_jira.py` prints them.
 
 6. **Update `raw/<company>/TODO.md`.** Move to Done each "Projects to add" item that now has
@@ -71,5 +80,5 @@ the mapping schema and the rules for scripts.
 
 ## Completion
 
-Every source in `mapping.yml` appears in `summary.json` and the report as loaded or failed, Jira is downloaded or
+Every source in `mapping.yml` appears in `commit-summary.json` and the report as loaded or failed, Jira is downloaded or
 skipped, every zero-commit repo is flagged, and `TODO.md` is updated.

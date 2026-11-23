@@ -36,11 +36,15 @@ the mapping schema and the rules for scripts.
    `status`, `project`, `epic`, `parent`, `assignee`, `created` and `resolved`. Pick the source:
    - `jira.api_token` is set: run `uv run scripts/ingest_jira.py <company>`. It searches
      `assignee = currentUser() ORDER BY created ASC` through the REST API, following every page.
-   - No token, and the Atlassian MCP is connected: search with `searchJiraIssuesUsingJql`, JQL
-     `assignee = currentUser() ORDER BY created ASC`, fields `summary`, `description`,
-     `issuetype`, `status`, `project`, `parent`, `assignee`, `created`, `resolutiondate`,
-     following every page. Save each page's JSON response as is to the scratchpad, then run
-     `uv run scripts/ingest_jira.py <company> --from-raw <page files>`. Delete the page files.
+   - No token, and the Atlassian MCP is connected: first check that `currentUser()` is the
+     user: take one ticket and match its assignee's display name against `me.names`. Get the
+     total with `searchResultMode: count`. Then search with `searchJiraIssuesUsingJql`, JQL
+     `assignee = currentUser() ORDER BY created ASC`, `view: full` (it includes the parent's
+     issue type), `maxResults: 100`, fields `summary`, `description`, `issuetype`, `status`,
+     `project`, `parent`, `assignee`, `created`, `resolutiondate`, following `nextPageToken`
+     until `isLast`. A full page is too large to show, so the tool saves it to a file: copy
+     each file to the scratchpad as `page-NN.json`. Then run
+     `uv run scripts/ingest_jira.py <company> --from-raw <page files>`.
    - Neither: tell the user to add an API token to `mapping.yml` or connect the Atlassian MCP,
      and skip Jira.
 
@@ -59,8 +63,11 @@ the mapping schema and the rules for scripts.
    - Jira: ticket count per year and per Jira project, as `ingest_jira.py` prints them.
 
 6. **Update `raw/<company>/TODO.md`.** Move to Done each "Projects to add" item that now has
-   repos loaded under its `id`. Add each Jira project with tickets of mine but no matching
-   project in `mapping.yml` to "Projects to add", with its ticket count and date range.
+   repos loaded under its `id`. Run `uv run scripts/jira_tickets.py <company> --unmapped`: it
+   lists the Jira projects and epics with tickets of mine that no project's `jira` selectors
+   pick. For each that is real work, either tell the user which `jira` selector to add to an
+   existing project in `mapping.yml`, or add it to "Projects to add" with its ticket count and
+   date range.
 
 ## Completion
 

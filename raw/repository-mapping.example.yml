@@ -21,3 +21,8 @@ projects:
     sources:
       - git@bitbucket.org:company-a/shelf-mono-repo.git
       - git@bitbucket.org:company-a/shelf-dashboard.git
+    # Where this project's Jira tickets are (optional). project: key or name; epic: epic title.
+    jira:
+      - project: SHELF # every ticket in a Jira project (older projects)
+      - project: TT # only the tickets under one epic of a shared project
+        epic: Retail shelf

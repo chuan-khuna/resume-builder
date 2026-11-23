@@ -124,7 +124,11 @@ projects:
     internal_name: Acme Shelf       # real name; never written to evidence/
     title: Retail Shelf Computer-Vision Analytics Platform  # public name
     sources:
-      - git@bitbucket.org:company-a/shelf-mono-repo.git</code></pre>
+      - git@bitbucket.org:company-a/shelf-mono-repo.git
+    jira:                           # optional: where its Jira tickets are
+      - project: SHELF              # every ticket in a Jira project (older projects)
+      - project: TT                 # only one epic of a shared project
+        epic: Retail shelf</code></pre>
 
 <table>
   <thead><tr><th>Field</th><th>Required</th><th>Used for</th></tr></thead>
@@ -136,6 +140,7 @@ projects:
     <tr><td><code>projects[].internal_name</code></td><td>Yes</td><td>Finding Jira tickets. Banned from evidence.</td></tr>
     <tr><td><code>projects[].title</code></td><td>Yes</td><td>The anonymised name in the evidence file</td></tr>
     <tr><td><code>projects[].sources</code></td><td>Yes</td><td>Git URLs to clone</td></tr>
+    <tr><td><code>projects[].jira</code></td><td>No</td><td>Selectors that pick the project's tickets: <code>{project: X}</code> for a whole Jira project, <code>{project: X, epic: Y}</code> for one epic. Ingest tells you which to add.</td></tr>
   </tbody>
 </table>
 
@@ -166,7 +171,9 @@ no entry in <code>mapping.yml</code> goes into <a class="term" href="#term-todo"
 You can run ingest again at any time to pick up new commits.</p>
 <p>You can also run the scripts yourself:</p>
 <pre><code class="language-sh">uv run scripts/ingest_repos.py company-a   # clone or fetch the repos, count your commits
-uv run scripts/ingest_jira.py company-a    # download your Jira tickets (needs jira.api_token)</code></pre>
+uv run scripts/ingest_jira.py company-a    # download your Jira tickets (needs jira.api_token)
+uv run scripts/jira_tickets.py company-a retail-shelf-cv   # one project's tickets
+uv run scripts/jira_tickets.py company-a --unmapped        # tickets no project selects</code></pre>
 <h4>Example prompts: ingest</h4>
 <pre><code class="language-text">/resume-evidence:ingest company-a
 
@@ -178,7 +185,11 @@ and show me the commit counts for that project.
 The shelf-dashboard clone failed last time. I fixed my SSH key; try again.
 
 /resume-evidence:ingest company-a
-I have no Jira API token. Download my tickets through the Atlassian MCP.</code></pre>
+I have no Jira API token. Download my Jira tickets through the Atlassian MCP.
+My Jira account name matches the names in me. Older projects each have their
+own Jira project, named after the project. Newer work is in the TT (Tech Team)
+project, with one epic per project. Propose the jira selectors for each
+project in mapping.yml.</code></pre>
 
 
 <h2 id="distill">2 · Distill</h2>

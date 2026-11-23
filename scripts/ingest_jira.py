@@ -5,8 +5,9 @@ raw/<company>/jira/merged.json. Each ticket keeps only:
 
     key, title, detail, type, status, project, epic, parent, assignee, created, resolved
 
-`detail` is the description as plain text. `epic` is the parent when the parent is an epic;
-`parent` is the direct parent key (a story, for a sub-task). Dates are yyyy-mm-dd.
+`detail` is the description as plain text. `project` is `{key, name}`. `epic` is `{key, title}`
+of the parent when the parent is an epic; `parent` is the direct parent key (a story, for a
+sub-task). Dates are yyyy-mm-dd.
 
 Two sources, same output:
 
@@ -14,7 +15,8 @@ Two sources, same output:
   raw/<company>/mapping.yml, searching `assignee = currentUser() ORDER BY created ASC`.
 - --from-raw FILE...: Jira search results saved as JSON, for example from the Atlassian MCP
   tool `searchJiraIssuesUsingJql`. Each file holds a search response (`{"issues": [...]}`) or
-  a list of issues; each issue needs `key` and `fields` as the Jira REST API returns them.
+  a list of issues, optionally wrapped in `{"data": ...}` as the MCP returns it. Each issue
+  needs `key` and `fields` as the Jira REST API returns them.
 
 Each run replaces the yearly files and merged.json.
 
@@ -29,7 +31,9 @@ from __future__ import annotations
 
 import argparse
 import base64
+import html
 import json
+import re
 import sys
 import urllib.error
 import urllib.parse
@@ -79,22 +83,48 @@ def name_of(obj: dict | None, key: str = "name") -> str | None:
     return obj.get(key) if obj else None
 
 
+def plain(text: str) -> str:
+    """Strip HTML tags and entities from a description the MCP returned as HTML."""
+    if "<" not in text:
+        return text
+    text = re.sub(r"<br\s*/?>|</p>|</li>|</h\d>", "\n", text)
+    return html.unescape(re.sub(r"<[^>]+>", "", text))
+
+
+def is_subtask(issuetype: dict | None) -> bool:
+    if not issuetype:
+        return False
+    if "subtask" in issuetype:
+        return bool(issuetype["subtask"])
+    return (issuetype.get("name") or "").lower().replace("-", "") == "subtask"
+
+
 def trim(issue: dict) -> dict:
     """Keep the fields evidence needs from one Jira issue."""
     f = issue.get("fields", {})
     parent = f.get("parent")
     parent_type = name_of((parent or {}).get("fields", {}).get("issuetype"))
     epic = None
-    if parent and parent_type and parent_type.lower() == "epic":
+    # The parent's type is missing from some MCP views. In Jira's hierarchy the parent of a
+    # ticket that is not a sub-task is an epic, so infer it.
+    if (
+        parent
+        and (parent_type or "").lower() == "epic"
+        or parent
+        and not parent_type
+        and not is_subtask(f.get("issuetype"))
+    ):
         epic = {"key": parent.get("key"), "title": parent.get("fields", {}).get("summary")}
-    detail = adf_text(f.get("description")).strip()
+    description = f.get("description")
+    detail = (plain(description) if isinstance(description, str) else adf_text(description)).strip()
+    project = f.get("project")
     return {
         "key": issue.get("key"),
         "title": f.get("summary"),
         "detail": detail or None,
         "type": name_of(f.get("issuetype")),
         "status": name_of(f.get("status")),
-        "project": name_of(f.get("project"), "key"),
+        "project": {"key": project.get("key"), "name": project.get("name")} if project else None,
         "epic": epic,
         "parent": parent.get("key") if parent else None,
         "assignee": name_of(f.get("assignee"), "displayName"),
@@ -153,7 +183,7 @@ def read_raw(paths: list[Path]) -> list[dict]:
     for path in paths:
         data = json.loads(path.read_text(encoding="utf-8"))
         if isinstance(data, dict):
-            data = data.get("issues", [])
+            data = data.get("data", data).get("issues", [])  # the MCP wraps responses in "data"
         issues += [i for i in data if isinstance(i, dict) and i.get("key")]
     return issues
 
@@ -192,7 +222,12 @@ def report(merged: list[dict], total: int | None) -> None:
         "per year:   "
         + ", ".join(f"{y} {n}" for y, n in sorted(Counter(t["created"][:4] for t in merged if t["created"]).items()))
     )
-    print("per project: " + ", ".join(f"{p} {n}" for p, n in Counter(t["project"] for t in merged).most_common()))
+    print(
+        "per project: "
+        + ", ".join(
+            f"{p} {n}" for p, n in Counter(t["project"]["key"] if t["project"] else None for t in merged).most_common()
+        )
+    )
     epics = Counter(t["epic"]["key"] for t in merged if t["epic"])
     print(f"with an epic: {sum(epics.values())} tickets under {len(epics)} epics")
 

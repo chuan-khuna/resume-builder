@@ -34,7 +34,10 @@ Schema and an example: `raw/repository-mapping.example.yml`.
   author name and email; a name matches as a substring.
 - `jira`: `site`, `email`, `api_token`. Optional; without it, skip Jira.
 - `projects[]`: `id` (path slug), `internal_name` (real name), `title` (anonymised name),
-  `sources` (git URLs).
+  `sources` (git URLs), and optionally `jira`: a list of selectors that pick the project's
+  tickets from `jira/merged.json`. `{project: X}` picks every ticket in Jira project X (key or
+  name); `{project: X, epic: Y}` picks only the tickets under epic Y. Older projects usually
+  have their own Jira project; newer ones are epics in a shared project.
 
 The user owns `mapping.yml`. To change it, tell the user what to change.
 

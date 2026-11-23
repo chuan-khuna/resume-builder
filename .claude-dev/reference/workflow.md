@@ -1,8 +1,20 @@
 # Evidence workflow: shared reference
 
-Read by the `ingest`, `distill` and `verify` skills. Three steps: **ingest** loads raw data,
-**distill** turns it into evidence, **verify** confirms it with the user and adds resume
-bullets. The evidence file's own format is in [`evidence.md`](evidence.md).
+Read by the `ingest`, `distill` and `verify` skills. The evidence file's own format is in
+[`evidence.md`](evidence.md).
+
+## Steps
+
+| Step | Skill | Reads | Writes |
+| ---- | ----- | ----- | ------ |
+| 1. Ingest | `/resume-evidence:ingest <company>` | `raw/<company>/mapping.yml` | `raw/<company>/repos/<id>/<slug>/`, `commit-summary.json`, `jira/<yyyy>.json`, `jira/merged.json`, `TODO.md` |
+| 2. Distill | `/resume-evidence:distill <company> <id>` | the project's repos and Jira tickets | `evidence/<company>/<yyyy>-<id>.md` with a draft Summary |
+| 3. Verify | `/resume-evidence:verify <company> <id>` | the evidence file, the user's answers | the same file, Summary confirmed, `reviewed:` set |
+| 4. To resume | `/resume-evidence:to-resume [base \| <slug>]` | evidence files, the user's job facts | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, built PDF |
+| 5. Review resume | `/resume-evidence:review-resume [slug] [template]` | the built PDF and its YAML | `resume/review/<slug>.html` (`index.html` for base) |
+
+Steps 4 and 5 use the `resume` skill for wording. Their rules are in each skill and in
+`resume/README.md`.
 
 ## Layout
 
@@ -14,15 +26,17 @@ raw/                                   # gitignored except the example
 └── <company>/
     ├── mapping.yml                    # config, written by the user only
     ├── TODO.md                        # todos for this company's data
-    ├── summary.json                   # per-repo load status and my commit counts (ingest)
+    ├── commit-summary.json            # per-repo load status and my commit counts (ingest)
     ├── jira/<yyyy>.json               # my Jira tickets, trimmed, by year created (ingest)
     ├── jira/merged.json               # every year merged, oldest first (ingest)
-    └── <id>/<repo-name>/              # git clones of the sources
+    └── repos/<id>/<slug>/             # git clones of the sources, named by slug (ingest)
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers
 ```
 
 - `raw/` holds real client names and a Jira token. It stays local.
+- Clones sit under `repos/`, so no project `id` can collide with `jira/` or a file the
+  scripts write.
 - `evidence/` and `scripts/` are committed, so they carry no real names, hosts or credentials.
 
 ## mapping.yml
@@ -34,7 +48,13 @@ Schema and an example: `raw/repository-mapping.example.yml`.
   author name and email; a name matches as a substring.
 - `jira`: `site`, `email`, `api_token`. Optional; without it, skip Jira.
 - `projects[]`: `id` (path slug), `internal_name` (real name), `title` (anonymised name),
-  `sources` (git URLs), and optionally `jira`: a list of selectors that pick the project's
+  `sources`, and optionally `jira`.
+- `sources[]`: `url` (the git URL) and `slug` (the repo's anonymised name, by its role:
+  `backend`, `worker`, `detection-lib`). A slug is lowercase kebab-case and unique within its
+  project. Ingest clones into `repos/<id>/<slug>/`; evidence cites the repo by slug, in
+  citations and in `verified:`. The user picks each slug once, so every distill run uses the
+  same name. The real repo name, the last segment of `url`, stays banned in evidence.
+- `jira`: a list of selectors that pick the project's
   tickets from `jira/merged.json`. `{project: X}` picks every ticket in Jira project X (key or
   name); `{project: X, epic: Y}` picks only the tickets under epic Y. Older projects usually
   have their own Jira project; newer ones are epics in a shared project.

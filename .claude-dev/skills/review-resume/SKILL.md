@@ -42,7 +42,7 @@ Put this group first: a claim the evidence does not back fails the resume whatev
 | Review state | evidence frontmatter, `(draft)` in trace comments | Every traced file has `reviewed:` set. A draft is `warn`: run `/resume-evidence:verify` |
 | Skills | `skills` vs evidence `tools:` lines | Every work skill is listed as used in an evidence file; "Studied, not used" stays out |
 | Untraced sections | `projects`, `activities` | Entries with no evidence file are the user's account: list them as `warn`, not `fail` |
-| Banned terms | YAML vs `raw/<company>/mapping.yml` | Zero hits for every `internal_name`, repo name, source host and Jira site |
+| Banned terms | YAML vs `raw/<company>/mapping.yml` | Zero hits for every `internal_name`, real repo name (from each source `url`), source host and Jira site |
 
 ### Screening: the first look
 

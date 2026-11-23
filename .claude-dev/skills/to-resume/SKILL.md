@@ -97,8 +97,8 @@ into the YAML.
    order each category by the job ad. Put a comment above `skills` naming the evidence files.
 
 7. **Search for banned terms.** For each company used, read `raw/<company>/mapping.yml` and
-   grep the target YAML for every `internal_name`, repo name, source host, org name and Jira
-   site. The employer name in `company:` is allowed. _Done when_ the search returns zero hits.
+   grep the target YAML for every `internal_name`, real repo name (the last segment of each
+   source `url`), source host, org name and Jira site. The employer name in `company:` is allowed. _Done when_ the search returns zero hits.
 
 8. **Check and build.**
    1. Run `mise -C resume run check`. Fix every error.

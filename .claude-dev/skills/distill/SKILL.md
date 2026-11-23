@@ -18,7 +18,9 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 
 1. **Pick the project.** Take `<company>` and `<id>` from the user's message; if either is
    missing, list the projects in `raw/<company>/mapping.yml` and ask. If
-   `raw/<company>/<id>/` has no repos, tell the user to run ingest and stop.
+   `raw/<company>/repos/<id>/` has no repos, tell the user to run ingest and stop. Each repo
+   folder is named by its `slug` from `mapping.yml`: cite the repo by that slug, in
+   citations and in `verified:`.
    - An evidence file matching `evidence/<company>/*-<id>.md` exists: **update** mode. Read it;
      its `verified:` shas mark where the new commits start.
    - None exists: **new** mode.
@@ -29,9 +31,17 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 2. **Establish authorship.** Use the authorship script in `scripts/`; write it first if none
    exists. Per repo it reports, with `--all` on every git command:
    - authors: `git shortlog -sne --all`;
-   - per directory, two levels deep: my commit count and my share of `git blame` lines at HEAD;
+   - per directory, two levels deep: my commit count and my share of `git blame` lines at the
+     checked-out branch, or at `--ref`;
    - my commits: sha, date, message, files touched;
-   - in update mode, only commits after the `verified:` sha.
+   - in update mode, only commits after the `verified:` sha;
+   - branches ahead: remote branches holding my commits that the checked-out branch lacks.
+
+   Blame and the head sha read the checked-out branch. Commit lists read every branch. When
+   branches ahead lists real work of mine, pick the ref that holds it (the newest branch with
+   that work, often `dev` or a feature branch), rerun with `--ref <slug>=<ref>`, and record that
+   ref's sha in `verified:` with a comment naming the branch. Say in Context which work lives
+   only on unmerged branches; it reads as unshipped unless the user says otherwise.
 
    Claim only paths where my share is real. Project-wide files (README, `pyproject.toml`,
    lock files, CI) describe the project, not my part.
@@ -44,7 +54,8 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 
 4. **Read Jira.** Run `uv run scripts/jira_tickets.py <company> <id>`: it prints the tickets
    the project's `jira` selectors pick from `raw/<company>/jira/merged.json`. Add
-   `--text <term>` for each `internal_name` and repo name, to catch tickets outside the
+   `--text <term>` for each `internal_name` and real repo name (the last segment of each
+   source `url`), to catch tickets outside the
    selected project or epic. If the project has no `jira` selectors, tell the user which to
    add to `mapping.yml`. A ticket proves
    assignment and dates, not authorship: cite it beside git evidence, and send a claim backed

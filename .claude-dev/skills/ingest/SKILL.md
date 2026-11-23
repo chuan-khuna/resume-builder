@@ -20,7 +20,8 @@ the mapping schema and the rules for scripts.
    _Done when_ `mapping.yml` parses and every project has `id`, `internal_name`, `title` and
    `sources`. Report each missing field to the user and stop until it is fixed.
 
-2. **Load repository data.** For every source of every project, the target is
+2. **Load repository data.** Run `uv run scripts/ingest_repos.py <company>`; it does this step
+   and step 4 and writes `raw/<company>/summary.json`. For every source of every project, the target is
    `raw/<company>/<id>/<repo-name>/`, where `<repo-name>` is the URL's last path segment
    without `.git`.
    - Target missing: `git clone <url> <target>`.
@@ -44,9 +45,12 @@ the mapping schema and the rules for scripts.
 
 4. **Check authorship coverage.** For each cloned repo, count my commits:
    `git -C <repo> log --all --format='%an <%ae>'`, matched against `me` as the reference
-   describes.
+   describes. `ingest_repos.py` records the counts and date ranges per repo and per project in
+   `raw/<company>/summary.json`, replacing the previous summary.
 
-5. **Report** to the user, as a table per project:
+   _Done when_ `summary.json` lists every source in `mapping.yml`.
+
+5. **Report** to the user from `summary.json`, as a table per project:
    - each repo: cloned / fetched / failed, my commit count, date range of my commits;
    - repos with zero commits of mine, flagged: the URL is wrong or `me` lacks a name or email;
    - Jira: ticket count per year, and ticket count per Jira project.
@@ -57,5 +61,5 @@ the mapping schema and the rules for scripts.
 
 ## Completion
 
-Every source in `mapping.yml` appears in the report as loaded or failed, Jira is downloaded or
+Every source in `mapping.yml` appears in `summary.json` and the report as loaded or failed, Jira is downloaded or
 skipped, every zero-commit repo is flagged, and `TODO.md` is updated.

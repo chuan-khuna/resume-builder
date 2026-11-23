@@ -1,5 +1,18 @@
 # CLAUDE.md
 
+## Purpose
+
+This repo helps the user build their resume.
+
+- `raw/<company>/` holds the raw data: git clones, Jira exports, `mapping.yml`. It stays local
+  (gitignored) because it carries real client names and credentials.
+- `evidence/<company>/` holds what is distilled from `raw/`, anonymised. **Evidence is the
+  ground truth for the resume**: every resume claim must trace to an evidence file, never to
+  memory or to `raw/` directly.
+- Pipeline: `resume-evidence:ingest` (load raw data) → `resume-evidence:distill` (raw →
+  evidence) → resume. Shared rules: `.claude-dev/reference/workflow.md`.
+- Python helpers live in `scripts/`; their dependencies are declared in `pyproject.toml`.
+
 ## Agent skills
 
 ### Issue tracker

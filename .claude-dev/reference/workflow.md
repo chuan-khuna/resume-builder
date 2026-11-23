@@ -13,6 +13,7 @@ raw/                                   # gitignored except the example
 └── <company>/
     ├── mapping.yml                    # config, written by the user only
     ├── TODO.md                        # todos for this company's data
+    ├── summary.json                   # per-repo load status and my commit counts (ingest)
     ├── jira/<yyyy>.json               # Jira tickets, by year created
     └── <id>/<repo-name>/              # git clones of the sources
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
@@ -52,8 +53,8 @@ Tick an item and move it to Done in the same step that resolves it.
 Write a helper into `scripts/` when a step needs one and none there fits. Check `scripts/`
 first and reuse or extend what exists.
 
-- Python, one file per command, with PEP 723 inline metadata for dependencies; run with
-  `uv run scripts/<name>.py`.
+- Python, one file per command. Declare dependencies in `pyproject.toml` with `uv add <pkg>`;
+  run with `uv run scripts/<name>.py`.
 - First argument is `<company>`. Read paths, `me` and credentials from
   `raw/<company>/mapping.yml` at run time.
 - Every client name, host, path and credential comes from `mapping.yml` or the arguments, so

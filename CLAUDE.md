@@ -10,7 +10,8 @@ This repo helps the user build their resume.
   ground truth for the resume**: every resume claim must trace to an evidence file, never to
   memory or to `raw/` directly.
 - Pipeline: `resume-evidence:ingest` (load raw data) → `resume-evidence:distill` (raw →
-  evidence) → resume. Shared rules: `.claude-dev/reference/workflow.md`.
+  evidence) → `resume-evidence:verify` (interview the user, add resume bullets). Shared rules:
+  `.claude-dev/reference/workflow.md` and `.claude-dev/reference/evidence.md`.
 - Python helpers live in `scripts/`; their dependencies are declared in `pyproject.toml`.
 
 ## Agent skills

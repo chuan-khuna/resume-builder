@@ -7,13 +7,16 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 ├── .claude-plugin/
 │   ├── plugin.json
 │   └── marketplace.json
-├── reference/workflow.md     # layout, mapping schema, script rules (shared by both skills)
+├── reference/
+│   ├── workflow.md           # layout, mapping schema, script rules (all skills)
+│   └── evidence.md           # evidence file schema, citations, anonymisation (distill, verify)
 └── skills/
     ├── ingest/SKILL.md       # /resume-evidence:ingest <company>
-    └── distill/SKILL.md      # /resume-evidence:distill <company> <id>
+    ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>
+    └── verify/SKILL.md       # /resume-evidence:verify <company> <id>
 ```
 
-Both skills are user-invoked. The design is in
+All skills are user-invoked. The design is in
 [`docs/documents/ingest-distill-workflow.html`](../docs/documents/ingest-distill-workflow.html).
 
 ## Install

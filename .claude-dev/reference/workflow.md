@@ -1,7 +1,8 @@
 # Evidence workflow: shared reference
 
-Read by the `ingest` and `distill` skills. Two steps: **ingest** loads raw data, **distill**
-turns it into evidence.
+Read by the `ingest`, `distill` and `verify` skills. Three steps: **ingest** loads raw data,
+**distill** turns it into evidence, **verify** confirms it with the user and adds resume
+bullets. The evidence file's own format is in [`evidence.md`](evidence.md).
 
 ## Layout
 

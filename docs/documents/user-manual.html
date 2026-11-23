@@ -12,7 +12,7 @@
 
 <header class="doc-head">
   <h1>User manual: from repositories to a reviewed resume</h1>
-  <p class="byline">2026-11-23 · For the user who runs the pipeline in Claude Code · Design: <a href="ingest-distill-workflow.html">Ingest → Ground truth</a></p>
+  <p class="byline">2026-11-23 · For the user who runs the pipeline in Claude Code · Design: <a href="resume-generation-workflow.html">Resume generation workflow</a></p>
 </header>
 
 <h2 id="overview">Overview</h2>
@@ -101,7 +101,8 @@ Keep it under <code>raw/</code>. Git ignores everything in <code>raw/</code> exc
   <li>Under <code>me</code>, list every git author name and email you committed with.</li>
   <li>If you want Jira tickets, fill in <code>jira</code>. Otherwise, delete the <code>jira</code> block.</li>
   <li>Add one entry under <code>projects</code> for each project.</li>
-  <li>For each project, list every repository URL under <code>sources</code>.</li>
+  <li>For each project, add one entry under <code>sources</code> per repository: its <code>url</code>, and a <code>slug</code>.</li>
+  <li>Name each slug by the repository's role, such as <code>backend</code> or <code>worker</code>. Do not use the real repository name.</li>
 </ol>
 <p>You can also ask the LLM to do the copy. It copies the example and stops; you fill in the values.
 The LLM never edits <code>mapping.yml</code> after that. When it needs a change, it tells you what to
@@ -124,7 +125,8 @@ projects:
     internal_name: Acme Shelf       # real name; never written to evidence/
     title: Retail Shelf Computer-Vision Analytics Platform  # public name
     sources:
-      - git@bitbucket.org:company-a/shelf-mono-repo.git
+      - url: git@bitbucket.org:company-a/shelf-mono-repo.git
+        slug: shelf-app             # anonymised repo name: clone folder and citations
     jira:                           # optional: where its Jira tickets are
       - project: SHELF              # every ticket in a Jira project (older projects)
       - project: TT                 # only one epic of a shared project
@@ -136,10 +138,11 @@ projects:
     <tr><td><code>company</code></td><td>Yes</td><td>Folder name under <code>raw/</code> and <code>evidence/</code></td></tr>
     <tr><td><code>me.names</code>, <code>me.emails</code></td><td>Yes</td><td>Matching your commits. A missing alias hides commits.</td></tr>
     <tr><td><code>jira</code></td><td>No</td><td>Downloading the tickets assigned to you</td></tr>
-    <tr><td><code>projects[].id</code></td><td>Yes</td><td>Paths: <code>raw/&lt;company&gt;/&lt;id&gt;/</code> and the evidence file name</td></tr>
+    <tr><td><code>projects[].id</code></td><td>Yes</td><td>Paths: <code>raw/&lt;company&gt;/repos/&lt;id&gt;/</code> and the evidence file name</td></tr>
     <tr><td><code>projects[].internal_name</code></td><td>Yes</td><td>Finding Jira tickets. Banned from evidence.</td></tr>
     <tr><td><code>projects[].title</code></td><td>Yes</td><td>The anonymised name in the evidence file</td></tr>
-    <tr><td><code>projects[].sources</code></td><td>Yes</td><td>Git URLs to clone</td></tr>
+    <tr><td><code>projects[].sources[].url</code></td><td>Yes</td><td>The git URL to clone. Its last segment, the real repository name, is banned from evidence.</td></tr>
+    <tr><td><code>projects[].sources[].slug</code></td><td>Yes</td><td>The repository's anonymised name: its clone folder, and its name in evidence citations and <code>verified:</code>. Lowercase kebab-case, unique within the project.</td></tr>
     <tr><td><code>projects[].jira</code></td><td>No</td><td>Selectors that pick the project's tickets: <code>{project: X}</code> for a whole Jira project, <code>{project: X, epic: Y}</code> for one epic. Ingest tells you which to add.</td></tr>
   </tbody>
 </table>
@@ -161,8 +164,10 @@ which repos show zero commits from either.</code></pre>
   <li>For each repository with zero commits of yours, add the missing name or email to <code>me</code>, or fix the URL.</li>
   <li>If you changed <code>mapping.yml</code>, run ingest again.</li>
 </ol>
-<p>Ingest only copies data. It clones each source into <code>raw/&lt;company&gt;/&lt;id&gt;/&lt;repo-name&gt;/</code>,
-or fetches it if it is already there. It writes your commit counts to <code>raw/&lt;company&gt;/summary.json</code>
+<p>Ingest only copies data. It checks that every source has a <code>url</code> and a <code>slug</code>, then clones each source into
+<code>raw/&lt;company&gt;/repos/&lt;id&gt;/&lt;slug&gt;/</code>, or fetches it and fast-forwards the checked-out branch if it
+is already there. It writes your commit counts to <code>raw/&lt;company&gt;/commit-summary.json</code>, with the
+branches that hold commits of yours the checked-out branch lacks,
 and your Jira tickets to <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>, merged into
 <code>raw/&lt;company&gt;/jira/merged.json</code>. Each ticket keeps only its key, title, detail, type,
 status, project, epic, parent, assignee and dates. With an API token in <code>mapping.yml</code>, the
@@ -392,7 +397,7 @@ I keep the projects section.</code></pre>
   <thead><tr><th>Symptom</th><th>Cause</th><th>Action</th></tr></thead>
   <tbody>
     <tr><td>Ingest marks a repo <em>failed</em></td><td>Wrong URL, or no git access</td><td>Clone the URL by hand to see the error. Fix it, then run ingest again.</td></tr>
-    <tr><td>A repo shows zero commits of yours</td><td><code>me</code> lacks one of your names or emails</td><td>Run <code>git -C raw/&lt;company&gt;/&lt;id&gt;/&lt;repo&gt; shortlog -sne --all</code>. Add your missing identity to <code>me</code>.</td></tr>
+    <tr><td>A repo shows zero commits of yours</td><td><code>me</code> lacks one of your names or emails</td><td>Run <code>git -C raw/&lt;company&gt;/repos/&lt;id&gt;/&lt;slug&gt; shortlog -sne --all</code>. Add your missing identity to <code>me</code>.</td></tr>
     <tr><td>Distill says there are no repos</td><td>Ingest has not run for that project</td><td>Run ingest for the company.</td></tr>
     <tr><td>A real name appears in an evidence file</td><td>The banned-term search missed a term</td><td>Tell the LLM the term. It replaces it with a placeholder and runs the search again.</td></tr>
     <tr><td>The resume build says it is 2 pages</td><td>Too much text</td><td>Hide or cut the lowest-ranked bullets. Raise <code>maxPages</code> only if you want two pages.</td></tr>

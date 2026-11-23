@@ -3,49 +3,112 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ingest → Ground truth: structure and flow</title>
+  <title>Resume generation workflow</title>
   <link rel="stylesheet" href="../shared/globals.css">
   <script src="../shared/doc.js"></script>
 </head>
-<body data-doc-name="Ingest → Ground truth">
+<body data-doc-name="Resume generation workflow">
 <main class="doc">
 
 <header class="doc-head">
-  <h1>Ingest → Ground truth: structure and flow</h1>
-  <p class="byline">Draft · 2026-11-23 · Scope: ingest and distill only; the verify step (interview and resume bullets) is specified in <code>.claude-dev/skills/verify/SKILL.md</code></p>
+  <h1>Resume generation workflow</h1>
+  <p class="byline">Draft · 2026-11-23 · Design of the five steps: ingest, distill, verify, to-resume and review-resume. Each step's full rules are in its skill under <code>.claude-dev/skills/</code>; how to run them is in the <a href="user-manual.html">user manual</a>.</p>
 </header>
+
+<h2 id="overview">Overview</h2>
+<p>Five steps, each a Claude Code skill in the <code>resume-evidence</code> plugin. Steps 1–3 turn raw work data into <strong>evidence</strong>: one anonymised, cited Markdown file per project. Steps 4–5 turn evidence into a <strong>resume</strong>: YAML that Typst typesets into a PDF, then a review of that PDF. Each step reads only what the step before it wrote.</p>
+
+<table>
+  <thead><tr><th>Step</th><th>Skill</th><th>Reads</th><th>Output</th></tr></thead>
+  <tbody>
+    <tr><td>1 · Ingest</td><td><code>/resume-evidence:ingest &lt;company&gt;</code></td><td><code>raw/&lt;company&gt;/mapping.yml</code>, the git remotes, Jira</td><td><code>raw/&lt;company&gt;/repos/&lt;id&gt;/&lt;slug&gt;/</code>, <code>commit-summary.json</code>, <code>jira/&lt;yyyy&gt;.json</code>, <code>jira/merged.json</code>, updated <code>TODO.md</code></td></tr>
+    <tr><td>2 · Distill</td><td><code>/resume-evidence:distill &lt;company&gt; &lt;id&gt;</code></td><td>One project's clones and Jira tickets</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code> with a draft Summary</td></tr>
+    <tr><td>3 · Verify</td><td><code>/resume-evidence:verify &lt;company&gt; &lt;id&gt;</code></td><td>The evidence file, the user's answers</td><td>The same file: gaps answered, Summary confirmed, <code>reviewed:</code> set</td></tr>
+    <tr><td>4 · To resume</td><td><code>/resume-evidence:to-resume [base | &lt;slug&gt;]</code></td><td>Evidence files, the user's job facts, a job ad for a version</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code>, and the PDF in <code>resume/build/&lt;slug&gt;/</code></td></tr>
+    <tr><td>5 · Review resume</td><td><code>/resume-evidence:review-resume [slug] [template]</code></td><td>The built PDF, its YAML, the evidence its bullets trace to</td><td><code>resume/review/&lt;slug&gt;.html</code> (<code>index.html</code> for base)</td></tr>
+  </tbody>
+</table>
+
+<figure class="diagram" data-diagram data-title="Five steps" data-height="900">
+<script type="text/plain" class="mermaid-src">flowchart TB
+  M[(mapping.yml)] --> RP
+  M --> J
+  subgraph S1["1 · Ingest"]
+    direction LR
+    RP[Load repository data] --> CS[(repos/ + commit-summary.json)]
+    J[Load Jira data] --> JM[(jira/merged.json)]
+  end
+  subgraph S2["2 · Distill"]
+    direction LR
+    A[Establish authorship] --> W[Write evidence + draft Summary]
+  end
+  subgraph S3["3 · Verify"]
+    direction LR
+    Q[Interview the user] --> V[Confirm Summary]
+  end
+  E[(evidence/)]
+  subgraph S4["4 · To resume"]
+    direction LR
+    P[Plan, approved by the user] --> Y[Write the YAML] --> RY[(resume.yml)] --> B[Typst build] --> PDF[(PDF)]
+  end
+  subgraph S5["5 · Review resume"]
+    direction LR
+    R[Measure and judge] --> H[(review HTML)]
+  end
+  CS --> A
+  JM --> A
+  W --> E
+  E --> Q
+  V --> E
+  E --> P
+  PDF --> R
+  class M,CS,JM,E,RY,PDF,H accent
+</script>
+</figure>
+
+<p>Highlighted nodes are data; plain nodes are steps. Evidence is the hinge. Verify writes back into the same file distill wrote, and to-resume reads only evidence: never <code>raw/</code>, memory or an old resume. A new fact the user gives at step 4 goes back through verify into evidence first.</p>
 
 <h2 id="structure">Structure</h2>
 <pre><code class="language-text">raw/                                 # commit only the example
 ├── repository-mapping.example.yml   # schema with fake values
 └── &lt;company&gt;/                       # real names and the Jira token
     ├── mapping.yml                  # config, edited by the user
-    ├── TODO.md                      # todos for this company's data
+    ├── TODO.md                      # projects to add, leads for distill
+    ├── commit-summary.json          # per-repo load status, my commit counts, branches ahead
     ├── jira/&lt;yyyy&gt;.json             # Jira data, trimmed, by year created
     ├── jira/merged.json             # every year merged
-    └── &lt;id&gt;/
-        └── &lt;repo-name&gt;/             # repository data
+    └── repos/&lt;id&gt;/
+        └── &lt;slug&gt;/                  # git clone, named by its slug
 evidence/                            # commit all: anonymised data
-└── &lt;company&gt;/&lt;yyyy-project-slug&gt;.md  # ground truth
+└── &lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md         # ground truth, one file per project
+resume/                              # commit all except build/
+├── data/resume.yml                  # base resume; every work bullet traced to evidence
+├── versions/&lt;slug&gt;/                 # resume.yml overrides and job-ad.md for one application
+├── templates/                       # Typst layouts: classic, rail
+├── build/&lt;slug&gt;/                    # PDF and page images (gitignored)
+└── review/                          # HTML reviews
 scripts/                             # commit all: written by the LLM
-└── …                                # process raw → evidence, query raw Jira data</code></pre>
+└── …                                # load raw data, query it</code></pre>
 
 <table>
   <thead><tr><th>Folder</th><th>Committed</th><th>Written by</th></tr></thead>
   <tbody>
     <tr><td><code>raw/</code></td><td>Only <code>repository-mapping.example.yml</code></td><td>User (<code>mapping.yml</code>), scripts (everything else)</td></tr>
-    <tr><td><code>evidence/</code></td><td>All</td><td>LLM, reviewed by the user</td></tr>
+    <tr><td><code>evidence/</code></td><td>All</td><td>Distill and verify, reviewed by the user</td></tr>
+    <tr><td><code>resume/</code></td><td>All except <code>build/</code></td><td>To-resume (YAML, build), review-resume (<code>review/</code>), the user (header, education, projects)</td></tr>
     <tr><td><code>scripts/</code></td><td>All</td><td>LLM, when a step needs a reusable helper (Python, run with <code>uv</code>)</td></tr>
   </tbody>
 </table>
 
+<p>Clones sit under <code>repos/</code>, so no project <code>id</code> can collide with <code>jira/</code> or a file the scripts write. Only <code>raw/</code> holds real client names; everything committed is anonymised.</p>
+
 <h2 id="mapping">mapping.yml</h2>
-<pre><code class="language-yaml">company: themather
+<pre><code class="language-yaml">company: company-a
 
 # Commit identity, used to find my commits
 me:
-  names: [altr, chuan, phattharanat]
-  emails: [chuan.khuna@gmail.com, phattharanat@gmail.com]
+  names: [jane, jdoe]
+  emails: [jane@company-a.example, jane.personal@example.com]
 
 # Credentials for the script to download tickets (optional)
 jira:
@@ -54,44 +117,49 @@ jira:
   api_token: &lt;token&gt;
 
 projects:
-  - id: &lt;project-slug&gt;       # raw/&lt;company&gt;/&lt;id&gt;/ and evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md
+  - id: &lt;project-slug&gt;       # raw/&lt;company&gt;/repos/&lt;id&gt;/ and evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md
     internal_name: &lt;real name&gt; # stays in raw/; never appears in evidence/
     title: &lt;anonymised name&gt;
     sources:
-      - &lt;git repo url&gt;</code></pre>
+      - url: &lt;git repo url&gt;    # its last segment is the real repo name, banned in evidence/
+        slug: &lt;role&gt;          # anonymised repo name: clone folder, citations, verified:
+    jira:                      # optional: where its tickets are
+      - project: &lt;KEY&gt;         # every ticket in a Jira project
+      - project: &lt;KEY&gt;         # only the tickets under one epic
+        epic: &lt;epic title&gt;</code></pre>
+<p>The user picks each <code>slug</code> once, by the repo's role: <code>backend</code>, <code>worker</code>, <code>detection-lib</code>. It is lowercase kebab-case and unique within its project. Every distill run then cites the repo by the same name, and an update run finds the clone its <code>verified:</code> sha belongs to. The user owns <code>mapping.yml</code>: when a step needs a change, it tells the user what to change.</p>
 
-<h2 id="flow">Flow</h2>
-
-<figure class="diagram" data-diagram data-title="Two steps" data-height="420">
-<script type="text/plain" class="mermaid-src">flowchart LR
-  subgraph S1["1 · Ingest"]
-    C[Update config] --> RP[Load repository data]
-    C --> J[Load Jira data]
-  end
-  subgraph S2["2 · Distill"]
-    RAW[Use data in raw/company] --> T[Distill to ground truth]
-  end
-  RP --> RAW
-  J --> RAW
-  T --> OUT[(evidence/)]
-  class OUT accent
-</script>
-</figure>
-
-<h3>1 · Ingest</h3>
+<h2 id="ingest">1 · Ingest</h2>
+<p>Copies data; reads nothing for meaning.</p>
 <ol>
-  <li><strong>Update config.</strong> The user edits <code>raw/&lt;company&gt;/mapping.yml</code>.</li>
-  <li><strong>Load repository data.</strong> The script clones each source into <code>raw/&lt;company&gt;/&lt;id&gt;/&lt;repo-name&gt;/</code>, or fetches it if it is already there.</li>
-  <li><strong>Load Jira data.</strong> If <code>jira:</code> is set, <code>scripts/ingest_jira.py</code> downloads all tickets assigned to me, through the REST API or from Atlassian MCP search results, into <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>, and merges them into <code>raw/&lt;company&gt;/jira/merged.json</code>. Each ticket keeps only key, title, detail, type, status, project, epic, parent, assignee and dates.</li>
+  <li><strong>Check the config.</strong> Every project has <code>id</code>, <code>internal_name</code>, <code>title</code> and <code>sources</code>; every source has a <code>url</code> and a <code>slug</code>. A missing field stops the step.</li>
+  <li><strong>Load repository data.</strong> <code>scripts/ingest_repos.py</code> clones each source into <code>raw/&lt;company&gt;/repos/&lt;id&gt;/&lt;slug&gt;/</code>, or fetches it and fast-forwards the checked-out branch, since a fetch moves only the remote branches. A failed clone is recorded, and the run continues.</li>
+  <li><strong>Count my commits.</strong> On every branch, matched against <code>me</code>. <code>commit-summary.json</code> records per repo: load status, my commit count and date range, and <code>branches_ahead</code>: the remote branches holding my commits the checked-out branch lacks.</li>
+  <li><strong>Load Jira data.</strong> If <code>jira:</code> is set, <code>scripts/ingest_jira.py</code> downloads all tickets assigned to me, through the REST API or from Atlassian MCP search results, into <code>jira/&lt;yyyy&gt;.json</code>, and merges them into <code>jira/merged.json</code>. Each ticket keeps only key, title, detail, type, status, project, epic, parent, assignee and dates.</li>
+  <li><strong>Report and update TODO.md.</strong> Flag repos with zero commits of mine, repos not fast-forwarded, and Jira projects or epics no project's selectors pick.</li>
 </ol>
 
-<h3>2 · Distill</h3>
+<h2 id="distill">2 · Distill</h2>
+<p>Turns one project's raw data into its evidence file. Git authorship decides what is mine; a ticket shows assignment, not authorship.</p>
 <ol>
-  <li><strong>Use data in <code>raw/&lt;company&gt;</code>.</strong> For one project: my commits (matched by <code>me</code>), the paths I own, dependency files and docs in its repos, and its related Jira tickets.</li>
-  <li><strong>Distill to ground truth.</strong> Write <code>evidence/&lt;company&gt;/&lt;yyyy-project-slug&gt;.md</code>, where <code>yyyy</code> is the year of my first commit in the project. Every What I Did bullet cites its evidence. The user reviews the file once.</li>
+  <li><strong>Pick the mode.</strong> No evidence file: new mode. A file exists: update mode, reading only the commits after its <code>verified:</code> shas.</li>
+  <li><strong>Establish authorship.</strong> <code>scripts/authorship.py</code> lists my commits on every branch and my share of blame lines per directory. Blame reads the checked-out branch, or the branch holding my work (<code>--ref &lt;slug&gt;=&lt;ref&gt;</code>) when <code>branches_ahead</code> names one. Each area is classed mine, shared or not mine.</li>
+  <li><strong>Read the sources and Jira.</strong> Code, my main diffs, dependency files and docs for the areas that are mine or shared; the tickets from <code>scripts/jira_tickets.py</code>.</li>
+  <li><strong>Write the evidence file</strong> at <code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code>, where <code>yyyy</code> is the year of my first commit. Every What I Did bullet cites its evidence.</li>
+  <li><strong>Draft the Summary</strong>: three to six resume bullets, each with a Remark naming what it traces to and what limits it.</li>
+  <li><strong>Anonymise</strong> and run the banned-term search until it returns zero hits.</li>
 </ol>
 
-<h2 id="truth">Ground truth file</h2>
+<h2 id="verify">3 · Verify</h2>
+<p>Git told distill what I did; verify asks what it was worth.</p>
+<ol>
+  <li><strong>Build the question list</strong> from Open questions, guessed frontmatter, configured or estimated numbers, bullets with no outcome, and every draft Summary bullet. Questions that decide a bullet come first.</li>
+  <li><strong>Interview the user</strong> in rounds of at most four. "Don't know" is an answer.</li>
+  <li><strong>Fold the answers in</strong> to the evidence sections, each cited <code>[me: yyyy-mm-dd]</code>. An unknown stays under Open questions, dated.</li>
+  <li><strong>Rewrite the Summary</strong>, anonymise, and set <code>reviewed:</code> when the user confirms the file.</li>
+</ol>
+
+<h2 id="truth">Evidence file</h2>
 <pre><code class="language-markdown">---
 id: &lt;project-slug&gt;
 title: &lt;anonymised name&gt;
@@ -100,26 +168,55 @@ period: yyyy-mm ~ yyyy-mm | present
 role: &lt;role&gt;
 status: shipped | wip | dropped
 verified:
-  &lt;repo-name&gt;: &lt;sha&gt;      # last commit read; the next distill starts here
+  &lt;slug&gt;: &lt;sha&gt;           # last commit read; the next distill starts here
+reviewed: yyyy-mm-dd     # set by verify; empty while the Summary is a draft
 ---
 
-## Summary           # draft resume bullets + remarks; verify confirms them
+## Summary           # resume bullets + remarks; distill drafts, verify confirms
 ## Context
-## What I Did        # every bullet cites [repo:path], [repo@sha], [KEY-123] or [me: date]
+## What I Did        # every bullet cites [slug:path 92%], [slug@sha], [KEY-123] or [me: date]
 ## Numbers           # value | scope | source
-## Tools
+## Tools             # tools: … (used) / Studied, not used: …
 ## Architecture
 ## Not mine          # parts built by others
 ## Open questions</code></pre>
+<p>The full schema, Summary rules and anonymisation rules are in <code>.claude-dev/reference/evidence.md</code>.</p>
+
+<h2 id="to-resume">4 · To resume</h2>
+<p>Writes the resume's content from evidence. The YAML is the ground truth for the printed resume; Typst only lays it out.</p>
+<ol>
+  <li><strong>Pick the target.</strong> <code>base</code> writes <code>resume/data/resume.yml</code>. A slug such as <code>2026-dec-acme-ml</code> writes <code>resume/versions/&lt;slug&gt;/resume.yml</code>, with the job ad saved beside it as <code>job-ad.md</code>.</li>
+  <li><strong>Pick the evidence.</strong> Every reviewed file is used. For an unreviewed file the user chooses: verify it first, include its draft bullets, or leave it out.</li>
+  <li><strong>Fill the facts evidence lacks</strong> from the user: employer name, job title, dates.</li>
+  <li><strong>Plan, then stop.</strong> The bullets per job, strongest first; for a version, the job ad's requirements sorted Direct, Bridge or Gap; the Remarks that limit each bullet; what to cut to fit <code>maxPages</code>. The user approves the plan before any YAML is written.</li>
+  <li><strong>Write the bullets</strong> by the <code>resume</code> skill: British English, a plain verb first, one result, 25 words or fewer. Each carries a trace comment, such as <code># evidence/&lt;company&gt;/&lt;file&gt;.md B2</code>, marked <code>(draft)</code> for an unreviewed file.</li>
+  <li><strong>Write the skills</strong> from the evidence <code>tools:</code> lines only.</li>
+  <li><strong>Search for banned terms</strong> from <code>mapping.yml</code> until zero hits.</li>
+  <li><strong>Check and build.</strong> <code>mise -C resume run check</code> validates the YAML against <code>resume/data/resume.schema.json</code>; <code>mise -C resume run build</code> (or <code>version &lt;slug&gt;</code>) compiles the PDF with Typst. The build fails past <code>maxPages</code>; the lowest-ranked bullets are cut first.</li>
+</ol>
+
+<h2 id="review-resume">5 · Review resume</h2>
+<p>Measures the built PDF and writes an HTML review. Every result is measured, except the career adviser's view and reader impressions, which are labelled as opinion.</p>
+<ol>
+  <li><strong>Measure.</strong> <code>.claude-dev/skills/review-resume/measure.sh</code> builds and measures the PDF; <code>resume/review/scripts/line_lengths.py</code> charts line lengths.</li>
+  <li><strong>Read</strong> every page image, the YAML, the job ad, and the evidence file behind each trace comment.</li>
+  <li><strong>Judge</strong> every check, evidence traceability first: trace comments, claims, numbers, review state, skills, banned terms. Then screening, CV standards, readability, format, ATS, contrast and accessibility.</li>
+  <li><strong>Write</strong> <code>resume/review/&lt;slug&gt;.html</code>: score cards, a summary table, the adviser's view, one section per check group, and fixes ranked most important first.</li>
+</ol>
+<p>Fixes the user accepts go back into the YAML through to-resume, or into evidence through verify when they change a fact.</p>
 
 <h2 id="scripts">Scripts</h2>
-<p>The LLM writes scripts into <code>scripts/</code> as it needs them, rather than to a fixed list up front. Scripts read paths and credentials from <code>raw/&lt;company&gt;/mapping.yml</code>, never from hard-coded values, so they hold no client names and are safe to commit. Expected ones:</p>
+<p>The LLM writes scripts as it needs them, rather than to a fixed list up front. Scripts read paths and credentials from <code>raw/&lt;company&gt;/mapping.yml</code>, never from hard-coded values, so they hold no client names and are safe to commit.</p>
 <table>
   <thead><tr><th>Script</th><th>Step</th><th>Does</th></tr></thead>
   <tbody>
-    <tr><td><code>ingest_repos.py &lt;company&gt;</code></td><td>1</td><td>Clone or fetch the repositories and count my commits</td></tr>
-    <tr><td><code>ingest_jira.py &lt;company&gt;</code></td><td>1</td><td>Download my Jira tickets (REST API or <code>--from-raw</code> MCP results) into yearly files and <code>merged.json</code></td></tr>
-    <tr><td><code>authorship &lt;company&gt; &lt;id&gt;</code></td><td>2</td><td>Show my commits and the paths I own in a project's repos</td></tr>
+    <tr><td><code>scripts/ingest_repos.py &lt;company&gt;</code></td><td>1</td><td>Check sources, clone or fetch and fast-forward, count my commits, write <code>commit-summary.json</code></td></tr>
+    <tr><td><code>scripts/ingest_jira.py &lt;company&gt;</code></td><td>1</td><td>Download my Jira tickets (REST API or <code>--from-raw</code> MCP results) into yearly files and <code>merged.json</code></td></tr>
+    <tr><td><code>scripts/jira_tickets.py &lt;company&gt; [&lt;id&gt; | --unmapped]</code></td><td>1, 2</td><td>Print one project's tickets by its selectors, or the tickets no project selects</td></tr>
+    <tr><td><code>scripts/authorship.py &lt;company&gt; &lt;id&gt;</code></td><td>2</td><td>Show my commits, blame share per directory and branches ahead; <code>--ref</code> blames another branch</td></tr>
+    <tr><td><code>resume/scripts/check.py</code> (<code>mise run check</code>)</td><td>4</td><td>Validate every <code>resume.yml</code> against the schema</td></tr>
+    <tr><td><code>.claude-dev/skills/review-resume/measure.sh</code></td><td>5</td><td>Build and measure a resume: positions, gaps, lengths, fonts, contrast, ATS text</td></tr>
+    <tr><td><code>resume/review/scripts/line_lengths.py</code></td><td>5</td><td>Chart and tabulate line lengths</td></tr>
   </tbody>
 </table>
 

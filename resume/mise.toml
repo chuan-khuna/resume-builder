@@ -7,11 +7,11 @@ typst = "0.15.1"
 
 [env]
 # Fonts come only from fonts/ (Geist, Geist Serif), so the PDF looks the same on any machine.
-TYPST_FONT_PATHS = "fonts"
+TYPST_FONT_PATHS = "{{config_root}}/fonts"
 TYPST_IGNORE_SYSTEM_FONTS = "true"
 # Templates live in templates/ but import lib/ and read data/ and versions/,
 # so the Typst project root is resume/.
-TYPST_ROOT = "."
+TYPST_ROOT = "{{config_root}}"
 
 # Layout: templates/<template>.typ + versions/<slug>/resume.yml
 #           -> build/<slug>/<template>.pdf, <template>-<page>.png

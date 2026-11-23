@@ -9,7 +9,8 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 │   └── marketplace.json
 ├── reference/
 │   ├── workflow.md           # layout, mapping schema, script rules (all skills)
-│   └── evidence.md           # evidence file schema, citations, anonymisation (distill, verify)
+│   ├── evidence.md           # evidence file schema, citations, anonymisation (distill, verify)
+│   └── kami.md               # Kami design rules for the Typst resume (to-resume, review-resume)
 └── skills/
     ├── ingest/SKILL.md       # /resume-evidence:ingest <company>
     ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>

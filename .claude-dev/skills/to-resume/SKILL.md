@@ -17,6 +17,8 @@ Read these first:
   Summary rules and the anonymisation rules.
 - `resume/README.md`: the resume layout, the YAML keys, versions and the build commands.
 - `resume/data/resume.schema.json`: the fields the YAML may hold.
+- [`../../reference/kami.md`](../../reference/kami.md): how to use the Kami skill's design
+  rules on the Typst resume. Read it before you change the layout or fit content to the page.
 
 Run every `mise` command from the repo root as `mise -C resume …`, or from inside `resume/`.
 

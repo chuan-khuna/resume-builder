@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User manual: from repositories to resume bullets</title>
+  <link rel="stylesheet" href="../shared/globals.css">
+  <script src="../shared/doc.js"></script>
+</head>
+<body data-doc-name="User manual">
+<main class="doc">
+
+<header class="doc-head">
+  <h1>User manual: from repositories to resume bullets</h1>
+  <p class="byline">2026-11-23 · For the user who runs the pipeline in Claude Code · Design: <a href="ingest-distill-workflow.html">Ingest → Ground truth</a></p>
+</header>
+
+<h2 id="overview">Overview</h2>
+<p>This project turns your work history into resume bullets you can defend. You give it a
+configuration file for one company. The LLM then loads your repositories, writes one
+<a class="term" href="#term-evidence-file">evidence file</a> per project, and interviews you to
+confirm the <a class="term" href="#term-summary">Summary</a>. Every resume bullet traces to a
+cited claim in an evidence file.</p>
+
+<figure class="diagram" data-diagram data-title="Three tasks for one company" data-height="360">
+<script type="text/plain" class="mermaid-src">flowchart LR
+  A["1 · Configure<br/>you edit mapping.yml"] --> I["ingest<br/>LLM loads repos and Jira"]
+  I --> D["2 · Distill<br/>LLM writes the evidence file"]
+  D --> V["3 · Verify<br/>LLM interviews you"]
+  V --> OUT[(evidence/ with confirmed Summary)]
+  class OUT accent
+</script>
+</figure>
+
+<table>
+  <thead><tr><th>Task</th><th>You do</th><th>The LLM does</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>1 · Configure</td><td>Write <code>mapping.yml</code>, then start ingest</td><td>Clones repos, downloads Jira tickets, counts your commits</td><td><code>raw/&lt;company&gt;/</code></td></tr>
+    <tr><td>2 · Distill</td><td>Start distill for one project, review the file</td><td>Reads your code and tickets, writes a cited, anonymised file with a draft Summary</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code></td></tr>
+    <tr><td>3 · Verify</td><td>Answer questions, confirm the bullets</td><td>Folds your answers into the file, rewrites the Summary</td><td>Same file, with <code>reviewed:</code> set</td></tr>
+  </tbody>
+</table>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<table>
+  <thead><tr><th>Tool</th><th>Used for</th><th>Install</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://mise.jdx.dev">mise</a></td><td>Installs the pinned tool versions in <code>mise.toml</code> (<code>uv</code>, <code>bun</code>, <code>node</code>) and runs the <code>plugins</code> task</td><td><code>brew install mise</code>, then <a href="https://mise.jdx.dev/getting-started.html">activate it in your shell</a></td></tr>
+    <tr><td><a href="https://docs.astral.sh/uv/">uv</a></td><td>Runs the Python scripts in <code>scripts/</code> and installs their dependencies</td><td><code>mise install</code> (from <code>mise.toml</code>)</td></tr>
+    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the three <a class="term" href="#term-skill">skills</a>: ingest, distill, verify</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
+    <tr><td>git</td><td>Clones and reads your repositories</td><td>Already on macOS with the Xcode command line tools</td></tr>
+  </tbody>
+</table>
+<p>You also need read access to every repository you will list in <code>mapping.yml</code>. For SSH
+URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or <code>ssh -T git@github.com</code>.</p>
+
+<h2 id="setup">Before you start</h2>
+<p>The <a class="term" href="#term-plugin">plugin</a> holds the three
+<a class="term" href="#term-skill">skills</a>.</p>
+<ol>
+  <li>Open a terminal at the repository root.</li>
+  <li>Install the pinned tools: <code>mise install</code>.</li>
+  <li>Check the tools: <code>uv --version</code> and <code>claude --version</code>.</li>
+  <li>Install the Python dependencies: <code>uv sync</code>.</li>
+  <li>Install the <a class="term" href="#term-plugin">plugin</a> for this repository: <code>mise run plugins</code>.</li>
+  <li>Start Claude Code: <code>claude</code>.</li>
+  <li>Type <code>/resume-evidence</code> and make sure the three skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>.</li>
+</ol>
+<p>To try the plugin for one session without installing it, start Claude Code with
+<code>claude --plugin-dir ./.claude-dev</code>.</p>
+<p>If you change a skill file, run <code>claude plugin marketplace update resume-builder-local</code>.</p>
+
+<h2 id="configure">1 · Configure and ingest</h2>
+<p>One company has one <a class="term" href="#term-mapping">mapping.yml</a>. It tells the scripts
+who you are in git, where your repositories are, and how to name each project in public.</p>
+
+<blockquote><strong>Warning:</strong> <code>mapping.yml</code> holds real client names and a Jira API token.
+Keep it under <code>raw/</code>. Git ignores everything in <code>raw/</code> except the example file.</blockquote>
+
+<h3>Write mapping.yml</h3>
+<ol>
+  <li>Pick a short slug for the company, for example <code>company-a</code>.</li>
+  <li>Copy the example: <code>mkdir -p raw/company-a &amp;&amp; cp raw/repository-mapping.example.yml raw/company-a/mapping.yml</code>.</li>
+  <li>Set <code>company</code> to the slug.</li>
+  <li>Under <code>me</code>, list every git author name and email you committed with.</li>
+  <li>If you want Jira tickets, fill in <code>jira</code>. Otherwise, delete the <code>jira</code> block.</li>
+  <li>Add one entry under <code>projects</code> for each project.</li>
+  <li>For each project, list every repository URL under <code>sources</code>.</li>
+</ol>
+<p>You can also ask the LLM to do the copy: <em>"Set up mapping.yml for company-a"</em>. It copies the
+example and stops; you fill in the values. The LLM never edits <code>mapping.yml</code> after that. When
+it needs a change, it tells you what to change.</p>
+
+<pre><code class="language-yaml">company: company-a                  # folder name under raw/ and evidence/
+
+me:                                 # how to find your commits
+  names: [jane, jdoe]               # case-insensitive, matches as a substring
+  emails: [jane@company-a.example]  # case-insensitive, exact
+
+jira:                               # optional
+  site: company-a.atlassian.net
+  email: jane@company-a.example
+  api_token: &lt;token&gt;                # https://id.atlassian.com/manage-profile/security/api-tokens
+
+projects:
+  - id: retail-shelf-cv             # slug in paths
+    internal_name: Acme Shelf       # real name; never written to evidence/
+    title: Retail Shelf Computer-Vision Analytics Platform  # public name
+    sources:
+      - git@bitbucket.org:company-a/shelf-mono-repo.git</code></pre>
+
+<table>
+  <thead><tr><th>Field</th><th>Required</th><th>Used for</th></tr></thead>
+  <tbody>
+    <tr><td><code>company</code></td><td>Yes</td><td>Folder name under <code>raw/</code> and <code>evidence/</code></td></tr>
+    <tr><td><code>me.names</code>, <code>me.emails</code></td><td>Yes</td><td>Matching your commits. A missing alias hides commits.</td></tr>
+    <tr><td><code>jira</code></td><td>No</td><td>Downloading the tickets assigned to you</td></tr>
+    <tr><td><code>projects[].id</code></td><td>Yes</td><td>Paths: <code>raw/&lt;company&gt;/&lt;id&gt;/</code> and the evidence file name</td></tr>
+    <tr><td><code>projects[].internal_name</code></td><td>Yes</td><td>Finding Jira tickets. Banned from evidence.</td></tr>
+    <tr><td><code>projects[].title</code></td><td>Yes</td><td>The anonymised name in the evidence file</td></tr>
+    <tr><td><code>projects[].sources</code></td><td>Yes</td><td>Git URLs to clone</td></tr>
+  </tbody>
+</table>
+
+<h3>Run ingest</h3>
+<ol>
+  <li>In Claude Code, type <code>/resume-evidence:ingest company-a</code>.</li>
+  <li>Wait for the report. It shows one table per project.</li>
+  <li>For each repository marked <em>failed</em>, fix the URL or your git access.</li>
+  <li>For each repository with zero commits of yours, add the missing name or email to <code>me</code>, or fix the URL.</li>
+  <li>If you changed <code>mapping.yml</code>, run ingest again.</li>
+</ol>
+<p>Ingest only copies data. It clones each source into <code>raw/&lt;company&gt;/&lt;id&gt;/&lt;repo-name&gt;/</code>,
+or fetches it if it is already there. It writes your commit counts to <code>raw/&lt;company&gt;/summary.json</code>
+and Jira tickets to <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>. A Jira project with your tickets but
+no entry in <code>mapping.yml</code> goes into <a class="term" href="#term-todo">TODO.md</a> as a project to add.
+You can run ingest again at any time to pick up new commits.</p>
+<p>You can also run the script yourself: <code>uv run scripts/ingest_repos.py company-a</code>.</p>
+
+<h2 id="distill">2 · Distill</h2>
+<p>Distill reads one project's raw data and writes its
+<a class="term" href="#term-evidence-file">evidence file</a>: what you did, with a citation for each
+claim, and no real names. Run it once per project.</p>
+
+<ol>
+  <li>Type <code>/resume-evidence:distill company-a retail-shelf-cv</code>.</li>
+  <li>If you leave out the company or the project, pick one from the list the LLM shows.</li>
+  <li>Wait while the LLM measures your <a class="term" href="#term-authorship">authorship</a>, reads the code and reads the tickets.</li>
+  <li>Read the draft <a class="term" href="#term-summary">Summary</a> the LLM shows first.</li>
+  <li>Read the rest of the file and the list of <a class="term" href="#term-open-question">open questions</a>.</li>
+  <li>If a claim is wrong, tell the LLM what you actually did. It records your answer as a <code>[me: yyyy-mm-dd]</code> citation.</li>
+  <li>Confirm the file when it is correct.</li>
+  <li>Review the diff and commit <code>evidence/company-a/&lt;yyyy&gt;-retail-shelf-cv.md</code>.</li>
+</ol>
+
+<p>You do not need to answer every open question here. Verify asks them later.</p>
+
+<h3>What distill writes</h3>
+<p>The file is <code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code>, where <code>yyyy</code> is the year of your
+first commit in the project. Its sections:</p>
+<table>
+  <thead><tr><th>Section</th><th>Holds</th></tr></thead>
+  <tbody>
+    <tr><td>Frontmatter</td><td>Title, period, role, status (<code>shipped</code>, <code>wip</code>, <code>dropped</code>), the <code>verified:</code> commit read per repo, and <code>reviewed:</code></td></tr>
+    <tr><td>Summary</td><td>Three to six resume bullets and a Remark for each; a draft until verify</td></tr>
+    <tr><td>Context</td><td>Who the project was for, the problem, rough scale</td></tr>
+    <tr><td>What I Did</td><td>One cited bullet per thing you owned, decided or built</td></tr>
+    <tr><td>Numbers</td><td>Measured outcomes and scale, each with its scope and source</td></tr>
+    <tr><td>Tools</td><td>Technology actually used, and what was only studied</td></tr>
+    <tr><td>Architecture</td><td>A Mermaid diagram and a short explanation</td></tr>
+    <tr><td>Not mine</td><td>Parts others built, named by role</td></tr>
+    <tr><td>Open questions</td><td>Gaps git cannot answer</td></tr>
+  </tbody>
+</table>
+
+<h3>Citations</h3>
+<table>
+  <thead><tr><th>Form</th><th>Means</th></tr></thead>
+  <tbody>
+    <tr><td><code>[backend:src/api 92%]</code></td><td>Your share of the blame lines under that path</td></tr>
+    <tr><td><code>[backend@a1b2c3d]</code></td><td>One of your commits</td></tr>
+    <tr><td><code>[KEY-123]</code></td><td>A Jira ticket. Proves assignment, not authorship.</td></tr>
+    <tr><td><code>[me: 2026-11-23]</code></td><td>Your own account, given on that date</td></tr>
+  </tbody>
+</table>
+
+<h3>Distill again after new work</h3>
+<ol>
+  <li>Run ingest for the company to fetch the new commits.</li>
+  <li>Run distill for the same project.</li>
+</ol>
+<p>Distill finds the existing file and starts at its <code>verified:</code> commits. It adds new bullets
+and keeps the existing ones. If the Summary is already confirmed, new bullets are marked
+<code>(draft)</code>. Run verify again to confirm them.</p>
+
+<h2 id="verify">3 · Verify</h2>
+<p>Git shows what you did. Verify asks you what it was worth: outcomes, scale, whether it shipped.
+It then rewrites the <a class="term" href="#term-summary">Summary</a> as confirmed resume bullets.</p>
+
+<ol>
+  <li>Type <code>/resume-evidence:verify company-a retail-shelf-cv</code>.</li>
+  <li>If you leave out the arguments, pick a file from the list. The list shows which files are reviewed and how many open questions each has.</li>
+  <li>Answer each round of questions. A round has four questions or fewer.</li>
+  <li>If you do not know an answer, say "don't know".</li>
+  <li>To end the interview early, tell the LLM to stop.</li>
+  <li>Read the rewritten Summary and the diff of the evidence sections.</li>
+  <li>Correct anything wrong.</li>
+  <li>Confirm the file. The LLM sets <code>reviewed:</code> to today.</li>
+  <li>Commit the evidence file.</li>
+</ol>
+
+<h3>How to give good answers</h3>
+<ul>
+  <li>Give numbers with a scope: "p95 latency fell from 800 ms to 120 ms, measured in production over a week".</li>
+  <li>Say if a number is a guess. The file marks it as estimated or user-reported.</li>
+  <li>Say if you only committed work that a teammate designed. Your account overrides git.</li>
+  <li>Say if a feature never shipped. The bullet then reads "prototyped" or "evaluated", not "delivered".</li>
+  <li>Use real names in answers if you need to. The LLM anonymises the file and runs the <a class="term" href="#term-banned-term-search">banned-term search</a> before you confirm.</li>
+</ul>
+<p>Each answer goes into the evidence sections first, cited <code>[me: yyyy-mm-dd]</code>, and only then
+into a bullet. A "don't know" stays under Open questions with the date you were asked. If an answer
+names a repository or Jira project not in <code>mapping.yml</code>, the LLM tells you what to add and
+records it in <a class="term" href="#term-todo">TODO.md</a>.</p>
+
+<h3>Use the result</h3>
+<p>Copy the bullets under <code>## Summary → ### Resume bullets</code> into your resume. Read the
+Remarks before you choose: each one names the claim the bullet traces to, its strength, its caveat
+and the roles it fits.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<table>
+  <thead><tr><th>Symptom</th><th>Cause</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr><td>Ingest marks a repo <em>failed</em></td><td>Wrong URL, or no git access</td><td>Clone the URL by hand to see the error. Fix it, then run ingest again.</td></tr>
+    <tr><td>A repo shows zero commits of yours</td><td><code>me</code> lacks one of your names or emails</td><td>Run <code>git -C raw/&lt;company&gt;/&lt;id&gt;/&lt;repo&gt; shortlog -sne --all</code>. Add your missing identity to <code>me</code>.</td></tr>
+    <tr><td>Distill says there are no repos</td><td>Ingest has not run for that project</td><td>Run ingest for the company.</td></tr>
+    <tr><td>A real name appears in an evidence file</td><td>The banned-term search missed a term</td><td>Tell the LLM the term. It replaces it with a placeholder and runs the search again.</td></tr>
+    <tr><td>Skills do not appear under <code>/resume-evidence</code></td><td>The plugin is not installed</td><td>Run <code>mise run plugins</code>, then restart Claude Code.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="glossary">Glossary</h2>
+<dl class="glossary">
+  <dt id="term-authorship">Authorship</dt>
+  <dd>Your share of a repository, per directory: your commit count and your share of <code>git blame</code> lines at HEAD. Distill claims only paths where your share is real.</dd>
+  <dt id="term-banned-term-search">Banned-term search</dt>
+  <dd>A grep of the evidence file for every real name: internal names, repo names, hosts, the Jira site, clients and people. It passes at zero hits.</dd>
+  <dt id="term-evidence-file">Evidence file</dt>
+  <dd>The anonymised, cited record of one project at <code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code>. The ground truth for every resume claim.</dd>
+  <dt id="term-mapping">mapping.yml</dt>
+  <dd>The configuration for one company at <code>raw/&lt;company&gt;/mapping.yml</code>. Only you edit it.</dd>
+  <dt id="term-open-question">Open question</dt>
+  <dd>A gap in an evidence file that git and Jira cannot answer. Verify asks you each one.</dd>
+  <dt id="term-plugin">Plugin</dt>
+  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the three skills.</dd>
+  <dt id="term-skill">Skill</dt>
+  <dd>A set of instructions the LLM follows when you type its command, for example <code>/resume-evidence:distill</code>.</dd>
+  <dt id="term-summary">Summary</dt>
+  <dd>The top section of an evidence file: three to six resume bullets and their Remarks. A draft until verify sets <code>reviewed:</code>.</dd>
+  <dt id="term-todo">TODO.md</dt>
+  <dd><code>raw/&lt;company&gt;/TODO.md</code>: projects to add to <code>mapping.yml</code> and leads for distill.</dd>
+</dl>
+
+</main>
+</body>
+</html>

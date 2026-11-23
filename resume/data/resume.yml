@@ -23,26 +23,27 @@ experiences:
     company: The Mather
     time: Jul 2022 - Present
     bullets:
-      - label: Computer vision systems
-        text: Build end-to-end pipelines for vehicle and accident detection, face-recognition visitor management, people counting on about 20 event cameras, and shelf product detection, with Kafka, RabbitMQ, and TimescaleDB.
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B2 (draft)
+      - label: RAG evaluation
+        text: Compared a new RAG source with the existing knowledge base on the client's test questions, and kept it switched off when it scored 56.8% recall@1 against 91.3%.
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B1 (draft)
+      - label: RAG knowledge source
+        text: Built a second RAG source for a human-in-the-loop support chatbot, with a background indexer that chunks and embeds uploaded documents into Qdrant and streams its progress.
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B1 (draft)
+      - label: Video analytics
+        text: Designed and built a demo-stage road-safety video analytics system on footage from 3 camera sites, with queued detection workers, TimescaleDB storage, and a Django REST API.
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B3 (draft)
       - label: Object detection
-        text: Train and fine-tune custom models with YOLO and RF-DETR.
-      - label: LLM and RAG
-        text: Build a Tau tool-calling agent, Qdrant RAG, and an eval runner over 633 test cases for a support chatbot.
-      - label: Graph RAG research
-        text: Implemented GraphRAG and LightRAG from their papers on Neo4j, and compared them with vector RAG on the same chunks, models, and context budget.
-      - label: Agent framework
-        text: Design a multi-client chatbot core on the Tau agent library, released as a versioned package, with an extension standard that adds client tools, skills, and guardrails without core changes.
-      - label: Sales data analysis
-        text: Analyse point-of-sale (POS) data for clients with Recency, Frequency, Monetary (RFM) analysis, cohort analysis, and association rule learning, and visualise the results.
-      - label: Survey text analysis
-        text: Analyse survey responses with word clouds, n-grams, and Latent Dirichlet Allocation (LDA) topic modelling.
-      - label: Backend development
-        text: Build and maintain a standardised Django starter template with Docker and PostgreSQL.
-      - label: DevOps
-        text: Automate deployments with Bitbucket Pipelines and standardise deployment commands in a Justfile.
-      - label: Infrastructure
-        text: Configure Cloudflare Tunnel to route multiple domains, and manage Nginx on AWS and DigitalOcean.
+        text: Trained an RF-DETR accident-detection model to replace a YOLO model with frequent false positives, and built a lane-straddling detector from per-lane polygon zones.
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B2 (draft)
+      - label: Pipeline migration
+        text: Migrated the detection pipeline from Kafka frame streaming to a RabbitMQ task queue when requirements moved to upload-then-process, with heartbeats for multi-minute jobs.
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B4 (draft)
+      - label: LLM evaluation
+        text: Built an eval runner that replays the client's 633-case multi-turn test set against the support chatbot, and a React and TypeScript app that compares runs.
+      # evidence/themather/2026-parallel-llm-serving-engine-evaluation.md B1 (draft)
+      - label: LLM serving
+        text: Built an asyncio load tester for OpenAI-compatible LLM servers, which showed Ollama serving 4 concurrent requests one at a time on a laptop.
 
 projects:
   - id: the-bazaar-tracker
@@ -108,15 +109,19 @@ projects:
       - Explored and visualised a Non-Intrusive Load Monitoring (NILM) dataset.
     hidden: true
 
+# Skills from the tools: lines of
+#   evidence/themather/2025-ai-road-safety-video-analytics-platform.md
+#   evidence/themather/2026-hitl-customer-support-chatbot-rag.md
+#   evidence/themather/2026-parallel-llm-serving-engine-evaluation.md
 skills:
   - category: Languages
-    items: [Python, SQL, Haskell, JavaScript]
+    items: [Python, TypeScript]
   - category: Data, ML and LLM
-    items: [pandas, NumPy, Matplotlib, seaborn, Google Looker Studio, PyThaiNLP, Gensim, NLTK, Ollama, RAG, MCP]
+    items: [PyTorch, YOLO, RF-DETR, OpenCV, Supervision, EasyOCR, Weights & Biases, Qdrant, Langfuse, Ollama, vLLM]
   - category: Backend and web
-    items: [Django, FastAPI, Streamlit, Astro, PostgreSQL, TimescaleDB, MongoDB, Kafka, RabbitMQ, Airflow]
-  - category: DevOps and cloud
-    items: [Docker, Nginx, Cloudflare, AWS, DigitalOcean, Bitbucket Pipelines, Git, uv, just, mise]
+    items: [Django, Django REST Framework, PostgreSQL, TimescaleDB, Redis, Kafka, RabbitMQ, React, Streamlit]
+  - category: DevOps and tooling
+    items: [Docker Compose, uv, just, CUDA]
 
 educations:
   - id: kmutnb-computer-engineering

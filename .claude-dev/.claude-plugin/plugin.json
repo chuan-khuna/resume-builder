@@ -1,6 +1,6 @@
 {
   "name": "resume-evidence",
   "version": "0.1.0",
-  "description": "Turn work repositories and Jira tickets into anonymised, cited evidence: ingest and distill.",
+  "description": "Turn work repositories and Jira tickets into anonymised, cited evidence (ingest, distill, verify), then into a resume (to-resume, resume, review-resume).",
   "author": { "name": "ALTR" }
 }

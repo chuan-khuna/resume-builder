@@ -8,9 +8,16 @@ or owned. Each claim cites the commit, path or ticket that proves it, and client
 anonymised. Evidence is the ground truth you write a resume, CV or portfolio from, and every
 line can be defended in an interview.
 
+## User manual
+
+The step-by-step guide is
+[`docs/documents/user-manual.html`](docs/documents/user-manual.html). It covers the
+prerequisites, installing the plugin, writing `mapping.yml`, running ingest, distill and
+verify, building the resume with `to-resume` and `review-resume`, and troubleshooting.
+
 ## How it works
 
-Two steps, each a Claude Code skill:
+Three steps, each a Claude Code skill:
 
 1. **Ingest** (`/resume-evidence:ingest <company>`)
    - Update the config: you list your projects and their git repos in `mapping.yml`.
@@ -21,6 +28,12 @@ Two steps, each a Claude Code skill:
      ticket shows assignment, not authorship.
    - The agent writes `evidence/<company>/<yyyy>-<project-id>.md`. Every claim is cited and
      anonymised, and you review the file once.
+   - The file opens with a draft `## Summary`: resume bullets, then remarks on what each traces
+     to and which numbers to quote.
+3. **Verify** (`/resume-evidence:verify <company> <project-id>`)
+   - The agent interviews you on the gaps git cannot answer: outcomes, scale, what shipped.
+   - It folds your answers into the evidence and confirms the `## Summary`: resume bullets,
+     each with a remark on what it traces to.
 
 The full design is in
 [`docs/documents/ingest-distill-workflow.html`](docs/documents/ingest-distill-workflow.html).
@@ -54,6 +67,7 @@ scripts/                               # committed: helpers the agent writes as 
 3. Fill in `me` (the names and emails you commit with), `jira`, and one entry per project.
 4. Restart Claude Code, then run `/resume-evidence:ingest <company>`.
 5. Run `/resume-evidence:distill <company> <project-id>` for each project.
+6. Run `/resume-evidence:verify <company> <project-id>` to answer its questions and confirm the bullets.
 
 To update a project after new work, run distill again. It reads only the commits after the
 `verified:` sha in the evidence file and adds new bullets.
@@ -69,5 +83,5 @@ An evidence file is done when:
 - no client, brand, person, host or infra identifier remains;
 - you have reviewed it.
 
-Resume wording (which bullets, which numbers to quote) is a later step, built on top of
-evidence.
+Resume wording (which bullets, which numbers to quote) lives in the file's `## Summary` at the
+top: drafted by distill, confirmed with you by verify.

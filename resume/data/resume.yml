@@ -1,0 +1,150 @@
+# yaml-language-server: $schema=resume.schema.json
+
+sections:
+  - skills
+  - experiences
+  - projects
+  - educations
+  - activities
+
+header:
+  name: Phattharanat Khunakornophat
+  jobTitle: Data Scientist and Developer
+  email: k.phattharanat@gmail.com
+  github: https://github.com/chuan-khuna
+  githubName: chuan-khuna
+  website: https://altrf.dev/
+  location: Bangkok, Thailand
+  introduction: I am a data scientist and developer with four years' experience in data analysis, computer vision, and backend development. I train machine learning models and deploy them to production. I also build the backend services and cloud infrastructure that run them.
+
+experiences:
+  - id: themather-datascientist
+    jobTitle: Data Scientist
+    company: The Mather
+    time: Jul 2022 - Present
+    bullets:
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B2 (draft)
+      - label: RAG evaluation
+        text: Compared a new RAG source with the existing knowledge base on the client's test questions, and kept it switched off when it scored 56.8% recall@1 against 91.3%.
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B1 (draft)
+      - label: RAG knowledge source
+        text: Built a second RAG source for a human-in-the-loop support chatbot, with a background indexer that chunks and embeds uploaded documents into Qdrant and streams its progress.
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B1 (draft)
+      - label: Video analytics
+        text: Designed and built a demo-stage road-safety video analytics system on footage from 3 camera sites, with queued detection workers, TimescaleDB storage, and a Django REST API.
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B3 (draft)
+      - label: Object detection
+        text: Trained an RF-DETR accident-detection model to replace a YOLO model with frequent false positives, and built a lane-straddling detector from per-lane polygon zones.
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B2 (draft)
+      - label: Pipeline migration
+        text: Migrated the detection pipeline from Kafka frame streaming to a RabbitMQ task queue when requirements moved to upload-then-process, with heartbeats for multi-minute jobs.
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B4 (draft)
+      - label: LLM evaluation
+        text: Built an eval runner that replays the client's 633-case multi-turn test set against the support chatbot, and a React and TypeScript app that compares runs.
+      # evidence/themather/2026-parallel-llm-serving-engine-evaluation.md B1 (draft)
+      - label: LLM serving
+        text: Built an asyncio load tester for OpenAI-compatible LLM servers, which showed Ollama serving 4 concurrent requests one at a time on a laptop.
+
+projects:
+  - id: the-bazaar-tracker
+    title: The Bazaar Tracker
+    time: Mar 2026 - Present
+    description: Personal project
+    url: https://github.com/chuan-khuna/bazaar-tracker-gpui
+    bullets:
+      - Build a Windows desktop tracker for The Bazaar in Rust and GPUI that records each run from the game's log file and memory.
+    hidden: true
+
+  - id: wordle-game-by-haskell
+    title: Wordle in Haskell
+    time: Sep 2023
+    description: Personal project
+    url: https://github.com/chuan-khuna/learning-haskell
+    bullets:
+      - Implemented Wordle in Haskell to learn the functional programming style.
+    hidden: true
+
+  - id: astro-digital-garden
+    title: Astro Digital Garden
+    time: 2025 - Present
+    description: Personal project
+    url: https://github.com/chuan-khuna/digital-garden-2024
+    bullets:
+      - Build a personal website with Astro, React, and Tailwind CSS on Cloudflare Workers, with a resume that prints to PDF.
+
+  - id: wordle
+    title: Wordle
+    time: Oct 2026 - Present
+    description: Personal project
+    url: https://github.com/chuan-khuna/wordle
+    bullets:
+      - Build a Wordle solver in Python and Rust, with a GPUI desktop app and an interactive Next.js site that visualises its findings.
+
+  - id: pos-rewrite
+    title: POS Rewrite in Rust
+    time: Oct 2026 - Present
+    description: Personal project
+    url: null
+    bullets:
+      - Rewrite a point-of-sale (POS) app in Rust from its 2019 Rails version, and add quotation PDFs and stock charts.
+
+  - id: bias-correction
+    title: Bias Correction of Multi-Dimensional Climate Data and Visualisation
+    time: 2019 - 2020
+    description: Senior project at KMUTNB
+    url: null
+    bullets:
+      - Developed the backend of a web application that maps downscaled climate data for Thailand, with Mann-Kendall trend tests and time-series charts.
+      - Compared additive, multiplicative, and linear regression bias correction on regional climate model (RCM) temperature and rainfall data against Thai Meteorological Department observations.
+      - Found that linear regression corrected temperature best, while no method reduced the error in rainfall.
+    hidden: true
+
+  - id: data-mining
+    title: Data Mining and AI Course
+    time: 2019 - 2020
+    description: Coursework at KMUTNB
+    url: null
+    bullets:
+      - Implemented linear regression, linear classification, k-means, and Naïve Bayes models, and studied the bias-variance trade-off.
+      - Explored and visualised a Non-Intrusive Load Monitoring (NILM) dataset.
+    hidden: true
+
+# Skills from the tools: lines of
+#   evidence/themather/2025-ai-road-safety-video-analytics-platform.md
+#   evidence/themather/2026-hitl-customer-support-chatbot-rag.md
+#   evidence/themather/2026-parallel-llm-serving-engine-evaluation.md
+skills:
+  - category: Languages
+    items: [Python, TypeScript]
+  - category: Data, ML and LLM
+    items: [PyTorch, YOLO, RF-DETR, OpenCV, Supervision, EasyOCR, Weights & Biases, Qdrant, Langfuse, Ollama, vLLM]
+  - category: Backend and web
+    items: [Django, Django REST Framework, PostgreSQL, TimescaleDB, Redis, Kafka, RabbitMQ, React, Streamlit]
+  - category: DevOps and tooling
+    items: [Docker Compose, uv, just, CUDA]
+
+educations:
+  - id: kmutnb-computer-engineering
+    degree: Bachelor of Engineering, Computer Engineering
+    institution: King Mongkut's University of Technology North Bangkok
+    time: Aug 2016 - Apr 2020
+    details:
+      - First Class Honours (CGPA 3.83)
+      - "Senior project: Bias Correction of Multi-Dimensional Climate Data and Visualisation"
+
+activities:
+  - id: internal-meetup-data-vis
+    title: 'Internal meetup talk: "What Not to Plot and Data Visualisation in History"'
+    time: Aug 2023
+    description: The Mather
+    url: null
+    details:
+      - Reviewed a chart and proposed improvements to its design.
+      - Presented well-designed data visualisations from history.
+
+interests:
+  - Data visualisation
+  - Table tennis
+  - Music by Sawano Hiroyuki
+  - Functional programming in Haskell and Elixir
+  - Personal knowledge management with Zettelkasten and evergreen notes

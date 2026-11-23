@@ -10,6 +10,8 @@ run = [
   "bunx skills add mattpocock/skills#v1.3.2",
   "bunx skills add thananon/9arm-skills --skill debug-mantra --skill scrutinize --skill post-mortem --skill management-talk",
   "bunx skills add cursor/plugins --skill unslop --skill technical-writing",
+  # kami: the document design system the resume/ styling is based on
+  "bunx skills add tw93/kami --skill kami",
 ]
 
 [tasks.plugins]

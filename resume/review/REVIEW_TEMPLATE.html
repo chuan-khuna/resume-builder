@@ -1,0 +1,223 @@
+<!doctype html>
+<!--
+  REVIEW TEMPLATE
+  Copy this file to start a new review page in review/, e.g.
+  review/2026-dec-dev.html, and replace every [bracketed] placeholder.
+
+  Shared files (don't copy them; link them):
+    styles/review.css   all styles
+    scripts/review.js   image pop-up, table-of-contents highlighting, notes
+    scripts/rough-notation.iife.js  hand-drawn notes (vendored, MIT)
+
+  Components, in the order they appear below:
+    1. Header: details (table.details), h1, lede, score cards (.scores > .score)
+    1b. Career adviser's view (ul.opinion): 3-5 bullets of opinion, after Summary
+    1c. Reader impressions (ul.opinion.readers): one bullet per reader, with
+        sub-bullets First impression | Looks for | Likely question
+    2. Results table (table.results): Check | Result | Status | Improvement
+       - Status cell: <td class="status"> with ONE badge
+       - Badges: .pass (good) · .warn (improve / consider) · .fail (must fix)
+       - Use .muted on the Improvement cell when nothing needs changing
+       - Optional group row: <tr class="group"><td colspan="4">…</td></tr>
+    3. Numeric cells: <td class="num"> for tabular figures
+    4. Colour swatch: <span class="sw" style="background:#hex"></span>
+    5. Code or extracted-text sample: <pre> with <mark> on the problem part
+    6. Compare cards (.compare): "Now" vs "Fix", side by side
+    6b. Chart (figure.chart): a static SVG from scripts/, followed by a
+        table.stats with the same numbers, one number per column (the table
+        is the accessible view); group rows name the template
+    7. Fixes table: Fix | Where | Effort | Impact, most important first
+    8. Footer: how the results were measured
+    9. Side column (aside.side): preview image that pops up, then the contents
+       - Every TOC link's href must match an id on a heading
+    10. The pop-up <dialog class="lightbox"> at the end of <body>: keep as is
+    11. Notes: a hand-drawn mark on a short phrase, drawn as it scrolls in.
+        <span data-note="circle" data-note-tone="warn">10 bullets</span>
+        Types: highlight | underline | box | circle | crossed-off | bracket.
+        Tones: fail (default) | warn | pass | accent | marker (highlight default).
+        Mark only what the reader must not miss, 8-12 per page:
+          highlight  the lede's main message; figures the user already has
+          circle     a Fix badge in the summary, a count that breaks a threshold
+          box        a flag a recruiter will raise (a gap, a missing month)
+          underline  a measured result that fails or warns
+          crossed-off  a false positive the review overrules
+          box, accent  fix 1 in the fixes table
+        Never mark a whole cell, a heading, or a passing result.
+
+  Writing rules: every result is measured, not estimated, and says how
+  (footer); the career adviser's view and reader impressions are the only
+  opinion. Each table row gives one finding and one concrete improvement.
+-->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[Review title]</title>
+<link rel="stylesheet" href="styles/review.css">
+<script src="scripts/rough-notation.iife.js" defer></script>
+<script src="scripts/review.js" defer></script>
+</head>
+<body>
+<main>
+
+<!-- 1. Header -->
+<div class="layout">
+<div>
+
+<header>
+  <!-- Source: git log -1 --format=%h -- data/resume.json versions/<slug> templates lib -->
+  <table class="details">
+    <tr><th scope="row">Resume</th><td><code>[build/&lt;slug&gt;/&lt;template&gt;.pdf]</code>, [pages] page, [paper]</td></tr>
+    <tr><th scope="row">Content</th><td><code>[versions/&lt;slug&gt;/resume.json]</code> [over data/resume.json]</td></tr>
+    <tr><th scope="row">Template</th><td><code>[template]</code>[; other templates compared, and for what]</td></tr>
+    <tr><th scope="row">Fonts</th><td>[fonts embedded, from pdffonts]</td></tr>
+    <tr><th scope="row">Source</th><td>commit <code>[short hash]</code></td></tr>
+    <tr><th scope="row">Reviewed</th><td>[date]</td></tr>
+  </table>
+  <h1>[Review title]</h1>
+  <p class="lede">[Two or three sentences: the overall verdict, then the most important things to change.]</p>
+
+  <div class="scores">
+    <div class="score"><b>[Area]</b><span><span class="badge pass">[Good]</span></span><small>[One-line result]</small></div>
+    <div class="score"><b>[Area]</b><span><span class="badge warn">[Fair]</span></span><small>[One-line result]</small></div>
+    <div class="score"><b>[Area]</b><span><span class="badge fail">[Fix]</span></span><small>[One-line result]</small></div>
+  </div>
+</header>
+
+
+<!-- Summary: one row per area -->
+<h2 id="summary">Summary</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Area</th><th>Result</th><th>Status</th><th>Top improvement</th></tr>
+  <tr><td>[Area]</td><td>[Measured result]</td><td class="status"><span class="badge pass">Pass</span></td><td>[Most important change]</td></tr>
+  <tr><td>[Area]</td><td>[Measured result]</td><td class="status"><span class="badge warn">Improve</span></td><td>[Most important change]</td></tr>
+</table>
+</div>
+
+<!-- 1b. Career adviser's view: 3-5 bullets of opinion on positioning -->
+<h2 id="adviser">Career adviser's view</h2>
+<p class="opinion-note">Opinion, not measured: how the resume positions you, read as a careers adviser would.</p>
+<ul class="opinion">
+  <li><strong>[Advice as a short imperative.]</strong> [Why, from what the resume shows, and what to do.]</li>
+  <li><strong>[Advice.]</strong> [Why and what to do.]</li>
+  <li><strong>[Advice.]</strong> [Why and what to do.]</li>
+</ul>
+
+<!-- 1c. Reader impressions: one bullet per reader, in the order they see the page -->
+<h3 id="readers">Reader impressions</h3>
+<p class="opinion-note">Opinion: how each reader is likely to take the page, in the order they usually see it.</p>
+<ul class="opinion readers">
+  <li><strong>HR or recruiter</strong> <span class="muted">· [first screen, how long]</span>
+    <ul>
+      <li><b>First impression:</b> [Impression]</li>
+      <li><b>Looks for:</b> [What they check]</li>
+      <li><b>Likely question:</b> [Question this resume raises]</li>
+    </ul></li>
+  <li><strong>Hiring manager</strong> <span class="muted">· [role]</span>
+    <ul>
+      <li><b>First impression:</b> [Impression]</li>
+      <li><b>Looks for:</b> [What they check]</li>
+      <li><b>Likely question:</b> [Question]</li>
+    </ul></li>
+  <li><strong>Technical interviewer</strong> <span class="muted">· [role]</span>
+    <ul>
+      <li><b>First impression:</b> [Impression]</li>
+      <li><b>Looks for:</b> [What they check]</li>
+      <li><b>Likely question:</b> [Question]</li>
+    </ul></li>
+</ul>
+
+<!-- 2. A section with a results table -->
+<h2 id="section-1">1. [Section]</h2>
+<p>[What this section checks, and how it was measured.]</p>
+
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr class="group"><td colspan="4">[Optional group label]</td></tr>
+  <tr><td>[Check]</td><td>[What was found]</td><td class="status"><span class="badge fail">Fix</span></td><td>[Concrete change]</td></tr>
+  <tr><td>[Check]</td><td>[What was found]</td><td class="status"><span class="badge warn">Improve</span></td><td>[Concrete change]</td></tr>
+  <tr><td>[Check]</td><td>[What was found]</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">[Note, or —]</td></tr>
+</table>
+</div>
+
+<!-- 3 + 4. Numbers and colour swatches -->
+<h3 id="section-1-sub">[Subsection]</h3>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Colour</th><th>Used for</th><th>Status</th><th>Ratio and improvement</th></tr>
+  <tr><td><span class="sw" style="background:#141413"></span><code>#141413</code></td><td>[Use]</td><td class="status"><span class="badge pass">AAA</span></td><td class="num">[18.4:1]</td></tr>
+</table>
+</div>
+
+<!-- 5. Extracted text or code, with the problem marked -->
+<h2 id="section-2">2. [Section]</h2>
+<pre>[Text before]
+<mark>[The problem part]</mark>
+[Text after]</pre>
+
+<!-- 6b. Chart, then the same numbers as a table -->
+<figure class="chart">
+  <img src="[&lt;slug&gt;-line-length.svg]" alt="[Every number the chart shows, in words]">
+  <figcaption>[How to read it]. Made by <code>uv run review/scripts/line_lengths.py --slug [slug]</code>.</figcaption>
+</figure>
+
+<!-- 6. Before and after -->
+<div class="compare">
+  <div><b>Now</b>[Current approach]</div>
+  <div><b>Fix</b>[Proposed approach]</div>
+</div>
+
+<!-- 7. Fixes, most important first -->
+<h2 id="fixes">Fixes, in priority order</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Fix</th><th>Where</th><th>Effort</th><th>Impact</th></tr>
+  <tr><td>1. [Fix]</td><td>[File or area]</td><td class="status"><span class="badge pass">Quick</span></td><td>[What it improves]</td></tr>
+  <tr><td>2. [Fix]</td><td>[File or area]</td><td class="status"><span class="badge warn">Medium</span></td><td>[What it improves]</td></tr>
+</table>
+</div>
+
+<!-- 8. Method -->
+<footer>
+  Method: [tools and checks used, and what wasn't checked].
+</footer>
+
+</div>
+
+<!-- 9. Side column: preview, then contents -->
+<aside class="side">
+  <figure class="preview">
+    <button type="button" data-lightbox aria-label="Open the preview full size">
+      <img src="[resume.png]" alt="[What the image shows]">
+    </button>
+    <figcaption>[Caption] · click to enlarge</figcaption>
+  </figure>
+
+  <nav class="toc" aria-label="Contents">
+    <b>Contents</b>
+    <ol>
+      <li><a href="#summary">Summary</a></li>
+      <li><a href="#adviser">Career adviser's view</a>
+        <ol><li><a href="#readers">Reader impressions</a></li></ol>
+      </li>
+      <li><a href="#section-1">1. [Section]</a>
+        <ol><li><a href="#section-1-sub">[Subsection]</a></li></ol>
+      </li>
+      <li><a href="#section-2">2. [Section]</a></li>
+      <li><a href="#fixes">Fixes, in priority order</a></li>
+    </ol>
+  </nav>
+</aside>
+</div>
+
+</main>
+
+<!-- 10. Image pop-up: filled by scripts/review.js -->
+<dialog class="lightbox" aria-label="Preview">
+  <button type="button" class="close" aria-label="Close">×</button>
+  <img src="" alt="">
+</dialog>
+</body>
+</html>

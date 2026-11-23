@@ -7,13 +7,23 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 ├── .claude-plugin/
 │   ├── plugin.json
 │   └── marketplace.json
-├── reference/workflow.md     # layout, mapping schema, script rules (shared by both skills)
+├── reference/
+│   ├── workflow.md           # layout, mapping schema, script rules (all skills)
+│   └── evidence.md           # evidence file schema, citations, anonymisation (distill, verify)
 └── skills/
     ├── ingest/SKILL.md       # /resume-evidence:ingest <company>
-    └── distill/SKILL.md      # /resume-evidence:distill <company> <id>
+    ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>
+    ├── verify/SKILL.md       # /resume-evidence:verify <company> <id>
+    ├── to-resume/SKILL.md    # /resume-evidence:to-resume [base | <slug>]
+    ├── review-resume/        # /resume-evidence:review-resume [slug] [template]
+    │   ├── SKILL.md
+    │   └── measure.sh
+    └── resume/SKILL.md       # /resume-evidence:resume (copied from chuan-khuna/altr-stack)
 ```
 
-Both skills are user-invoked. The design is in
+`to-resume` and `review-resume` work on the Typst resume in `resume/` (see `resume/README.md`).
+
+All skills are user-invoked. The design is in
 [`docs/documents/ingest-distill-workflow.html`](../docs/documents/ingest-distill-workflow.html).
 
 ## Install

@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Resume",
+  "description": "Resume data rendered by templates/*.typ. A version file at versions/<slug>/resume.yml may contain any subset of the top-level sections; each section it contains replaces the whole section from data/resume.yml.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "sections": {
+      "type": "array",
+      "description": "Which sections to print, in order. Sections not listed are not printed.",
+      "items": {
+        "enum": [
+          "skills",
+          "experiences",
+          "projects",
+          "educations",
+          "activities",
+          "interests"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "maxPages": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Most pages the resume may use; the build fails if it runs longer. Default 1."
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "jobTitle",
+        "email",
+        "location"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "jobTitle": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "github": {
+          "type": "string",
+          "format": "uri"
+        },
+        "githubName": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri"
+        },
+        "location": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string",
+          "description": "Optional opening line of the summary, printed in medium weight before the introduction."
+        },
+        "introduction": {
+          "type": "string"
+        }
+      }
+    },
+    "experiences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "jobTitle",
+          "company",
+          "time",
+          "bullets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "description": "Rendered in bold before the text."
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Set to true to leave this entry out of the PDF."
+          }
+        }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "description": "Rendered in array order.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "time",
+          "bullets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Set to true to leave this entry out of the PDF."
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "items"
+        ],
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "educations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "degree",
+          "institution",
+          "time"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "degree": {
+            "type": "string"
+          },
+          "institution": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Set to true to leave this entry out of the PDF."
+          }
+        }
+      }
+    },
+    "activities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "time"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Set to true to leave this entry out of the PDF."
+          }
+        }
+      }
+    },
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

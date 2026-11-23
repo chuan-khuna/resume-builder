@@ -1,7 +1,8 @@
 # Evidence workflow: shared reference
 
-Read by the `ingest` and `distill` skills. Two steps: **ingest** loads raw data, **distill**
-turns it into evidence.
+Read by the `ingest`, `distill` and `verify` skills. Three steps: **ingest** loads raw data,
+**distill** turns it into evidence, **verify** confirms it with the user and adds resume
+bullets. The evidence file's own format is in [`evidence.md`](evidence.md).
 
 ## Layout
 
@@ -13,7 +14,9 @@ raw/                                   # gitignored except the example
 └── <company>/
     ├── mapping.yml                    # config, written by the user only
     ├── TODO.md                        # todos for this company's data
-    ├── jira/<yyyy>.json               # Jira tickets, by year created
+    ├── summary.json                   # per-repo load status and my commit counts (ingest)
+    ├── jira/<yyyy>.json               # my Jira tickets, trimmed, by year created (ingest)
+    ├── jira/merged.json               # every year merged, oldest first (ingest)
     └── <id>/<repo-name>/              # git clones of the sources
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers
@@ -31,7 +34,10 @@ Schema and an example: `raw/repository-mapping.example.yml`.
   author name and email; a name matches as a substring.
 - `jira`: `site`, `email`, `api_token`. Optional; without it, skip Jira.
 - `projects[]`: `id` (path slug), `internal_name` (real name), `title` (anonymised name),
-  `sources` (git URLs).
+  `sources` (git URLs), and optionally `jira`: a list of selectors that pick the project's
+  tickets from `jira/merged.json`. `{project: X}` picks every ticket in Jira project X (key or
+  name); `{project: X, epic: Y}` picks only the tickets under epic Y. Older projects usually
+  have their own Jira project; newer ones are epics in a shared project.
 
 The user owns `mapping.yml`. To change it, tell the user what to change.
 
@@ -52,8 +58,8 @@ Tick an item and move it to Done in the same step that resolves it.
 Write a helper into `scripts/` when a step needs one and none there fits. Check `scripts/`
 first and reuse or extend what exists.
 
-- Python, one file per command, with PEP 723 inline metadata for dependencies; run with
-  `uv run scripts/<name>.py`.
+- Python, one file per command. Declare dependencies in `pyproject.toml` with `uv add <pkg>`;
+  run with `uv run scripts/<name>.py`.
 - First argument is `<company>`. Read paths, `me` and credentials from
   `raw/<company>/mapping.yml` at run time.
 - Every client name, host, path and credential comes from `mapping.yml` or the arguments, so

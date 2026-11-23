@@ -20,7 +20,8 @@ the mapping schema and the rules for scripts.
    _Done when_ `mapping.yml` parses and every project has `id`, `internal_name`, `title` and
    `sources`. Report each missing field to the user and stop until it is fixed.
 
-2. **Load repository data.** For every source of every project, the target is
+2. **Load repository data.** Run `uv run scripts/ingest_repos.py <company>`; it does this step
+   and step 4 and writes `raw/<company>/summary.json`. For every source of every project, the target is
    `raw/<company>/<id>/<repo-name>/`, where `<repo-name>` is the URL's last path segment
    without `.git`.
    - Target missing: `git clone <url> <target>`.
@@ -29,33 +30,46 @@ the mapping schema and the rules for scripts.
 
    _Done when_ every source is either cloned and fetched, or recorded as failed with its error.
 
-3. **Load Jira data.** Skip this step if `jira:` is absent. Use the Jira download script in
-   `scripts/`; write it first if none exists. It must:
-   - authenticate with basic auth `jira.email:jira.api_token` against
-     `https://<jira.site>`;
-   - search `assignee = currentUser() ORDER BY created ASC`, following every page;
-   - fetch `summary`, `status`, `issuetype`, `project`, `parent`, `labels`, `created`,
-     `resolutiondate`, `description`, `comment`;
-   - write one file per year created to `raw/<company>/jira/<yyyy>.json`, replacing the
-     previous download.
+3. **Load Jira data.** Skip this step if `jira:` is absent. `scripts/ingest_jira.py` writes
+   one file per year created, `raw/<company>/jira/<yyyy>.json`, then merges them into
+   `raw/<company>/jira/merged.json`. Each ticket keeps only `key`, `title`, `detail`, `type`,
+   `status`, `project`, `epic`, `parent`, `assignee`, `created` and `resolved`. Pick the source:
+   - `jira.api_token` is set: run `uv run scripts/ingest_jira.py <company>`. It searches
+     `assignee = currentUser() ORDER BY created ASC` through the REST API, following every page.
+   - No token, and the Atlassian MCP is connected: first check that `currentUser()` is the
+     user: take one ticket and match its assignee's display name against `me.names`. Get the
+     total with `searchResultMode: count`. Then search with `searchJiraIssuesUsingJql`, JQL
+     `assignee = currentUser() ORDER BY created ASC`, `view: full` (it includes the parent's
+     issue type), `maxResults: 100`, fields `summary`, `description`, `issuetype`, `status`,
+     `project`, `parent`, `assignee`, `created`, `resolutiondate`, following `nextPageToken`
+     until `isLast`. A full page is too large to show, so the tool saves it to a file: copy
+     each file to the scratchpad as `page-NN.json`. Then run
+     `uv run scripts/ingest_jira.py <company> --from-raw <page files>`.
+   - Neither: tell the user to add an API token to `mapping.yml` or connect the Atlassian MCP,
+     and skip Jira.
 
-   _Done when_ the yearly files exist and their ticket total equals the total the search
-   reported.
+   _Done when_ `merged.json` exists and its ticket count equals the total the search reported.
 
 4. **Check authorship coverage.** For each cloned repo, count my commits:
    `git -C <repo> log --all --format='%an <%ae>'`, matched against `me` as the reference
-   describes.
+   describes. `ingest_repos.py` records the counts and date ranges per repo and per project in
+   `raw/<company>/summary.json`, replacing the previous summary.
 
-5. **Report** to the user, as a table per project:
+   _Done when_ `summary.json` lists every source in `mapping.yml`.
+
+5. **Report** to the user from `summary.json`, as a table per project:
    - each repo: cloned / fetched / failed, my commit count, date range of my commits;
    - repos with zero commits of mine, flagged: the URL is wrong or `me` lacks a name or email;
-   - Jira: ticket count per year, and ticket count per Jira project.
+   - Jira: ticket count per year and per Jira project, as `ingest_jira.py` prints them.
 
 6. **Update `raw/<company>/TODO.md`.** Move to Done each "Projects to add" item that now has
-   repos loaded under its `id`. Add each Jira project with tickets of mine but no matching
-   project in `mapping.yml` to "Projects to add", with its ticket count and date range.
+   repos loaded under its `id`. Run `uv run scripts/jira_tickets.py <company> --unmapped`: it
+   lists the Jira projects and epics with tickets of mine that no project's `jira` selectors
+   pick. For each that is real work, either tell the user which `jira` selector to add to an
+   existing project in `mapping.yml`, or add it to "Projects to add" with its ticket count and
+   date range.
 
 ## Completion
 
-Every source in `mapping.yml` appears in the report as loaded or failed, Jira is downloaded or
+Every source in `mapping.yml` appears in `summary.json` and the report as loaded or failed, Jira is downloaded or
 skipped, every zero-commit repo is flagged, and `TODO.md` is updated.

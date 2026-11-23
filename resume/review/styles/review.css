@@ -1,0 +1,251 @@
+/* Shared styles for review pages in review/.
+   Components: header + score cards, check lists with badges, tables with
+   swatches, code extract (pre + mark), compare cards, priority list, and a
+   sticky side column with the preview image, a pop-up for it, and a table of contents.
+   See REVIEW_TEMPLATE.html for markup of each. */
+
+:root {
+  --ink: #141413; --dark: #3d3d3a; --olive: #504e49; --stone: #6b6a64;
+  --rule: #e8e6dc; --paper: #faf9f5; --card: #ffffff; --accent: #1b365d;
+  --pass: #2f6b3a; --pass-bg: #e7f1e8;
+  --warn: #8a5a00; --warn-bg: #fbf0d9;
+  --fail: #9b2c2c; --fail-bg: #f8e3e1;
+  --radius: 6px;
+  --side: 300px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1140px; margin: 0 auto; padding: 48px 28px 96px; }
+
+/* ---------- Type ---------- */
+
+h1, h2 { font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; font-weight: 400; }
+h1 { font-size: 2.3rem; line-height: 1.15; margin: 0 0 .4rem; }
+h2 { font-size: 1.6rem; margin: 3.2rem 0 .6rem; padding-bottom: .4rem; border-bottom: 1px solid var(--rule); }
+h3 { font-size: 1.02rem; margin: 1.6rem 0 .3rem; }
+p { margin: .5rem 0; }
+a { color: var(--accent); }
+
+/* Selection: a tint of the accent that stands out from the page (1.6:1) and the
+   white tables (1.7:1), with text kept ink (10.9:1).
+   Images opt out, so a drag across a section doesn't paint them blue;
+   the dark code block gets its own darker tint. */
+::selection { background: #b8c9df; color: var(--ink); }
+img, svg { user-select: none; -webkit-user-select: none; }
+pre ::selection, pre::selection { background: #3d5579; color: #fff; }
+code {
+  font: .88em/1.4 ui-monospace, "Cascadia Code", Consolas, monospace;
+  background: #efede4; padding: .08em .3em; border-radius: 3px;
+}
+.meta { color: var(--stone); font-size: .92rem; }
+
+/* Review details above the title: a label | value table on the page background.
+   Overrides the general table rules further down (white background, row padding). */
+table.details { width: auto; margin: 0 0 1.4rem; background: none; font-size: .88rem; }
+table.details th, table.details td { padding: .22rem 0; border-bottom: 0; vertical-align: baseline; }
+table.details th {
+  padding-right: 1.6rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--stone); font-weight: 600; white-space: nowrap;
+}
+table.details td { color: var(--dark); }
+.lede { font-size: 1.08rem; color: var(--dark); max-width: 62ch; }
+
+/* ---------- Two-column layout: content + sticky side ---------- */
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) var(--side); gap: 40px; align-items: start; }
+.side {
+  position: sticky; top: 24px;
+  max-height: calc(100vh - 48px); overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Preview image: a button that opens the pop-up. */
+.preview { margin: 0; }
+.preview button {
+  display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in;
+}
+.preview img {
+  display: block; width: 100%; background: #fff;
+  border: 1px solid var(--rule); box-shadow: 0 2px 14px rgba(20, 20, 19, .08);
+  transition: box-shadow .15s;
+}
+.preview button:hover img, .preview button:focus-visible img { box-shadow: 0 4px 22px rgba(20, 20, 19, .18); }
+.preview button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.preview figcaption { font-size: .82rem; color: var(--stone); margin-top: .4rem; }
+
+/* Table of contents under the preview. */
+.toc { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: .9rem; }
+.toc b {
+  display: block; font-size: .74rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--stone); font-weight: 600; margin-bottom: .4rem;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc ol ol { padding-left: .9rem; font-size: .86rem; }
+.toc a {
+  display: block; padding: .18rem .6rem; margin-left: -.6rem;
+  color: var(--dark); text-decoration: none; border-left: 2px solid transparent;
+}
+.toc a:hover { color: var(--accent); }
+.toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .side { position: static; max-height: none; order: -1; max-width: 420px; }
+}
+
+/* ---------- Image pop-up ---------- */
+
+/* The dialog shrinks to the image, so the close button sits on the image's corner.
+   The image is sized by height from its aspect ratio (--ratio, height / width;
+   default A4 = 1.4142): max-height alone leaves the dialog as wide as the
+   image's full pixel width, and the button floats off the corner. */
+dialog.lightbox {
+  --ratio: 1.4142;
+  padding: 0; border: 0; background: transparent;
+  width: fit-content; max-width: none; max-height: none; overflow: visible;
+}
+dialog.lightbox::backdrop { background: rgba(20, 20, 19, .72); }
+dialog.lightbox img {
+  display: block; height: min(92vh, calc(94vw * var(--ratio))); width: auto;
+  background: #fff; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); cursor: zoom-out;
+}
+dialog.lightbox .close {
+  position: absolute; top: -14px; right: -14px; width: 32px; height: 32px;
+  border: 0; border-radius: 50%; background: var(--card); color: var(--ink);
+  font-size: 1.2rem; line-height: 1; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+dialog.lightbox .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Score cards ---------- */
+
+/* 4 cards per row; 2 on narrow screens. Spans the content column only,
+   so it never runs under the side preview. */
+.scores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 1.6rem 0 0; }
+@media (max-width: 640px) { .scores { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.score { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; min-width: 0; }
+.score b {
+  display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--stone); font-weight: 600;
+}
+.score > span { display: block; margin-top: .35rem; }
+.score .badge { font-size: .8rem; white-space: normal; }
+.score small { display: block; color: var(--stone); font-size: .82rem; line-height: 1.4; margin-top: .35rem; }
+
+/* ---------- Badges: .pass / .warn / .fail ---------- */
+
+.badge {
+  display: inline-block; font-size: .74rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  padding: .12em .5em; border-radius: 3px; vertical-align: .12em; margin-right: .45em; white-space: nowrap;
+}
+.pass { color: var(--pass); background: var(--pass-bg); }
+.warn { color: var(--warn); background: var(--warn-bg); }
+.fail { color: var(--fail); background: var(--fail-bg); }
+
+/* ---------- Check list ---------- */
+
+ul.checks { list-style: none; padding: 0; margin: .6rem 0; }
+ul.checks li { padding: .7rem 0; border-bottom: 1px solid var(--rule); }
+ul.checks li:last-child { border-bottom: 0; }
+ul.checks .why { display: block; color: var(--dark); font-size: .94rem; margin-top: .15rem; }
+
+/* ---------- Tables ---------- */
+
+table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: .8rem 0; background: var(--card); }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--stone); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sw {
+  display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+  vertical-align: -2px; margin-right: .4em; border: 1px solid rgba(0, 0, 0, .12);
+}
+
+/* Results table: Check | Result | Status | Improvement.
+   Put the badge alone in td.status; .muted for "nothing to change". */
+table.results td:first-child { font-weight: 500; width: 20%; }
+table.results td.status { width: 1%; white-space: nowrap; }
+table.results td.status .badge { margin-right: 0; }
+table.results td:nth-child(2) { width: 32%; }
+table.results .muted { color: var(--stone); }
+table.results tr.group td {
+  background: var(--paper); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--stone); font-weight: 600; padding-top: .8rem;
+}
+.table-wrap { overflow-x: auto; }
+
+/* ---------- Opinion: the career adviser's view, 3-5 bullets ---------- */
+
+.opinion-note { color: var(--stone); font-size: .9rem; font-style: italic; }
+ul.opinion { padding-left: 1.2rem; margin: .8rem 0; }
+ul.opinion li { margin: .7rem 0; padding-left: .2rem; }
+ul.opinion li::marker { color: var(--stone); }
+ul.opinion strong { font-weight: 600; }
+
+/* ---------- Chart: a static SVG from scripts/, plus its numbers as a table ---------- */
+
+figure.chart { margin: 1rem 0 .4rem; }
+figure.chart img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: var(--radius); }
+figure.chart figcaption { font-size: .85rem; color: var(--stone); margin-top: .5rem; }
+
+/* ---------- Code extract ---------- */
+
+pre {
+  background: #1f1f1d; color: #ecebe4; padding: 14px 16px; border-radius: var(--radius); overflow-x: auto;
+  font: .82rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; white-space: pre-wrap;
+}
+pre mark { background: #6b3b1f; color: #fff; padding: 0 .15em; border-radius: 2px; }
+
+/* ---------- Compare cards ---------- */
+
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.compare > div { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; font-size: .92rem; }
+.compare b {
+  display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--stone); margin-bottom: .3rem;
+}
+@media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
+
+/* ---------- Priority list ---------- */
+
+ol.fixes { padding-left: 1.3rem; }
+ol.fixes li { margin: .55rem 0; }
+ol.fixes li::marker { color: var(--stone); font-variant-numeric: tabular-nums; }
+.eff { color: var(--stone); font-size: .85rem; }
+
+footer { margin-top: 3.5rem; color: var(--stone); font-size: .85rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+
+/* Reader impressions: one bullet per reader (name, then a muted note on who
+   they are), with sub-bullets for impression, what they look for, and question. */
+ul.opinion.readers > li { margin: 1rem 0; }
+ul.opinion.readers .muted { color: var(--stone); font-size: .86rem; }
+ul.opinion.readers ul { padding-left: 1.1rem; margin: .3rem 0 0; font-size: .95rem; }
+ul.opinion.readers ul li { margin: .25rem 0; }
+ul.opinion.readers ul b { font-weight: 600; color: var(--dark); }
+
+/* ---------- Hand-drawn notes (scripts/review.js, rough-notation) ---------- */
+/* Multiply, so a stroke that overshoots its words tints the text beside it
+   instead of covering it. */
+svg.rough-annotation { mix-blend-mode: multiply; }
+/* rough-notation positions its SVG against the nearest positioned ancestor.
+   Make that the mark's own block, so the mark moves with its words when the
+   centred layout shifts (a scrollbar appearing fires no resize event). */
+:is(p, li, td, th, div):has(> [data-note]) { position: relative; }
+
+/* ---------- Stats table: one number per column ---------- */
+/* Label | count | min | median | max | over threshold | Status.
+   Group rows (tr.group) name the template; the median is bold. */
+table.stats th, table.stats td { white-space: nowrap; }
+table.stats td:first-child { font-weight: 500; }
+table.stats .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.stats td.median { font-weight: 600; }
+table.stats td.status { width: 1%; }
+table.stats td.status .badge { margin-right: 0; }
+table.stats th:first-child { width: 40%; }
+table.stats tr.group td {
+  background: var(--paper); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--stone); font-weight: 600; padding-top: .8rem;
+}

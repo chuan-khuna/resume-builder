@@ -158,10 +158,15 @@ which repos show zero commits from either.</code></pre>
 </ol>
 <p>Ingest only copies data. It clones each source into <code>raw/&lt;company&gt;/&lt;id&gt;/&lt;repo-name&gt;/</code>,
 or fetches it if it is already there. It writes your commit counts to <code>raw/&lt;company&gt;/summary.json</code>
-and Jira tickets to <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>. A Jira project with your tickets but
+and your Jira tickets to <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>, merged into
+<code>raw/&lt;company&gt;/jira/merged.json</code>. Each ticket keeps only its key, title, detail, type,
+status, project, epic, parent, assignee and dates. With an API token in <code>mapping.yml</code>, the
+script downloads the tickets. Without one, the LLM uses the Atlassian MCP if it is connected. A Jira project with your tickets but
 no entry in <code>mapping.yml</code> goes into <a class="term" href="#term-todo">TODO.md</a> as a project to add.
 You can run ingest again at any time to pick up new commits.</p>
-<p>You can also run the script yourself: <code>uv run scripts/ingest_repos.py company-a</code>.</p>
+<p>You can also run the scripts yourself:</p>
+<pre><code class="language-sh">uv run scripts/ingest_repos.py company-a   # clone or fetch the repos, count your commits
+uv run scripts/ingest_jira.py company-a    # download your Jira tickets (needs jira.api_token)</code></pre>
 <h4>Example prompts: ingest</h4>
 <pre><code class="language-text">/resume-evidence:ingest company-a
 
@@ -170,7 +175,10 @@ I added two repos to the retail-shelf-cv project. Fetch only what is new
 and show me the commit counts for that project.
 
 /resume-evidence:ingest company-a
-The shelf-dashboard clone failed last time. I fixed my SSH key; try again.</code></pre>
+The shelf-dashboard clone failed last time. I fixed my SSH key; try again.
+
+/resume-evidence:ingest company-a
+I have no Jira API token. Download my tickets through the Atlassian MCP.</code></pre>
 
 
 <h2 id="distill">2 · Distill</h2>

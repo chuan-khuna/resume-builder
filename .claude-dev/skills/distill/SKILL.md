@@ -42,8 +42,9 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
    commits, dependency files, README and in-repo docs. Read enough to state what each part does,
    the pattern behind it, and the trade-off taken.
 
-4. **Read Jira.** Use the Jira query script in `scripts/`; write it first if none exists. Find
-   the project's tickets by `internal_name`, repo names, Jira project and epic. A ticket proves
+4. **Read Jira.** Read `raw/<company>/jira/merged.json`, written by ingest; filter it with `jq`
+   or a short script. Find the project's tickets by `internal_name` and repo names in `title`
+   and `detail`, and by `project` and `epic`. A ticket proves
    assignment and dates, not authorship: cite it beside git evidence, and send a claim backed
    only by tickets to Open questions.
 

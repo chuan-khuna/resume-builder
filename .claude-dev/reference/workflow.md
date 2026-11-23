@@ -15,7 +15,8 @@ raw/                                   # gitignored except the example
     ├── mapping.yml                    # config, written by the user only
     ├── TODO.md                        # todos for this company's data
     ├── summary.json                   # per-repo load status and my commit counts (ingest)
-    ├── jira/<yyyy>.json               # Jira tickets, by year created
+    ├── jira/<yyyy>.json               # my Jira tickets, trimmed, by year created (ingest)
+    ├── jira/merged.json               # every year merged, oldest first (ingest)
     └── <id>/<repo-name>/              # git clones of the sources
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers

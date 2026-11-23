@@ -30,18 +30,21 @@ the mapping schema and the rules for scripts.
 
    _Done when_ every source is either cloned and fetched, or recorded as failed with its error.
 
-3. **Load Jira data.** Skip this step if `jira:` is absent. Use the Jira download script in
-   `scripts/`; write it first if none exists. It must:
-   - authenticate with basic auth `jira.email:jira.api_token` against
-     `https://<jira.site>`;
-   - search `assignee = currentUser() ORDER BY created ASC`, following every page;
-   - fetch `summary`, `status`, `issuetype`, `project`, `parent`, `labels`, `created`,
-     `resolutiondate`, `description`, `comment`;
-   - write one file per year created to `raw/<company>/jira/<yyyy>.json`, replacing the
-     previous download.
+3. **Load Jira data.** Skip this step if `jira:` is absent. `scripts/ingest_jira.py` writes
+   one file per year created, `raw/<company>/jira/<yyyy>.json`, then merges them into
+   `raw/<company>/jira/merged.json`. Each ticket keeps only `key`, `title`, `detail`, `type`,
+   `status`, `project`, `epic`, `parent`, `assignee`, `created` and `resolved`. Pick the source:
+   - `jira.api_token` is set: run `uv run scripts/ingest_jira.py <company>`. It searches
+     `assignee = currentUser() ORDER BY created ASC` through the REST API, following every page.
+   - No token, and the Atlassian MCP is connected: search with `searchJiraIssuesUsingJql`, JQL
+     `assignee = currentUser() ORDER BY created ASC`, fields `summary`, `description`,
+     `issuetype`, `status`, `project`, `parent`, `assignee`, `created`, `resolutiondate`,
+     following every page. Save each page's JSON response as is to the scratchpad, then run
+     `uv run scripts/ingest_jira.py <company> --from-raw <page files>`. Delete the page files.
+   - Neither: tell the user to add an API token to `mapping.yml` or connect the Atlassian MCP,
+     and skip Jira.
 
-   _Done when_ the yearly files exist and their ticket total equals the total the search
-   reported.
+   _Done when_ `merged.json` exists and its ticket count equals the total the search reported.
 
 4. **Check authorship coverage.** For each cloned repo, count my commits:
    `git -C <repo> log --all --format='%an <%ae>'`, matched against `me` as the reference
@@ -53,7 +56,7 @@ the mapping schema and the rules for scripts.
 5. **Report** to the user from `summary.json`, as a table per project:
    - each repo: cloned / fetched / failed, my commit count, date range of my commits;
    - repos with zero commits of mine, flagged: the URL is wrong or `me` lacks a name or email;
-   - Jira: ticket count per year, and ticket count per Jira project.
+   - Jira: ticket count per year and per Jira project, as `ingest_jira.py` prints them.
 
 6. **Update `raw/<company>/TODO.md`.** Move to Done each "Projects to add" item that now has
    repos loaded under its `id`. Add each Jira project with tickets of mine but no matching

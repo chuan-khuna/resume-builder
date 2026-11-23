@@ -21,7 +21,8 @@
 └── &lt;company&gt;/                       # real names and the Jira token
     ├── mapping.yml                  # config, edited by the user
     ├── TODO.md                      # todos for this company's data
-    ├── jira/&lt;yyyy&gt;.json             # Jira data
+    ├── jira/&lt;yyyy&gt;.json             # Jira data, trimmed, by year created
+    ├── jira/merged.json             # every year merged
     └── &lt;id&gt;/
         └── &lt;repo-name&gt;/             # repository data
 evidence/                            # commit all: anonymised data
@@ -81,7 +82,7 @@ projects:
 <ol>
   <li><strong>Update config.</strong> The user edits <code>raw/&lt;company&gt;/mapping.yml</code>.</li>
   <li><strong>Load repository data.</strong> The script clones each source into <code>raw/&lt;company&gt;/&lt;id&gt;/&lt;repo-name&gt;/</code>, or fetches it if it is already there.</li>
-  <li><strong>Load Jira data.</strong> If <code>jira:</code> is set, the script downloads all tickets assigned to me into <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>.</li>
+  <li><strong>Load Jira data.</strong> If <code>jira:</code> is set, <code>scripts/ingest_jira.py</code> downloads all tickets assigned to me, through the REST API or from Atlassian MCP search results, into <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>, and merges them into <code>raw/&lt;company&gt;/jira/merged.json</code>. Each ticket keeps only key, title, detail, type, status, project, epic, parent, assignee and dates.</li>
 </ol>
 
 <h3>2 · Distill</h3>
@@ -116,8 +117,8 @@ verified:
 <table>
   <thead><tr><th>Script</th><th>Step</th><th>Does</th></tr></thead>
   <tbody>
-    <tr><td><code>ingest &lt;company&gt;</code></td><td>1</td><td>Load repository data and Jira data from the config</td></tr>
-    <tr><td><code>jira query &lt;company&gt; …</code></td><td>2</td><td>Filter raw Jira tickets (by text, project, epic, date) for one project</td></tr>
+    <tr><td><code>ingest_repos.py &lt;company&gt;</code></td><td>1</td><td>Clone or fetch the repositories and count my commits</td></tr>
+    <tr><td><code>ingest_jira.py &lt;company&gt;</code></td><td>1</td><td>Download my Jira tickets (REST API or <code>--from-raw</code> MCP results) into yearly files and <code>merged.json</code></td></tr>
     <tr><td><code>authorship &lt;company&gt; &lt;id&gt;</code></td><td>2</td><td>Show my commits and the paths I own in a project's repos</td></tr>
   </tbody>
 </table>

@@ -17,6 +17,9 @@ This repo helps the user build their resume.
 - `resume/` holds the Typst resume: `data/resume.yml` is the resume's ground truth, built with
   `mise -C resume run build`. See `resume/README.md`. `.reference/` holds gitignored reference
   clones.
+- When you format the Typst resume, use the Kami skill's design rules (`.claude/skills/kami/`)
+  as `.claude-dev/reference/kami.md` describes. This repo's evidence, writing and review rules
+  win over Kami's.
 - Python helpers live in `scripts/`; their dependencies are declared in `pyproject.toml`.
 
 ## Agent skills

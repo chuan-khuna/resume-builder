@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>User manual: from repositories to resume bullets</title>
+  <title>User manual: from repositories to a reviewed resume</title>
   <link rel="stylesheet" href="../shared/globals.css">
   <script src="../shared/doc.js"></script>
 </head>
@@ -11,7 +11,7 @@
 <main class="doc">
 
 <header class="doc-head">
-  <h1>User manual: from repositories to resume bullets</h1>
+  <h1>User manual: from repositories to a reviewed resume</h1>
   <p class="byline">2026-11-23 · For the user who runs the pipeline in Claude Code · Design: <a href="ingest-distill-workflow.html">Ingest → Ground truth</a></p>
 </header>
 
@@ -19,15 +19,18 @@
 <p>This project turns your work history into resume bullets you can defend. You give it a
 configuration file for one company. The LLM then loads your repositories, writes one
 <a class="term" href="#term-evidence-file">evidence file</a> per project, and interviews you to
-confirm the <a class="term" href="#term-summary">Summary</a>. Every resume bullet traces to a
-cited claim in an evidence file.</p>
+confirm the <a class="term" href="#term-summary">Summary</a>. Last, it writes the resume YAML
+from the evidence files and reviews the built PDF. Every resume bullet traces to a cited claim
+in an evidence file.</p>
 
-<figure class="diagram" data-diagram data-title="Three tasks for one company" data-height="360">
+<figure class="diagram" data-diagram data-title="From repositories to a reviewed resume" data-height="360">
 <script type="text/plain" class="mermaid-src">flowchart LR
   A["1 · Configure<br/>you edit mapping.yml"] --> I["ingest<br/>LLM loads repos and Jira"]
   I --> D["2 · Distill<br/>LLM writes the evidence file"]
   D --> V["3 · Verify<br/>LLM interviews you"]
-  V --> OUT[(evidence/ with confirmed Summary)]
+  V --> R["4 · To resume<br/>LLM writes resume.yml"]
+  R --> RV["5 · Review<br/>LLM measures the PDF"]
+  RV --> OUT[(resume/build/ PDF)]
   class OUT accent
 </script>
 </figure>
@@ -38,6 +41,8 @@ cited claim in an evidence file.</p>
     <tr><td>1 · Configure</td><td>Write <code>mapping.yml</code>, then start ingest</td><td>Clones repos, downloads Jira tickets, counts your commits</td><td><code>raw/&lt;company&gt;/</code></td></tr>
     <tr><td>2 · Distill</td><td>Start distill for one project, review the file</td><td>Reads your code and tickets, writes a cited, anonymised file with a draft Summary</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code></td></tr>
     <tr><td>3 · Verify</td><td>Answer questions, confirm the bullets</td><td>Folds your answers into the file, rewrites the Summary</td><td>Same file, with <code>reviewed:</code> set</td></tr>
+    <tr><td>4 · To resume</td><td>Approve the plan, check the bullets</td><td>Writes the resume YAML from the evidence, with a trace comment per bullet, then builds it</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code></td></tr>
+    <tr><td>5 · Review</td><td>Read the review, pick the fixes</td><td>Measures the PDF and checks every bullet against its evidence</td><td><code>resume/review/&lt;slug&gt;.html</code></td></tr>
   </tbody>
 </table>
 
@@ -47,7 +52,9 @@ cited claim in an evidence file.</p>
   <tbody>
     <tr><td><a href="https://mise.jdx.dev">mise</a></td><td>Installs the pinned tool versions in <code>mise.toml</code> (<code>uv</code>, <code>bun</code>, <code>node</code>) and runs the <code>plugins</code> task</td><td><code>brew install mise</code>, then <a href="https://mise.jdx.dev/getting-started.html">activate it in your shell</a></td></tr>
     <tr><td><a href="https://docs.astral.sh/uv/">uv</a></td><td>Runs the Python scripts in <code>scripts/</code> and installs their dependencies</td><td><code>mise install</code> (from <code>mise.toml</code>)</td></tr>
-    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the three <a class="term" href="#term-skill">skills</a>: ingest, distill, verify</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
+    <tr><td><a href="https://typst.app">Typst</a></td><td>Builds the resume PDF in <code>resume/</code></td><td><code>mise trust resume</code>, then <code>mise -C resume install</code></td></tr>
+    <tr><td>poppler</td><td>Gives <code>pdftotext</code>, <code>pdfinfo</code> and <code>pdffonts</code> for the resume review</td><td><code>brew install poppler</code></td></tr>
+    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the six <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-resume, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
     <tr><td>git</td><td>Clones and reads your repositories</td><td>Already on macOS with the Xcode command line tools</td></tr>
   </tbody>
 </table>
@@ -55,7 +62,7 @@ cited claim in an evidence file.</p>
 URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or <code>ssh -T git@github.com</code>.</p>
 
 <h2 id="setup">Before you start</h2>
-<p>The <a class="term" href="#term-plugin">plugin</a> holds the three
+<p>The <a class="term" href="#term-plugin">plugin</a> holds the six
 <a class="term" href="#term-skill">skills</a>.</p>
 <ol>
   <li>Open a terminal at the repository root.</li>
@@ -64,11 +71,20 @@ URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or
   <li>Install the Python dependencies: <code>uv sync</code>.</li>
   <li>Install the <a class="term" href="#term-plugin">plugin</a> for this repository: <code>mise run plugins</code>.</li>
   <li>Start Claude Code: <code>claude</code>.</li>
-  <li>Type <code>/resume-evidence</code> and make sure the three skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>.</li>
+  <li>Type <code>/resume-evidence</code> and make sure the six skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-resume</code>, <code>resume</code>, <code>review-resume</code>.</li>
 </ol>
 <p>To try the plugin for one session without installing it, start Claude Code with
 <code>claude --plugin-dir ./.claude-dev</code>.</p>
 <p>If you change a skill file, run <code>claude plugin marketplace update resume-builder-local</code>.</p>
+
+<h3 id="prompting">How to prompt</h3>
+<p>The LLM runs a <a class="term" href="#term-skill">skill</a> only when you type its command. A request in
+plain words, such as "distill my project", does not start the skill. Write the command first, then
+its arguments, then any context in plain words on the same message:</p>
+<pre><code class="language-text">/resume-evidence:&lt;skill&gt; &lt;arguments&gt; &lt;context for the LLM&gt;</code></pre>
+<p>Context helps the LLM ask fewer questions: what you know about the project, what to focus on,
+what to leave out. Each step below gives example prompts. Replace <code>company-a</code> and
+<code>retail-shelf-cv</code> with your own company slug and project <code>id</code>.</p>
 
 <h2 id="configure">1 · Configure and ingest</h2>
 <p>One company has one <a class="term" href="#term-mapping">mapping.yml</a>. It tells the scripts
@@ -87,9 +103,10 @@ Keep it under <code>raw/</code>. Git ignores everything in <code>raw/</code> exc
   <li>Add one entry under <code>projects</code> for each project.</li>
   <li>For each project, list every repository URL under <code>sources</code>.</li>
 </ol>
-<p>You can also ask the LLM to do the copy: <em>"Set up mapping.yml for company-a"</em>. It copies the
-example and stops; you fill in the values. The LLM never edits <code>mapping.yml</code> after that. When
-it needs a change, it tells you what to change.</p>
+<p>You can also ask the LLM to do the copy. It copies the example and stops; you fill in the values.
+The LLM never edits <code>mapping.yml</code> after that. When it needs a change, it tells you what to
+change.</p>
+
 
 <pre><code class="language-yaml">company: company-a                  # folder name under raw/ and evidence/
 
@@ -122,6 +139,15 @@ projects:
   </tbody>
 </table>
 
+<h4>Example prompts: configure</h4>
+<pre><code class="language-text">/resume-evidence:ingest company-a
+
+Check raw/company-a/mapping.yml before you clone. List each field that is
+missing or still holds an example value.
+
+I committed with two identities: my work email and my personal one. Tell me
+which repos show zero commits from either.</code></pre>
+
 <h3>Run ingest</h3>
 <ol>
   <li>In Claude Code, type <code>/resume-evidence:ingest company-a</code>.</li>
@@ -136,6 +162,16 @@ and Jira tickets to <code>raw/&lt;company&gt;/jira/&lt;yyyy&gt;.json</code>. A J
 no entry in <code>mapping.yml</code> goes into <a class="term" href="#term-todo">TODO.md</a> as a project to add.
 You can run ingest again at any time to pick up new commits.</p>
 <p>You can also run the script yourself: <code>uv run scripts/ingest_repos.py company-a</code>.</p>
+<h4>Example prompts: ingest</h4>
+<pre><code class="language-text">/resume-evidence:ingest company-a
+
+/resume-evidence:ingest company-a
+I added two repos to the retail-shelf-cv project. Fetch only what is new
+and show me the commit counts for that project.
+
+/resume-evidence:ingest company-a
+The shelf-dashboard clone failed last time. I fixed my SSH key; try again.</code></pre>
+
 
 <h2 id="distill">2 · Distill</h2>
 <p>Distill reads one project's raw data and writes its
@@ -154,6 +190,18 @@ claim, and no real names. Run it once per project.</p>
 </ol>
 
 <p>You do not need to answer every open question here. Verify asks them later.</p>
+<h4>Example prompts: distill</h4>
+<pre><code class="language-text">/resume-evidence:distill company-a retail-shelf-cv
+
+/resume-evidence:distill company-a retail-shelf-cv
+I joined this project in March 2025, after the first version shipped.
+I owned the detection pipeline and the ingestion service. A teammate built
+the dashboard, even where my name is on the merge commits.
+
+/resume-evidence:distill company-a
+Which projects in mapping.yml have no evidence file yet? Start with the
+one where I have the most commits.</code></pre>
+
 
 <h3>What distill writes</h3>
 <p>The file is <code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code>, where <code>yyyy</code> is the year of your
@@ -192,6 +240,11 @@ first commit in the project. Its sections:</p>
 <p>Distill finds the existing file and starts at its <code>verified:</code> commits. It adds new bullets
 and keeps the existing ones. If the Summary is already confirmed, new bullets are marked
 <code>(draft)</code>. Run verify again to confirm them.</p>
+<h4>Example prompts: distill again</h4>
+<pre><code class="language-text">/resume-evidence:distill company-a retail-shelf-cv
+I ingested the commits from the last three months. Add the new work only;
+keep the confirmed bullets as they are.</code></pre>
+
 
 <h2 id="verify">3 · Verify</h2>
 <p>Git shows what you did. Verify asks you what it was worth: outcomes, scale, whether it shipped.
@@ -208,6 +261,23 @@ It then rewrites the <a class="term" href="#term-summary">Summary</a> as confirm
   <li>Confirm the file. The LLM sets <code>reviewed:</code> to today.</li>
   <li>Commit the evidence file.</li>
 </ol>
+
+<h4>Example prompts: verify</h4>
+<pre><code class="language-text">/resume-evidence:verify company-a retail-shelf-cv
+
+/resume-evidence:verify
+Show me which evidence files are not reviewed yet, and how many open
+questions each has.
+
+/resume-evidence:verify company-a retail-shelf-cv
+Ask about outcomes first: what shipped, and the numbers. I have the
+production latency figures from our monitoring dashboard.</code></pre>
+
+<p>Example answers during the interview:</p>
+<pre><code class="language-text">1. Shipped to production in June 2025; about 300 stores used it.
+2. Don't know. The client never shared accuracy in the field.
+3. Partly mine: I wrote the model training, a teammate wrote the labelling tool.
+4. Don't quote the 0.65 mAP figure. Product AP50 0.92 is fine.</code></pre>
 
 <h3>How to give good answers</h3>
 <ul>
@@ -227,6 +297,77 @@ records it in <a class="term" href="#term-todo">TODO.md</a>.</p>
 Remarks before you choose: each one names the claim the bullet traces to, its strength, its caveat
 and the roles it fits.</p>
 
+<h2 id="to-resume">4 · Write the resume</h2>
+<p>The resume lives in <code>resume/</code>. Its content is one YAML file: <code>resume/data/resume.yml</code>
+for the base resume, or <code>resume/versions/&lt;slug&gt;/resume.yml</code> for one job application.
+Work bullets and skills come only from evidence files. Your name, contact details, employers,
+job titles, dates and education come from you.</p>
+
+<ol>
+  <li>Verify every evidence file you want on the resume.</li>
+  <li>For the base resume, type <code>/resume-evidence:to-resume</code>.</li>
+  <li>For one job application, type <code>/resume-evidence:to-resume 2026-dec-acme-ml</code>, and paste the job ad when the LLM asks.</li>
+  <li>If the LLM lists unreviewed evidence files, choose: verify first, include as draft, or leave out.</li>
+  <li>Give the employer name, job title and dates for each company when the LLM asks.</li>
+  <li>Read the plan. Approve it, or tell the LLM what to change.</li>
+  <li>Read the YAML diff and the page images in <code>resume/build/&lt;slug&gt;/</code>.</li>
+  <li>Correct any bullet you cannot defend in an interview.</li>
+</ol>
+<p>Each bullet in the YAML has a <a class="term" href="#term-trace-comment">trace comment</a> above it, such as
+<code># evidence/company-a/2025-retail-shelf-cv.md B2</code>. It names the evidence file and the
+Summary bullet the claim comes from. Keep the comment when you edit the bullet. To reword text
+without the full pipeline, use <code>/resume-evidence:resume</code>.</p>
+<h4>Example prompts: write the resume</h4>
+<pre><code class="language-text">/resume-evidence:to-resume
+
+/resume-evidence:to-resume
+Use only reviewed evidence files. Put backend, data and LLM work first and
+keep computer vision as supporting work. Fit one page.
+
+/resume-evidence:to-resume 2026-dec-acme-ml
+Here is the job ad:
+&lt;paste the job ad&gt;
+Aim the headline at "ML engineer". Tell me each requirement I can't show.
+
+/resume-evidence:resume
+Proofread the experience bullets in resume/data/resume.yml. Keep every
+trace comment and change no facts.</code></pre>
+
+<p>Example answers when the LLM asks for facts that evidence does not hold:</p>
+<pre><code class="language-text">company-a prints as "Company A Co., Ltd.". Job title: Data Scientist,
+Jul 2022 – Present. Keep my header and education as they are.</code></pre>
+
+<p>To build the resume yourself:</p>
+<pre><code class="language-sh">mise -C resume run check            # check the YAML against the schema
+mise -C resume run build            # base resume -&gt; resume/build/base/classic.pdf
+mise -C resume run version &lt;slug&gt;   # a version   -&gt; resume/build/&lt;slug&gt;/classic.pdf</code></pre>
+
+<blockquote><strong>Warning:</strong> the build fails if the resume runs past <code>maxPages</code>
+(default 1). Cut or hide bullets before you raise <code>maxPages</code>.</blockquote>
+
+<h2 id="review">5 · Review the resume</h2>
+<ol>
+  <li>Type <code>/resume-evidence:review-resume</code> for the base resume, or <code>/resume-evidence:review-resume &lt;slug&gt;</code> for a version.</li>
+  <li>Open <code>resume/review/&lt;slug&gt;.html</code> in a browser. The base resume writes <code>index.html</code>.</li>
+  <li>Fix every <code>fail</code> row first. Start with the Evidence traceability group.</li>
+  <li>Apply the fixes you agree with through <code>/resume-evidence:to-resume</code>.</li>
+  <li>Run the review again.</li>
+</ol>
+<p>The review measures the PDF for screening, CV standards, readability, format, ATS, contrast and
+accessibility. It also checks that every bullet has a trace comment, claims no more than its
+evidence, and quotes only numbers from the evidence.</p>
+<h4>Example prompts: review</h4>
+<pre><code class="language-text">/resume-evidence:review-resume
+
+/resume-evidence:review-resume 2026-dec-acme-ml rail
+Compare the rail template with classic for this version. Focus on the
+keyword match with the job ad.
+
+/resume-evidence:to-resume 2026-dec-acme-ml
+Apply fixes 1 to 3 from resume/review/2026-dec-acme-ml.html. Skip fix 4:
+I keep the projects section.</code></pre>
+
+
 <h2 id="troubleshooting">Troubleshooting</h2>
 <table>
   <thead><tr><th>Symptom</th><th>Cause</th><th>Action</th></tr></thead>
@@ -235,6 +376,8 @@ and the roles it fits.</p>
     <tr><td>A repo shows zero commits of yours</td><td><code>me</code> lacks one of your names or emails</td><td>Run <code>git -C raw/&lt;company&gt;/&lt;id&gt;/&lt;repo&gt; shortlog -sne --all</code>. Add your missing identity to <code>me</code>.</td></tr>
     <tr><td>Distill says there are no repos</td><td>Ingest has not run for that project</td><td>Run ingest for the company.</td></tr>
     <tr><td>A real name appears in an evidence file</td><td>The banned-term search missed a term</td><td>Tell the LLM the term. It replaces it with a placeholder and runs the search again.</td></tr>
+    <tr><td>The resume build says it is 2 pages</td><td>Too much text</td><td>Hide or cut the lowest-ranked bullets. Raise <code>maxPages</code> only if you want two pages.</td></tr>
+    <tr><td><code>mise -C resume</code> says the config is not trusted</td><td>mise has not trusted <code>resume/mise.toml</code></td><td>Run <code>mise trust resume</code>.</td></tr>
     <tr><td>Skills do not appear under <code>/resume-evidence</code></td><td>The plugin is not installed</td><td>Run <code>mise run plugins</code>, then restart Claude Code.</td></tr>
   </tbody>
 </table>
@@ -252,9 +395,11 @@ and the roles it fits.</p>
   <dt id="term-open-question">Open question</dt>
   <dd>A gap in an evidence file that git and Jira cannot answer. Verify asks you each one.</dd>
   <dt id="term-plugin">Plugin</dt>
-  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the three skills.</dd>
+  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the six skills.</dd>
   <dt id="term-skill">Skill</dt>
   <dd>A set of instructions the LLM follows when you type its command, for example <code>/resume-evidence:distill</code>.</dd>
+  <dt id="term-trace-comment">Trace comment</dt>
+  <dd>A YAML comment above a resume bullet that names its evidence file and Summary bullet, for example <code># evidence/company-a/2025-retail-shelf-cv.md B2</code>.</dd>
   <dt id="term-summary">Summary</dt>
   <dd>The top section of an evidence file: three to six resume bullets and their Remarks. A draft until verify sets <code>reviewed:</code>.</dd>
   <dt id="term-todo">TODO.md</dt>

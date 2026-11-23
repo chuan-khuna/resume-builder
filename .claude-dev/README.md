@@ -24,15 +24,15 @@ Try it for one session:
 claude --plugin-dir ./.claude-dev
 ```
 
-Install it for this repo:
+Install it for you, in this repo only (`mise run plugins` does this):
 
 ```bash
-claude plugin marketplace add ./.claude-dev --scope project
-claude plugin install resume-evidence@resume-builder-local --scope project
+claude plugin marketplace add ./.claude-dev --scope local
+claude plugin install resume-evidence@resume-builder-local --scope local
 ```
 
-The CLI saves the marketplace path in `.claude/settings.json` as an absolute path. Change it to
-`"path": "./.claude-dev"` before you commit.
+Local scope writes to `.claude/settings.local.json`, which is gitignored, so nothing about the
+install is committed.
 
 After you change a skill:
 

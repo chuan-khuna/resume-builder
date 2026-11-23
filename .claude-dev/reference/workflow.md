@@ -12,6 +12,7 @@ raw/                                   # gitignored except the example
 ├── repository-mapping.example.yml     # schema with fake values
 └── <company>/
     ├── mapping.yml                    # config, written by the user only
+    ├── TODO.md                        # todos for this company's data
     ├── jira/<yyyy>.json               # Jira tickets, by year created
     └── <id>/<repo-name>/              # git clones of the sources
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
@@ -33,6 +34,18 @@ Schema and an example: `raw/repository-mapping.example.yml`.
   `sources` (git URLs).
 
 The user owns `mapping.yml`. To change it, tell the user what to change.
+
+## TODO.md
+
+`raw/<company>/TODO.md` records what `mapping.yml` and `evidence/` cannot show. A project in
+`mapping.yml` with no evidence file is already a todo, so it is not listed. Sections:
+
+- **Projects to add to mapping.yml**: work with no repo found yet, with what is known about it.
+- **Leads for distill**: facts to cover for a project, keyed by `id`. A lead points at
+  evidence to find; it is not evidence.
+- **Done**: ticked items, with the `id` they resolved to.
+
+Tick an item and move it to Done in the same step that resolves it.
 
 ## Scripts
 

@@ -51,7 +51,11 @@ the mapping schema and the rules for scripts.
    - repos with zero commits of mine, flagged: the URL is wrong or `me` lacks a name or email;
    - Jira: ticket count per year, and ticket count per Jira project.
 
+6. **Update `raw/<company>/TODO.md`.** Move to Done each "Projects to add" item that now has
+   repos loaded under its `id`. Add each Jira project with tickets of mine but no matching
+   project in `mapping.yml` to "Projects to add", with its ticket count and date range.
+
 ## Completion
 
 Every source in `mapping.yml` appears in the report as loaded or failed, Jira is downloaded or
-skipped, and every zero-commit repo is flagged.
+skipped, every zero-commit repo is flagged, and `TODO.md` is updated.

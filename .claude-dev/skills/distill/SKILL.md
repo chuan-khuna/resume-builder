@@ -21,6 +21,9 @@ the mapping schema and the rules for scripts.
      its `verified:` shas mark where the new commits start.
    - None exists: **new** mode.
 
+   Read the project's items under "Leads for distill" in `raw/<company>/TODO.md`: each is a
+   fact to confirm or reject in steps 2–4.
+
 2. **Establish authorship.** Use the authorship script in `scripts/`; write it first if none
    exists. Per repo it reports, with `--all` on every git command:
    - authors: `git shortlog -sne --all`;
@@ -54,6 +57,9 @@ the mapping schema and the rules for scripts.
    account differs from git ("I committed it, but a teammate wrote the logic"), the user's
    account wins: record it with a `[me: yyyy-mm-dd]` citation.
    _Done when_ the user confirms the file.
+
+8. **Update `raw/<company>/TODO.md`.** Move this project's leads to Done, each noting whether
+   it went into the file or into Open questions.
 
 ## Evidence file
 
@@ -126,4 +132,5 @@ Anonymise the label, keep the engineering.
 ## Completion
 
 The file follows the schema, every What I Did bullet is cited, the banned-term search returns
-zero hits, `verified:` holds the HEAD sha read for every repo, and the user has confirmed it.
+zero hits, `verified:` holds the HEAD sha read for every repo, the user has confirmed it, and the
+project's leads in `TODO.md` are resolved.

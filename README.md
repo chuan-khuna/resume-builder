@@ -8,6 +8,13 @@ or owned. Each claim cites the commit, path or ticket that proves it, and client
 anonymised. Evidence is the ground truth you write a resume, CV or portfolio from, and every
 line can be defended in an interview.
 
+## User manual
+
+The step-by-step guide is
+[`docs/documents/user-manual.html`](docs/documents/user-manual.html). It covers the
+prerequisites, installing the plugin, writing `mapping.yml`, running ingest, distill and
+verify, building the resume with `to-resume` and `review-resume`, and troubleshooting.
+
 ## How it works
 
 Three steps, each a Claude Code skill:

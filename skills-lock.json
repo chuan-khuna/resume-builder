@@ -128,6 +128,13 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "f0820b18426a7d9a6c823a890988ba0ac70bf0fd596d30d7ef07c88558728c23"
     },
+    "kami": {
+      "source": "tw93/Kami",
+      "commit": "27177605ad0007bc29fa3f9c203c347aa91074e2",
+      "sourceType": "github",
+      "skillPath": "skills/kami/SKILL.md",
+      "computedHash": "6063ba50a05a745b97affd8417119be3fe95d8581af29e85d8c004bdde6c3db6"
+    },
     "loop-me": {
       "source": "mattpocock/skills",
       "ref": "v1.3.2",

@@ -4,8 +4,9 @@
 
 This repo helps the user build their resume.
 
-- `raw/<company>/` holds the raw data: git clones, Jira exports, `mapping.yml`. It stays local
-  (gitignored) because it carries real client names and credentials.
+- `raw/<company>/` holds the raw data: git clones, Jira exports, `mapping.yml`, and private
+  notes on the limits of the user's own work. It stays local (gitignored) because it carries
+  real client names and credentials.
 - `evidence/<company>/` holds what is distilled from `raw/`, anonymised. **Evidence is the
   ground truth for the resume**: every resume claim must trace to an evidence file, never to
   memory or to `raw/` directly.
@@ -14,6 +15,9 @@ This repo helps the user build their resume.
   `resume-evidence:to-resume` (evidence → resume YAML) → `resume-evidence:review-resume`
   (review the built PDF). Shared rules: `.claude-dev/reference/workflow.md` and
   `.claude-dev/reference/evidence.md`.
+- Every piece of resume or evidence prose follows the writing rules in the
+  `resume-evidence:resume` skill (`.claude-dev/skills/resume/SKILL.md`), including edits made
+  outside the pipeline.
 - `resume/` holds the Typst resume: `data/resume.yml` is the resume's ground truth, built with
   `mise -C resume run build`. See `resume/README.md`. `.reference/` holds gitignored reference
   clones.

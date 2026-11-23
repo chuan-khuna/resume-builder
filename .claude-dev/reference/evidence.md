@@ -1,7 +1,8 @@
 # Evidence file: shared reference
 
 Read by the `distill` and `verify` skills. One file per project at
-`evidence/<company>/<yyyy>-<id>.md`.
+`evidence/<company>/<yyyy>-<id>.md`, plus an optional [private note](#private-notes) at
+`raw/<company>/notes/<id>.md`.
 
 ## Schema
 
@@ -84,6 +85,34 @@ Shared by distill (draft) and verify (confirmed).
   backend, ML, AI infra, data`); one item per number in Numbers that no bullet quotes, saying
   why and how to phrase the point without it; one item per scope caveat. Neutral wording:
   describe the work or the data, never a person.
+- **Caveats state the limit, not the reason.** A caveat says what a bullet must not claim
+  ("tests are minimal: do not claim test coverage"). The personal reason behind it (time,
+  skill, interest) goes in the [private note](#private-notes), never in the evidence file.
+
+## Private notes
+
+`raw/<company>/notes/<id>.md` holds the honest account of the limits of my own work, so the
+owner has the facts at hand, for example when asked in an interview. It is gitignored with
+the rest of `raw/`. Verify and distill write it from the user's answers. No skill reads it to
+write a resume claim: evidence stays the ground truth.
+
+One bullet per limit, citing `[me: yyyy-mm-dd]`, and naming the evidence bullet or section it
+explains:
+
+```markdown
+- B2: built under a two-week deadline, so tests were kept minimal. [me: 2026-11-23]
+- What I Did 3: first project in Go; I learnt it on the job and the first version needed a
+  refactor. [me: 2026-11-23]
+```
+
+- **Record**: what held my work back, stated as fact: too little time, a skill I lacked then,
+  low interest that led to less effort, a scope cut. A cause outside my control is recorded as
+  a condition of the work ("requirements changed twice mid-sprint").
+- **Never record**: blame or criticism of anyone (a teammate, a manager, the client, the
+  employer), offensive or insulting words, or wording that makes me look worse than the facts
+  ("I was lazy" → "low priority for me; I spent less time on it").
+- **Claim limits**: when a limit narrows what a bullet may claim, also add a caveat Remark in
+  the evidence file that states the limit in neutral words, without the reason.
 
 ## Citations
 

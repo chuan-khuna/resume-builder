@@ -8,7 +8,7 @@ Read by the `ingest`, `distill` and `verify` skills. The evidence file's own for
 | Step | Skill | Reads | Writes |
 | ---- | ----- | ----- | ------ |
 | 1. Ingest | `/resume-evidence:ingest <company>` | `raw/<company>/mapping.yml` | `raw/<company>/repos/<id>/<slug>/`, `commit-summary.json`, `jira/<yyyy>.json`, `jira/merged.json`, `TODO.md` |
-| 2. Distill | `/resume-evidence:distill <company> <id>` | the project's repos and Jira tickets | `evidence/<company>/<yyyy>-<id>.md` with a draft Summary |
+| 2. Distill | `/resume-evidence:distill <company> <id>` | the project's repos and Jira tickets, or, with no repos, the user's account in an interview | `evidence/<company>/<yyyy>-<id>.md` with a draft Summary |
 | 3. Verify | `/resume-evidence:verify <company> <id>` | the evidence file, the user's answers | the same file, Summary confirmed, `reviewed:` set |
 | 4. To resume | `/resume-evidence:to-resume [base \| <slug>]` | evidence files, the user's job facts | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, built PDF |
 | 5. Review resume | `/resume-evidence:review-resume [slug] [template]` | the built PDF and its YAML | `resume/review/<slug>.html` (`index.html` for base) |
@@ -29,6 +29,7 @@ raw/                                   # gitignored except the example
     ├── commit-summary.json            # per-repo load status and my commit counts (ingest)
     ├── jira/<yyyy>.json               # my Jira tickets, trimmed, by year created (ingest)
     ├── jira/merged.json               # every year merged, oldest first (ingest)
+    ├── notes/<id>.md                  # private notes: limits of my own work (distill, verify)
     └── repos/<id>/<slug>/             # git clones of the sources, named by slug (ingest)
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers

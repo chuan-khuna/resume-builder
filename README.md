@@ -33,7 +33,8 @@ evidence; the last two build the resume from it.
 
 ```
 mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─▶ evidence (reviewed)
-                                                                      │
+                            ▲                                         │
+  no repos: you ─interview──┘                                         │
                      review page ◀─review-resume─ PDF ◀─Typst─ resume.yml ◀─to-resume
 ```
 
@@ -47,6 +48,8 @@ mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─�
    - The agent uses the data in `raw/<company>/`. Git authorship decides what is yours; a
      ticket shows assignment, not authorship. Commits count on every branch; blame reads the
      checked-out branch, or the branch holding your work.
+   - No repos (lost access, or the work left no code): the agent interviews you on each
+     responsibility instead, and cites your answers `[me: yyyy-mm-dd]`.
    - The agent writes `evidence/<company>/<yyyy>-<project-id>.md`. Every claim is cited and
      anonymised.
    - The file opens with a draft `## Summary`: resume bullets, then remarks on what each traces
@@ -90,6 +93,7 @@ raw/                                   # local only; commit only the example
     ├── TODO.md                        # projects still to add, leads for distill
     ├── commit-summary.json            # per-repo load status, my commit counts, branches ahead
     ├── jira/<yyyy>.json, merged.json  # my Jira tickets
+    ├── notes/<id>.md                  # private notes: what held my work back
     └── repos/<id>/<slug>/             # git clones, named by their anonymised slug
 evidence/<company>/<yyyy>-<id>.md      # committed: anonymised, cited ground truth
 resume/

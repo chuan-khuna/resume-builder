@@ -5,8 +5,12 @@ Read by the `distill` and `verify` skills. One file per project at
 
 ## Schema
 
-Distill writes every section except `## Resume`; verify writes `## Resume`, sets `reviewed:` and
-edits the other sections with the user's answers.
+Distill writes every section, including a **draft** `## Summary`. Verify confirms the Summary
+with the user, rewrites it, sets `reviewed:` and edits the other sections with the user's
+answers. While `reviewed:` is empty, the Summary is a draft.
+
+`## Summary` comes first because it is what a resume is written from; every section below it is
+the evidence it rests on.
 
 ```markdown
 ---
@@ -20,6 +24,14 @@ verified:
   <repo-name>: <HEAD sha read>
 reviewed: yyyy-mm-dd                   # set by verify when the user confirms the file
 ---
+
+## Summary
+### Resume bullets
+- <resume bullet>                      # 3–6, strongest first; see Summary rules
+### Remarks
+- B1: traces to <What I Did bullet, short> · strength · caveat · fits which roles
+- `<number left out>`: why it is not quoted, and how to make the point without it
+- <scope caveat: joined an existing project, wip, prototype only, …>
 
 ## Context
 Who it was for, the problem, rough scale. May describe the whole project.
@@ -46,16 +58,32 @@ A Mermaid diagram of the system or data flow, plus a short explanation.
 
 ## Open questions
 - Claims backed only by tickets, gaps git cannot answer, facts to confirm with the user.
-
-## Resume
-### Context
-One or two lines a recruiter reads first: the client type, the product, the setting.
-### Issue
-The problem the work solved and why it mattered, in one or two lines.
-### Bullets
-- <resume bullet>
-  - Remark: <traces to · strength · caveat · fits which roles>
 ```
+
+## Summary rules
+
+Shared by distill (draft) and verify (confirmed).
+
+- **Source**: condense What I Did only. Never claim what What I Did does not list; one bullet
+  may merge several What I Did bullets.
+- **Bullets**: three to six, one per outcome, strongest first. Each starts with a past-tense
+  verb and names what I built or decided, how, and the result, in about 25 words. Number them
+  `B1`, `B2`, … only inside Remarks, not in the bullet text.
+- **Numbers in bullets**: only measured or user-reported values from Numbers, with their scope.
+  A change (before → after) beats scale, scale beats activity. At most two per bullet.
+  Configured values describe design capacity: write "designed for", never as results. Counts of
+  my own code (commits, files, endpoints, tests) stay out.
+- **No measured impact**: name a verifiable outcome instead (shipped, still in use, adopted by
+  another team, a failure removed). In a draft with no such outcome, write the bullet without
+  one and add a Remark that the outcome is to confirm.
+- **Shared work**: "with a teammate" or "led" only as the evidence supports; a shared area gets
+  "contributed to" or names my part.
+- **Unfinished work**: a `wip` or `dropped` project, or a feature that never shipped, reads as
+  evaluated, prototyped or proposed, never as delivered.
+- **Remarks**: one item per bullet (`B<n>: traces to … · strength · caveat · roles it fits:
+  backend, ML, AI infra, data`); one item per number in Numbers that no bullet quotes, saying
+  why and how to phrase the point without it; one item per scope caveat. Neutral wording:
+  describe the work or the data, never a person.
 
 ## Citations
 

@@ -10,7 +10,54 @@ verified:
   worker: cdb36647a6437c7ef0c29db1ad6b6c4fb30e91d0
   detection-lib: a564e53b3cecaa84660f204a90268553e00a11d5
   notes: 120e21251513a7130c37dccc439f0ab2704e438c
+reviewed:
 ---
+
+## Summary
+### Resume bullets
+- Designed and built a demo-stage road-safety video analytics system on footage from 3 roadside
+  camera sites: queued detection workers, TimescaleDB time-series storage and a Django REST
+  dashboard API.
+- Migrated the pipeline from Kafka frame streaming to a RabbitMQ task queue when requirements
+  moved to upload-then-process, adding manual ack, heartbeats for multi-minute jobs and task
+  progress tracking.
+- Trained an RF-DETR accident-detection model to replace a YOLO model with frequent false
+  positives, and built a lane-straddling detector from per-lane polygon zones and per-track
+  dwell timers.
+- Wrote an internal Python detection library (composable processing chains, YOLO/RF-DETR behind
+  one interface, ByteTrack tracking, plate OCR), versioned by git tag, ending copy-paste between
+  PoC and production code.
+- Built LINE and Discord accident alerts with duplicate suppression, replacing pgvector
+  embedding-similarity checks with tracker-ID, site and time-window deduplication.
+- Modelled detections as TimescaleDB hypertables with continuous aggregates serving dashboard
+  summaries, removing the need for a separate Airflow aggregation pipeline.
+### Remarks
+- B1: traces to the architecture, dashboard backend and pedestrian-step bullets · breadth and
+  ownership (notes say one engineer built most of it) · demo stage, no production go-live in
+  git · roles: ML, backend, AI infra.
+- B2: traces to the Kafka pipeline, RabbitMQ migration and worker-hardening bullets · a real
+  re-architecture with a reason · no throughput figure · roles: backend, AI infra.
+- B3: traces to the RF-DETR training and lane-straddling bullets · model work plus a rule-based
+  detector · no accuracy or false-positive figure exists (notes' evaluation tables are empty);
+  outcome to confirm · roles: ML.
+- B4: traces to the detection library and per-platform PyTorch bullets · reusable engineering ·
+  internal library, one consumer project · roles: ML, backend.
+- B5: traces to the alerting and duplicate-alert-strategy bullets · trade-off between two dedup
+  designs · alert volume unknown · roles: backend, ML.
+- B6: traces to the TimescaleDB bullet · removed a component · the Airflow point is from meeting
+  notes · roles: data, backend.
+- `~25 s → 0.8 s per frame` (gemma3 4B accident re-check, M1 Pro vs RTX 4070 Super): left out;
+  a hardware comparison of an experiment that never reached the worker. Mention only as "evaluated
+  local multimodal LLMs for accident re-checking and plate OCR".
+- `~2 s+ per image` (LLM plate OCR): left out; no gain over EasyOCR. Same phrasing as above.
+- `33 ms per frame`: derived real-time budget; it explains the Kafka choice in B2's history but is
+  not a result. Leave out.
+- `5-minute window`, `5 min / hourly / daily aggregates`, `4 detection steps`: configured values,
+  not results; B5, B6 and B1 describe them without the figures.
+- Scope caveat: status wip, a demo system for an R&D contract; the training code, frontend and
+  several phase-2 repos were not ingested. The leads on Label Studio, DVC, Cloudflare Tunnel,
+  LLM accident verification and real-data evaluation are not in What I Did, so no bullet claims
+  them.
 
 ## Context
 A research-and-development project for a provincial client in Thailand: detect road
@@ -136,7 +183,8 @@ aggregates serve the dashboard summaries.
   [notes:Notes 100%]
 
 ## Open questions
-- Jira was not checked: no Jira export exists yet for this company.
+- Jira was not checked: no Jira export exists yet for this company, and `mapping.yml` holds a
+  placeholder API token (re-checked 2026-11-23).
 - Accident model accuracy: the evaluation tables in the notes (YOLO11 n/s/m vs RF-DETR, inference
   time and accuracy) are empty. Is there an mAP / precision / recall figure, or a false-positive
   rate before vs after RF-DETR?

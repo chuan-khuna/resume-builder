@@ -7,7 +7,55 @@ role: AI / backend engineer, one of four engineers (to confirm)
 status: wip
 verified:
   chatbot: 70eaaec37147ea0b758e098d50a9b5a8293ee09f   # tip of the newest feature branch; main (e70f16343) is its ancestor
+reviewed:
 ---
+
+## Summary
+### Resume bullets
+- Built a second RAG knowledge source for a human-in-the-loop support chatbot: operator text/PDF
+  upload, a background indexer chunking and embedding into Qdrant, live SSE progress, and
+  generation-safe re-indexing.
+- Evaluated the new retrieval against the existing knowledge base on the client's test questions
+  before switching (recall@1 56.8% vs 91.3%) and kept it behind a default-off switch with
+  one-variable rollback.
+- Prototyped an agent answer engine (tool loop over the existing rate, branch and knowledge
+  resolvers) beside the fixed chain, keeping must-not-fail rules in code: step cap, admin
+  handoff on failure, reply guardrails.
+- Built chatbot evaluation tooling: a runner executing the client's 633-case multi-turn test set
+  with concurrency and resume, and a React/TypeScript app comparing runs and grading answers.
+- Moved the Django backend from WSGI to ASGI (gunicorn + uvicorn workers), chosen over a threaded
+  WSGI server because long-lived SSE connections would exhaust its thread pool.
+- Audited the client's rate database read-only before building on it, found three client bugs
+  and data contradicting the client's own answers, and limited the source to rate numbers.
+### Remarks
+- B1: traces to the Reference subsystem bullet · end-to-end ownership (model, indexer, API, UI) ·
+  its retrieval was measured weaker and left off (see B2), so do not imply it serves customers ·
+  roles: AI, backend.
+- B2: traces to the measure-before-switching bullet and the reversible-switch bullet · strongest
+  judgement signal: a negative result acted on, not hidden · the number shows the new work
+  losing, so frame the bullet around the decision · roles: AI, ML.
+- B3: traces to the agent answer engine bullet · design trade-off recorded as an ADR · lives on a
+  feature branch, production use unconfirmed, no agent-vs-chain result recorded, so it reads as
+  prototyped · roles: AI, backend.
+- B4: traces to the evaluation tooling bullet · 633 cases is the suite's scale, not a pass rate ·
+  feature branch, merged to `dev` by a teammate · roles: AI, ML, backend.
+- B5: traces to the ASGI bullet · infra reasoning with a rejected alternative · no latency or
+  load figure · roles: backend.
+- B6: traces to the data audit bullet · shows checking data before building · audit, not code ·
+  roles: data, backend.
+- The banknote feature, prompt v13, decision-model routing and dashboard model configuration are
+  in What I Did but not in a bullet; swap one in if a role asks for prompt or routing work.
+- `recall@3 98.8% vs 79.9%`, `174 shared cases: 90.8% → 56.3%`: left out to keep B2 to one
+  figure; use the shared-case figure if asked how the comparison was kept fair.
+- `prompt v13 vs v12: 6/6 vs 0/4, ~300 vs 1,300–1,800 chars`: left out; 6 questions over 2–3
+  runs is too small a sample. Say "revised the system prompt and checked it against the old one
+  on banknote questions".
+- `banknote recall@1 95.5% unchanged`: a no-regression check, not an outcome; leave out.
+- `6,787 cached vs 683 new prompt tokens`: single runs, caching not guaranteed; leave out.
+- `~25 branches, ~40 currencies`: client business scale, rounded; may go in a project line
+  ("for a currency-exchange chain with ~25 branches") rather than a bullet.
+- Scope caveat: joined a running POC in 2026-09 that teammates started in 2026-03; status wip;
+  nothing confirms which of the switches were turned on in production.
 
 ## Context
 
@@ -176,8 +224,8 @@ and roll back by env var. The `indexer` service keeps embedding work out of requ
 
 ## Open questions
 
-- Jira was not checked: no Jira export exists under `raw/` yet. Ticket assignment and dates
-  are unverified.
+- Jira was not checked: no Jira export exists under `raw/` yet, and `mapping.yml` holds a
+  placeholder API token (re-checked 2026-11-23). Ticket assignment and dates are unverified.
 - Role title and team size: git shows three other engineers; confirm my title and whether I
   led any part.
 - What reached production? Main has the Reference subsystem, ASGI, banknotes, model config and

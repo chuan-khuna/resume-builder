@@ -7,7 +7,43 @@ role: AI engineer (sole author of the evaluation; role to confirm)
 status: wip
 verified:
   serving-eval: ca4417dddd25413bf79ca727b2eb1c3f4575d48d
+reviewed:
 ---
+
+## Summary
+### Resume bullets
+- Built a concurrent streaming load tester for OpenAI-compatible LLM servers (Python asyncio +
+  httpx) reporting per-request TTFT and throughput; it showed Ollama serving 4 concurrent
+  requests one at a time (TTFT 0.1 → 4.4 s).
+- Root-caused Ollama's failure to parallelise Qwen 3.5: its scheduler pins hybrid-architecture
+  models to a single slot, traced to an unfixed upstream llama.cpp recurrent-state issue, plus a
+  desktop-app setting forcing one parallel slot.
+- Designed a continuous-batching test (long request at 0 s, short at 5 s) that separates
+  continuous from static batching; on vLLM the late request got its first token 0.4 s after send.
+- Evaluated vLLM, SGLang, llama.cpp and Ollama against six serving requirements for a 5–10
+  concurrent-request target, recommending vLLM for the GPU server and advising against MTP
+  speculative decoding at that load.
+### Remarks
+- B1: traces to the load-tester bullet · concrete, reusable tool with a visible finding · the
+  staircase was measured on a laptop with a 2B model · roles: AI infra, backend.
+- B2: traces to the Ollama root-cause bullet · shows debugging into an engine's scheduler and
+  upstream code · a diagnosis, not a fix · roles: AI infra.
+- B3: traces to the continuous-batching test bullet · test design that a naive simultaneous-send
+  test cannot replace · single laptop run on vLLM Metal · roles: AI infra, ML.
+- B4: traces to the engine-comparison bullet and the vLLM Metal requirement-test bullet · decision
+  work · whether vLLM was adopted on the GPU server is unknown (outcome to confirm) · roles: AI
+  infra. "5–10 concurrent requests" is the requirement, not a measured load.
+- `TTFT 3.28 s / 3.32 s`: left out; two requests on a laptop says little on its own. Make the
+  point as "both requests started streaming together" if needed.
+- `12.4 tok/s aggregate, ~8 tok/s per request, 34.43 s wall`: left out; laptop numbers on vLLM
+  Metal, slower than Ollama per request. Not a result worth quoting until the GPU-server run.
+- `~50 tok/s Ollama vs ~8 tok/s vLLM Metal`: left out; it favours the rejected engine and the
+  vLLM single-request run was not done. Mention only as a risk flagged.
+- `4 of 6 requirements passed`: left out; partial and laptop-only. B4 can say "tested vLLM
+  against the requirements" without the count.
+- `max 8 concurrent sequences`: configured serve setting, not a result; leave out.
+- Scope caveat: a one-day spike (2026-10-29) on a developer laptop; the GPU-server run is
+  pending, so nothing here reads as a production deployment.
 
 ## Context
 A one-day engineering spike (2026-10-29) to choose a self-hosted serving engine for Qwen 3.5.
@@ -91,7 +127,8 @@ concurrency, context and parser settings so results are comparable.
   [serving-eval@ca4417d] (authorship to confirm; see Open questions)
 
 ## Open questions
-- Jira was not checked: no Jira export exists yet for this company.
+- Jira was not checked: no Jira export exists yet for this company, and `mapping.yml` holds a
+  placeholder API token (re-checked 2026-11-23).
 - The two Windows/WSL commits came from a shared company account on the same day: were they
   made by me on the Windows PC (then they move to What I Did) or by a teammate?
 - Who requested the evaluation and for which product or client (the chatbot work?), and was

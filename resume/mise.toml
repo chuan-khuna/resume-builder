@@ -1,0 +1,71 @@
+# Resume build, copied from github.com/chuan-khuna/typst-resume.
+# Tasks run in resume/. From the repo root: mise -C resume run <task>.
+# bun and uv come from the root mise.toml.
+
+[tools]
+typst = "0.15.1"
+
+[env]
+# Fonts come only from fonts/ (Geist, Geist Serif), so the PDF looks the same on any machine.
+TYPST_FONT_PATHS = "fonts"
+TYPST_IGNORE_SYSTEM_FONTS = "true"
+# Templates live in templates/ but import lib/ and read data/ and versions/,
+# so the Typst project root is resume/.
+TYPST_ROOT = "."
+
+# Layout: templates/<template>.typ + versions/<slug>/resume.yml
+#           -> build/<slug>/<template>.pdf, <template>-<page>.png
+# The base resume (data/resume.yml, no version) builds to build/base/.
+# Typst does not create output folders, so each task makes its own first;
+# run_windows is the same task in cmd.exe syntax (mise uses cmd on Windows).
+
+[tasks.check]
+description = "Check data/resume.yml and every versions/*/resume.yml against the schema"
+run = "uv run scripts/check.py"
+
+[tasks.build]
+description = "Compile the base resume to build/base/<template>.pdf"
+usage = '''
+arg "[template]" help="Template in templates/, without .typ" default="classic"
+'''
+run = [
+  "mkdir -p build/base",
+  "typst compile templates/{{usage.template}}.typ build/base/{{usage.template}}.pdf",
+  "typst compile templates/{{usage.template}}.typ build/base/{{usage.template}}-{p}.png --ppi 200",
+]
+run_windows = [
+  "if not exist build\\base mkdir build\\base",
+  "typst compile templates/{{usage.template}}.typ build/base/{{usage.template}}.pdf",
+  "typst compile templates/{{usage.template}}.typ build/base/{{usage.template}}-{p}.png --ppi 200",
+]
+
+[tasks.watch]
+description = "Recompile the base resume on every save"
+usage = '''
+arg "[template]" help="Template in templates/, without .typ" default="classic"
+'''
+run = [
+  "mkdir -p build/base",
+  "typst watch templates/{{usage.template}}.typ build/base/{{usage.template}}.pdf",
+]
+run_windows = [
+  "if not exist build\\base mkdir build\\base",
+  "typst watch templates/{{usage.template}}.typ build/base/{{usage.template}}.pdf",
+]
+
+[tasks.version]
+description = "Compile versions/<slug>/resume.yml to build/<slug>/<template>.pdf"
+usage = '''
+arg "<slug>" help="Version folder in versions/, e.g. 2026-jul-dev"
+arg "[template]" help="Template in templates/, without .typ" default="classic"
+'''
+run = [
+  "mkdir -p build/{{usage.slug}}",
+  "typst compile templates/{{usage.template}}.typ build/{{usage.slug}}/{{usage.template}}.pdf --input version={{usage.slug}}",
+  "typst compile templates/{{usage.template}}.typ build/{{usage.slug}}/{{usage.template}}-{p}.png --ppi 200 --input version={{usage.slug}}",
+]
+run_windows = [
+  "if not exist build\\{{usage.slug}} mkdir build\\{{usage.slug}}",
+  "typst compile templates/{{usage.template}}.typ build/{{usage.slug}}/{{usage.template}}.pdf --input version={{usage.slug}}",
+  "typst compile templates/{{usage.template}}.typ build/{{usage.slug}}/{{usage.template}}-{p}.png --ppi 200 --input version={{usage.slug}}",
+]

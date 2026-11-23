@@ -42,3 +42,9 @@ node_modules/
 # Raw work data: real names and credentials (commit only the example)
 raw/*
 !raw/repository-mapping.example.yml
+
+# Reference clones (github.com/chuan-khuna/typst-resume)
+.reference/
+
+# Resume build output
+resume/build/

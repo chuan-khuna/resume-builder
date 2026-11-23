@@ -16,13 +16,14 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
     ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>
     ├── verify/SKILL.md       # /resume-evidence:verify <company> <id>
     ├── to-resume/SKILL.md    # /resume-evidence:to-resume [base | <slug>]
+    ├── steer/SKILL.md        # /resume-evidence:steer [base | <slug>] <what to change>
     ├── review-resume/        # /resume-evidence:review-resume [slug] [template]
     │   ├── SKILL.md
     │   └── measure.sh
     └── resume/SKILL.md       # /resume-evidence:resume (copied from chuan-khuna/altr-stack)
 ```
 
-`to-resume` and `review-resume` work on the Typst resume in `resume/` (see `resume/README.md`).
+`to-resume`, `steer` and `review-resume` work on the Typst resume in `resume/` (see `resume/README.md`).
 
 All skills are user-invoked. The design is in
 [`docs/documents/resume-generation-workflow.html`](../docs/documents/resume-generation-workflow.html).

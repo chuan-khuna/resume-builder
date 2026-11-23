@@ -56,7 +56,7 @@ in an evidence file.</p>
     <tr><td><a href="https://docs.astral.sh/uv/">uv</a></td><td>Runs the Python scripts in <code>scripts/</code> and installs their dependencies</td><td><code>mise install</code> (from <code>mise.toml</code>)</td></tr>
     <tr><td><a href="https://typst.app">Typst</a></td><td>Builds the resume PDF in <code>resume/</code></td><td><code>mise trust resume</code>, then <code>mise -C resume install</code></td></tr>
     <tr><td>poppler</td><td>Gives <code>pdftotext</code>, <code>pdfinfo</code> and <code>pdffonts</code> for the resume review</td><td><code>brew install poppler</code></td></tr>
-    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the six <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-resume, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
+    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the seven <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-resume, steer, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
     <tr><td>git</td><td>Clones and reads your repositories</td><td>Already on macOS with the Xcode command line tools</td></tr>
   </tbody>
 </table>
@@ -64,7 +64,7 @@ in an evidence file.</p>
 URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or <code>ssh -T git@github.com</code>.</p>
 
 <h2 id="setup">Before you start</h2>
-<p>The <a class="term" href="#term-plugin">plugin</a> holds the six
+<p>The <a class="term" href="#term-plugin">plugin</a> holds the seven
 <a class="term" href="#term-skill">skills</a>.</p>
 <ol>
   <li>Open a terminal at the repository root.</li>
@@ -73,7 +73,7 @@ URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or
   <li>Install the Python dependencies: <code>uv sync</code>.</li>
   <li>Install the <a class="term" href="#term-plugin">plugin</a> for this repository: <code>mise run plugins</code>.</li>
   <li>Start Claude Code: <code>claude</code>.</li>
-  <li>Type <code>/resume-evidence</code> and make sure the six skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-resume</code>, <code>resume</code>, <code>review-resume</code>.</li>
+  <li>Type <code>/resume-evidence</code> and make sure the seven skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-resume</code>, <code>steer</code>, <code>resume</code>, <code>review-resume</code>.</li>
 </ol>
 <p>To try the plugin for one session without installing it, start Claude Code with
 <code>claude --plugin-dir ./.claude-dev</code>.</p>
@@ -389,7 +389,7 @@ mise -C resume run version &lt;slug&gt;   # a version   -&gt; resume/build/&lt;s
   <li>Type <code>/resume-evidence:review-resume</code> for the base resume, or <code>/resume-evidence:review-resume &lt;slug&gt;</code> for a version.</li>
   <li>Open <code>resume/review/&lt;slug&gt;.html</code> in a browser. The base resume writes <code>index.html</code>.</li>
   <li>Fix every <code>fail</code> row first. Start with the Evidence traceability group.</li>
-  <li>Apply the fixes you agree with through <code>/resume-evidence:to-resume</code>.</li>
+  <li>Apply the fixes you agree with through <code>/resume-evidence:to-resume</code> or <code>/resume-evidence:steer</code>.</li>
   <li>Run the review again.</li>
 </ol>
 <p>The review measures the PDF for screening, CV standards, readability, format, ATS, contrast and
@@ -406,6 +406,30 @@ keyword match with the job ad.
 Apply fixes 1 to 3 from resume/review/2026-dec-acme-ml.html. Skip fix 4:
 I keep the projects section.</code></pre>
 
+
+<h2 id="steer">6 · Steer the resume</h2>
+<p>Use steer to change the resume yourself: sections, their order, a project, an education line,
+or the experience bullet you want to write. The LLM checks each work claim against the evidence
+and suggests wording the evidence supports.</p>
+<ol>
+  <li>Type <code>/resume-evidence:steer</code>, then the change you want. Add a slug to change a version.</li>
+  <li>Read the grade of each work claim: backed, stretched or unbacked.</li>
+  <li>For a stretched claim, choose the suggested rewrite or leave the claim out.</li>
+  <li>For an unbacked claim, give your account to record in evidence, or leave the claim out.</li>
+  <li>Read the page images and the YAML diff.</li>
+</ol>
+<p>Sections, education, activities, interests and personal projects need no evidence. A claim
+about your work always traces to an evidence file. If no evidence file fits, run
+<code>/resume-evidence:distill</code> in interview mode first.</p>
+<h4>Example prompts: steer</h4>
+<pre><code class="language-text">/resume-evidence:steer
+Put Projects above Experience, and hide the POS rewrite project.
+
+/resume-evidence:steer
+Add a bullet: "Led the move from Kafka to RabbitMQ, cutting failed jobs by half."
+
+/resume-evidence:steer 2026-dec-acme-ml
+Add a data-engineering bullet. Suggest the strongest one the evidence supports.</code></pre>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 <table>

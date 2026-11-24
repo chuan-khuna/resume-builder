@@ -3,10 +3,10 @@ id: retail-shelf-computer-vision-analytics-platform
 title: Retail Shelf Computer-Vision Analytics Platform
 company: themather
 period: 2026-03 ~ 2026-11   # first to last commit; Jira shows PoC tickets from 2026-02; still active
-role: AI / full-stack engineer (sole committer: 482 of 483 commits)
+role: AI / full-stack engineer (sole committer: 501 of 502 commits)
 status: shipped   # deployed to a production host; the client uses it on a trial (2026-09)
 verified:
-  monorepo: b5ab3367761892053b7123be93876e3f9e4e6b97   # origin/docs/unknown-logo-ux-consideration (25 ahead of main); main at c617046738ac3b12abb2f28aaa420742a9cc637b
+  monorepo: 7431568971942f8c0d93c5f12f2143ff1d1cb2cc   # origin/feat/decision-model-brand (44 ahead of main; contains docs/unknown-logo-ux-consideration); main at c617046738ac3b12abb2f28aaa420742a9cc637b
 reviewed:
 ---
 
@@ -24,8 +24,9 @@ reviewed:
   them, and scores detection and brand recognition separately, with confusion matrices.
 - Diagnosed a detection accuracy plateau by training YOLO11m-AMF and RF-DETR-small: both reached
   the same per-class profile (logo AP50 0.54 against product 0.92), tracing the limit to the data.
-- Rewrote shelf-level clustering on product bases with a median/MAD gap threshold and height floor,
-  stopping over-segmentation that corrupted the Golden Line and fill-rate metrics.
+- Integrated a hosted vision decision model as a second brand recognizer beside logo matching,
+  with additive storage, a read-time brand-source switch for charts and exports, and
+  fingerprinted re-runs that skip unchanged crops.
 ### Remarks
 - B1: traces to the system design, detection worker, logo indexing, analytics and admin
   bullets · breadth and sole ownership · frontend started from an open-source admin template;
@@ -41,9 +42,16 @@ reviewed:
   production until confirmed · roles: ML, MLOps.
 - B5: traces to the model training and accuracy-plateau bullets · measured on 23 validation
   images (small set); a diagnosis, not an improvement · roles: ML.
-- B6: traces to the shelf-level clustering bullet · algorithmic fix with tests · constants are
-  not tuned on labelled data (ground truth has no shelf level); do not claim an accuracy gain ·
-  roles: ML, backend.
+- B6: traces to the decision-model brand recognizer bullets · an LLM-era
+  integration with a recorded design decision (ADR-10) and failure isolation · caveat: on an
+  unmerged branch, built in one day, not deployed and not yet compared with logo matching on
+  real data; write "integrated" or "prototyped", never "shipped", and quote no accuracy until a
+  comparison exists · roles: AI, backend, ML.
+- Alternate bullet, replaced by B6 in this draft: "Rewrote shelf-level clustering on product
+  bases with a median/MAD gap threshold and height floor, stopping over-segmentation that
+  corrupted the Golden Line and fill-rate metrics." Traces to the shelf-level clustering bullet ·
+  algorithmic fix with tests · constants are not tuned on labelled data (ground truth has no
+  shelf level); do not claim an accuracy gain · roles: ML, backend.
 - `1,015 products, 82% Unknown, 60% with no logo detected`: measured on 9 full-size photos in the
   live system; a diagnostic of recognition coverage, not a success metric. Use only to describe
   the unknown-logo investigation, for example "measured why most products stayed unrecognised".
@@ -58,10 +66,11 @@ reviewed:
   "designed for" only, or leave out.
 - `5 × 20 → 5 × 12 database connections (~40 spare)`, `20 images per chunk`, `0.7 similarity
   threshold`, `k = 1.5, α = 0.5`: configured values; the bullets describe them without figures.
-- Scope caveat: per-zone k-NN brand voting, the brand-recognition decision model and the
-  from-scratch redesign are specs and reports only, not code; do not claim them as built.
-- Scope caveat: about 280 of the commits are co-authored with an AI coding assistant; the
-  claims above rest on the design records and code in git.
+- Scope caveat: per-zone k-NN brand voting and the from-scratch redesign are specs and reports
+  only, not code; do not claim them as built. The decision-model recognizer is code, but only on
+  the unmerged `feat/decision-model-brand` branch (2026-11-24).
+- Scope caveat: about 300 of the commits (all 19 of the decision-model commits) are co-authored
+  with an AI coding assistant; the claims above rest on the design records and code in git.
 
 ## Context
 A SaaS product for a retail-research client that collects smartphone photos of convenience-store
@@ -74,8 +83,11 @@ catalogue, and shows per-survey analytics to two roles: staff (field accounts th
 surveys) and admins (who curate zones, brands and reference logos). A PoC in a separate repo
 (not ingested) preceded this monorepo; the monorepo is the SaaS rebuild. It runs on one AWS
 t3.large host behind a Cloudflare Tunnel under PM2, with inference on Modal; the client was
-trialling it in 2026-09. Work after 2026-09-16 (two reports and small chart changes) lives only
-on the branch `docs/unknown-logo-ux-consideration`, not yet merged to main.
+trialling it in 2026-09. Work after 2026-09-16 lives only on unmerged branches: two reports and
+small chart changes on `docs/unknown-logo-ux-consideration`, and, built on top of it on
+2026-11-24, the decision-model brand recognizer on `feat/decision-model-brand`. ADR-10 records
+that management decided to bring the decision model from an internal R&D project into this
+product. [monorepo:docs/adr 100%]
 [monorepo:docs/artifacts 100%] [monorepo:docs/deploy 100%] [TT-897] [TT-976]
 
 ## What I Did
@@ -160,8 +172,31 @@ on the branch `docs/unknown-logo-ux-consideration`, not yet merged to main.
   pixels were fixtures); compared an external decision-model API with vector matching for brand
   recognition and proposed a staged cascade; specified per-zone k-NN brand voting weighted by
   `exp(similarity/τ)` (the ticket records "plan documented, not implemented"). None of these
-  three is in the code. [monorepo@00933d289]
+  three was in the code at the time; the decision model was built later (see the next two
+  bullets). [monorepo@00933d289]
   [monorepo@3c768f28d] [monorepo@c20e5bbc0] [monorepo:docs/artifacts 100%] [TT-1261]
+- **Designed a second brand recognizer beside logo matching (ADR-10, unmerged branch)**: a hosted
+  vision decision model picks each product crop's brand from a per-zone *brand set* of written
+  packaging descriptions plus a catch-all *other*. Both recognizers always run; storage is
+  additive only (a brand-set table, a prediction table with raw response, probabilities,
+  confidence, tokens, cost and latency, and a per-collection run record), so no existing table,
+  endpoint output or benchmark moves. The brand source is chosen at read time on survey
+  aggregation and the CSV export, with a confidence cutoff applied on read so tuning it never
+  re-runs anything; aggregations are cached per source, and the detection view shows both brands
+  per product. Wrote the spec as user stories and vertical-slice tickets first.
+  [monorepo@8078fe5] [monorepo@dbf6c66] [monorepo@e77d902] [monorepo@6ca7c97]
+  [monorepo@e27df18] [monorepo:docs/adr 100%]
+- **Built the decision-model run job**: it runs after detection in the Celery chord callback and
+  from a separate "Run decision model" action that re-classifies existing detections only; API
+  calls fan out on a thread pool while DB work stays on one thread; a fingerprint of model,
+  question, ordered brand set, crop pixels and image send policy skips unchanged products; one
+  failing call is recorded and counted, and eight consecutive API errors abort the run, which
+  never fails the survey. Run status streams over the existing SSE channel. Ported the image send
+  policy and client from the R&D project, added an admin brand-set editor (multi-select, reorder,
+  describe later) and an idempotent import of brand sets from that project. Tests go through the
+  HTTP API with the model provider faked at the HTTP-client boundary. [monorepo@103a9e1]
+  [monorepo@6b42c5e] [monorepo@9a961bc] [monorepo@0988c21] [monorepo@db37664]
+  [monorepo:backend/src 100%] [monorepo:frontend/src 100%]
 - **Built the admin and account features**: user and permission management, zones with
   per-zone model configuration, a model hub for weight upload, brand and logo management,
   per-user notification inbox with a bell, admin announcement banner, queue and requeue
@@ -193,12 +228,13 @@ on the branch `docs/unknown-logo-ux-consideration`, not yet merged to main.
 tools: Python, uv, Django, Django REST Framework, JWT, Celery, Redis (pub/sub, broker), PostgreSQL /
 TimescaleDB, pgvector, psycopg pool, Ultralytics YOLO11, YOLO11-AMF, RF-DETR, ONNX / onnxruntime,
 Supervision, DINOv2 (Hugging Face Transformers), PyTorch, Modal (serverless GPU), RustFS / AWS S3,
+OpenRouter (hosted vision decision model), httpx, Pillow,
 Textual (TUI), Streamlit, Next.js, TypeScript, Tailwind CSS, shadcn/ui, bun, Playwright, Docker
-Compose, PM2, Cloudflare Tunnel, AWS EC2, just, pytest, ruff, Obsidian, Claude Code (custom
+Compose, PM2, Cloudflare Tunnel, AWS EC2, just, mise, pytest, ruff, Obsidian, Claude Code (custom
 subagents and skills)
 Studied, not used: Django Channels and Postgres LISTEN/NOTIFY (rejected for SSE), DB-backed queue
-(rejected for jobs), pgbouncer (deferred), external decision-model API for brand recognition
-(compared in a report), k-NN brand voting (specified), ChromaDB (PoC only)
+(rejected for jobs), pgbouncer (deferred), decision-model cascade filling logo-matching Unknowns
+(proposed in a report, not adopted by ADR-10), k-NN brand voting (specified), ChromaDB (PoC only)
 
 ## Architecture
 ```mermaid
@@ -213,6 +249,8 @@ flowchart LR
   M -->|read images| OS
   W -->|detections, zone-scoped logo match| DB
   W -.->|publish status| R
+  W -.->|after detection, unmerged branch| DM[Decision-model run: hosted vision model per crop]
+  DM -.->|second brand per product| DB
   R -.->|per-user SSE| BE
   BE -.-> FE
 ```
@@ -222,7 +260,9 @@ empty slots and DINOv2 embeds each product's top logo. The worker matches each e
 nearest reference logo in the collection's zone, assigns shelf levels, saves detections and
 publishes progress over Redis to the user's SSE channel. Analytics endpoints aggregate saved
 detections; admins curate the catalogue and the unknown-logo worklist, and run benchmarks
-through the same pipeline.
+through the same pipeline. On the unmerged decision-model branch, a second job sends each
+product crop to a hosted vision decision model with the zone's brand set and stores a second
+brand per product; viewers pick which brand source the charts and exports read.
 
 ## Not mine
 - The frontend scaffold: an open-source Next.js + shadcn/ui admin dashboard template, committed
@@ -231,6 +271,8 @@ through the same pipeline.
 - One commit by a deploy account on the production host (UTF-8 config reading). [monorepo@a0e15cd]
 - Training images and labels came from a Roboflow dataset; who labelled them is not recorded.
 - The YOLO11-AMF architecture is from a published paper; the adaptation and training are mine.
+- The vision decision model is a third-party hosted model; the client code and brand
+  descriptions it uses were ported from my internal R&D project, a separate evidence file.
 
 ## Open questions
 - Production status: is the client still on a trial, or a paying user? How many staff accounts,
@@ -250,3 +292,7 @@ through the same pipeline.
   did the client accept as delivered?
 - Work on `docs/unknown-logo-ux-consideration` (RPT-9 to RPT-12, top-10 brand charts) is unmerged:
   were the reports sent to the client?
+- The decision-model recognizer (2026-11-24) is on an unmerged branch: will it be merged and
+  deployed, and has it been run on a real survey and compared with logo matching?
+- Sending shelf crops to an external model provider: ADR-10 records a manager's approval; is
+  that the client's approval too?

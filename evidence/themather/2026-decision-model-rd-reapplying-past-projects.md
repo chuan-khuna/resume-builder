@@ -4,9 +4,9 @@ title: "Decision-Model R&D: Re-applying Past Projects"
 company: themather
 period: 2026-09 ~ 2026-11
 role: AI / backend engineer, sole developer of the repo
-status: wip   # R&D playground; task delegation and the shelf-survey evaluation live only on an unmerged branch
+status: wip   # R&D playground; every branch merged to main on 2026-11-23
 verified:
-  sentiment-classifier: a47ea015bf15f8c7b5bfd0fa5ef4a2a974465146   # tip of origin/feat/task-delegation-wt; main and the other two feature branches are its ancestors
+  sentiment-classifier: 372ae964f2095ebd07de407dcff63118d4e26b1f   # main, after merging feat/task-delegation-wt (which held every other branch)
 reviewed:
 ---
 
@@ -30,7 +30,10 @@ reviewed:
 - B1: traces to the shelf-survey evaluation, evaluation page and stored-predictions bullets ·
   strongest: a measured result on real client imagery · caveat: one survey's crops, labels
   hand-checked in commits co-written with an AI coding agent (who labelled is to confirm),
-  accuracy read with no confidence threshold, on an unmerged branch · roles: ML, AI infra.
+  accuracy read with no confidence threshold · outcome: the retail-shelf project then took the
+  decision model in as a second brand recognizer (its ADR-10, 2026-11-24), but that port is on
+  an unmerged branch there, so say "led to an integration" only, not "deployed" · roles: ML, AI
+  infra.
 - B2: traces to the model-comparison bullet · cost and latency trade-off with numbers · caveat:
   44 images reused from two small categories; accuracy ties, so do not claim one model is more
   accurate · roles: ML, AI infra.
@@ -40,8 +43,8 @@ reviewed:
   delivery · caveat: the survey data is a fictional 200-response example; no accuracy figure
   exists for sentiment, and the outcome (demoed, adopted) is to confirm · roles: backend, ML.
 - B5: traces to the task-delegation bullets · combines rules in code with two models · caveat:
-  unmerged branch, a recommendation tool never writing to Jira; usage is to confirm · roles:
-  backend, AI.
+  a recommendation tool never writing to Jira (merged to main 2026-11-23); usage is to confirm ·
+  roles: backend, AI.
 - B6: traces to the intent-router bullet · caveat: the router was tuned on the same 43 messages
   it is scored on, so the figure is not a held-out accuracy; say "on a labelled test set" only
   with that caveat ready · roles: ML, AI.
@@ -55,9 +58,8 @@ reviewed:
 - `8 concurrent calls`, `5-minute board cache`, `500 responses per upload`: configured values;
   B4 and B5 describe the design without them.
 - Scope caveat: an internal R&D repo re-applying hosted decision models to earlier projects'
-  problems; no production deployment is in git. Work after 2026-10-05 (task delegation, shelf
-  survey) lives only on unmerged feature branches. 159 of 163 commits carry an AI coding-agent
-  co-author trailer.
+  problems; no production deployment is in git. 159 of 163 authored commits carry an AI
+  coding-agent co-author trailer.
 
 ## Context
 An internal R&D project at a Thai software consultancy: try "decision models", hosted models on
@@ -74,12 +76,15 @@ projects. One repo holds four experiments:
 - **Task delegation**: recommend who in the tech team should own a new task, following the
   team's written role charter and current Jira load.
 
-The repo is a single-developer project (163 of 163 commits mine, 100% of blame on every area).
+The repo is a single-developer project (164 of 164 commits mine, one a merge; 100% of blame on every area).
 The commits record that the work ran through specs and vertical-slice tickets kept in the repo
-(`.scratch/<feature>/`), and 159 of 163 carry an AI coding-agent co-author trailer.
-Survey and brand recognition are merged to `main` (2026-10-05). Task delegation (2026-10-08 ~
-10-09) and the shelf-survey evaluation (2026-11-23) exist only on `feat/task-delegation-wt`,
-which contains every other branch. [sentiment-classifier:backend/src 100%]
+(`.scratch/<feature>/`), and 159 of the 163 non-merge commits carry an AI coding-agent co-author trailer.
+Survey and brand recognition were merged to `main` on 2026-10-05; task delegation (2026-10-08 ~
+10-09) and the shelf-survey evaluation (2026-11-23) were merged on 2026-11-23 through a pull
+request. A report on the new shelf images and the decision-model result was filed for review
+the same day [TT-1772]. The next day, the retail-shelf project ported the decision-model client
+and imported these brand sets as a second brand recognizer (that project's evidence file).
+[sentiment-classifier@372ae96] [sentiment-classifier:backend/src 100%]
 [sentiment-classifier:frontend/src 100%] [TT-1543]
 
 ## What I Did
@@ -144,7 +149,7 @@ which contains every other branch. [sentiment-classifier:backend/src 100%]
   (739 kept; shelf tags, backs of packs and blurry shots left out) with brand descriptions, stored
   Clef's predictions, and added a survey page pooling every category's evaluation.
   [sentiment-classifier@1da1a41] [sentiment-classifier@87405d5] [sentiment-classifier@d73dc33]
-  [sentiment-classifier@6e8fb0a] [sentiment-classifier@a47ea01]
+  [sentiment-classifier@6e8fb0a] [sentiment-classifier@a47ea01] [TT-1772]
 - **Built a task-delegation tool from a written role charter**: the team's Jira board is read
   through the Jira REST search (paged, cached for 5 minutes) into each member's load (projects
   held against a capacity cap, open issues); a decision model answers four typed questions
@@ -227,12 +232,13 @@ never call a model.
    say "hand-label" and carry an AI co-author trailer.
 2. The repo was built ticket by ticket with an AI coding agent (159 of 163 commits carry its
    co-author trailer). How do you want that described: as your workflow, or not at all?
-3. Was the brand-recognition result used: did it feed a decision for the retail-shelf product
-   (adopt Clef, keep the existing logo matcher, or neither)?
+3. Partly answered by git (2026-11-24): the retail-shelf product's ADR-10 records that
+   management decided to run the decision model beside the logo matcher, on an unmerged branch
+   there. Did the shelf-survey report (TT-1772) drive that decision, and was it shown to the
+   client?
 4. Was the sentiment tool demoed to a client or used on a real survey, or did it stay an
    internal demo on the fictional data?
-5. Was the task-delegation tool used by the team, and is the unmerged branch to be merged or
-   dropped?
+5. The task-delegation branch was merged to main on 2026-11-23. Is the tool used by the team?
 6. Did the intent router go into the support chatbot? Ticket TT-1594 says an intent router via a
    decision model was implemented there; is that this prototype's design?
 7. Who asked for this R&D (a lead, a client) and was it presented anywhere?

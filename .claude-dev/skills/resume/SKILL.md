@@ -38,7 +38,12 @@ Harvard asks for writing that is specific, active, fact-based and plain, for a r
 - **Specific nouns.** Name the tool, dataset or system. "Detect vehicles on 12 CCTV feeds with YOLO" tells the reader more than "work on computer vision solutions".
 - **Most relevant first.** Order the bullets in an entry by relevance to the target role.
 - **Length.** Keep a bullet to 30 words or fewer, about two printed lines.
-- **Labels.** When bullets start with a bold label (`**Label**: text.`), the label names the area of work in two to four words, in sentence case. The text after it adds what the label does not say (unslop 16).
+- **Labels.** A bold label (`**Label**: text.`) is optional, and an entry labels all its bullets or none.
+  - Use labels when an entry's bullets span several areas of work, such as a role that covered many projects. Leave them out when the bullets share one area or the entry has one or two bullets.
+  - Each label names one area of work in two to four words, in sentence case.
+  - No two labels in an entry overlap. Merge an area into the one that contains it: "Computer vision" and "Object detection" become one label. Split every label on the same axis, the area of work; a practice such as "Model evaluation" is not an area, so its results go under the area of the model evaluated.
+  - Each bullet sits under exactly one label, and no fact repeats across labels.
+  - The text after the label adds what the label does not say (unslop 16).
 
 ### Person and tense
 

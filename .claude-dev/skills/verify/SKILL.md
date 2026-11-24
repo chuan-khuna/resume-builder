@@ -65,6 +65,10 @@ sections before it reaches a bullet.
    private note.
    Apply corrections, then set `reviewed:` to today. _Done when_ the user confirms the file.
 
+8. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). The facts the
+   user gives go into the evidence file, not `me.md`. Typical lessons here: how they like to be
+   interviewed (round size, which questions to skip), and Summary wording they rewrote.
+
 ## Completion
 
 Every gap from step 2 is answered or left as a dated unknown, every answer is cited in the

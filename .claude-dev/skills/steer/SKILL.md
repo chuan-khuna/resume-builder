@@ -79,8 +79,9 @@ Read these first:
 6. **Write the YAML.** Apply every change the user approved. Leave the rest of the file as it
    is.
    - User facts: write them as given; quote values YAML would misread (`time: "2025"`).
-   - Work bullets: follow the `resume` skill's writing rules, and the `{label, text}` form when
-     the entry's other bullets use it. Put a trace comment above each bullet, as to-resume
+   - Work bullets: follow the `resume` skill's writing rules, including its Labels rule, and
+     the `{label, text}` form when the entry's other bullets use it. A new label must not
+     overlap the entry's other labels. Put a trace comment above each bullet, as to-resume
      does: `# evidence/<company>/<file>.md B2`, or `What I Did: <short> [me: yyyy-mm-dd]` for an
      account recorded in step 5. Add `(draft)` when the file has no `reviewed:`.
    - Skills: update the comment above `skills` so it names every evidence file the list draws on.
@@ -95,6 +96,10 @@ Read these first:
 
 8. **Show the result.** Show the YAML diff, the page images, and any item the user left out or
    routed to distill. Commit only when the user asks.
+
+9. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Every steer
+   shows a preference: record each wording, label, order or emphasis the user chose or
+   rejected. When the same lesson would help any user, fix the skill it belongs to as well.
 
 ## Completion
 

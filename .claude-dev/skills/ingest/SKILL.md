@@ -78,6 +78,10 @@ the mapping schema and the rules for scripts.
    existing project in `mapping.yml`, or add it to "Projects to add" with its ticket count and
    date range.
 
+7. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+   lessons here: a script that failed on a source or a Jira response (fix the script), and
+   how the user wants projects split or named.
+
 ## Completion
 
 Every source in `mapping.yml` appears in `commit-summary.json` and the report as loaded or failed, Jira is downloaded or

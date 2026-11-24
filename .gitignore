@@ -48,3 +48,6 @@ raw/*
 
 # Resume build output
 resume/build/
+
+# The user's preferences and needs, learned across sessions (see CLAUDE.md)
+me.md

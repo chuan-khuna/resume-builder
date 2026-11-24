@@ -10,7 +10,8 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 ├── reference/
 │   ├── workflow.md           # layout, mapping schema, script rules (all skills)
 │   ├── evidence.md           # evidence file schema, citations, anonymisation (distill, verify)
-│   └── kami.md               # Kami design rules for the Typst resume (to-resume, review-resume)
+│   ├── kami.md               # Kami design rules for the Typst resume (to-resume, review-resume)
+│   └── learning.md           # how every skill learns: me.md and skill fixes (all skills)
 └── skills/
     ├── ingest/SKILL.md       # /resume-evidence:ingest <company>
     ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>
@@ -24,6 +25,11 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 ```
 
 `to-resume`, `steer` and `review-resume` work on the Typst resume in `resume/` (see `resume/README.md`).
+
+The skills evolve: when a session teaches a lesson that holds for any user, Claude fixes the
+skill it belongs to. The user's own preferences go to the gitignored `me.md` at the repo root
+instead, through `scripts/me.py`. Every skill ends with a Learn step that applies
+`reference/learning.md`.
 
 All skills are user-invoked. The design is in
 [`docs/documents/resume-generation-workflow.html`](../docs/documents/resume-generation-workflow.html).

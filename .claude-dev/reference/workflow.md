@@ -1,7 +1,8 @@
 # Evidence workflow: shared reference
 
 Read by the `ingest`, `distill` and `verify` skills. The evidence file's own format is in
-[`evidence.md`](evidence.md).
+[`evidence.md`](evidence.md). How every skill learns from the user is in
+[`learning.md`](learning.md).
 
 ## Steps
 
@@ -34,6 +35,7 @@ raw/                                   # gitignored except the example
     └── repos/<id>/<slug>/             # git clones of the sources, named by slug (ingest)
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers
+me.md                                  # the user's preferences and needs (gitignored)
 ```
 
 - `raw/` holds real client names and a Jira token. It stays local.

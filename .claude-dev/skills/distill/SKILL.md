@@ -108,6 +108,10 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 9. **Update `raw/<company>/TODO.md`.** Move this project's leads to Done, each noting whether
    it went into the file or into Open questions.
 
+10. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+    lessons here: how the user wants work anonymised or described, which kinds of work they
+    want claimed or left out, and authorship cases the script misread.
+
 ## Completion
 
 The file follows the schema, every What I Did bullet is cited, the draft Summary follows the

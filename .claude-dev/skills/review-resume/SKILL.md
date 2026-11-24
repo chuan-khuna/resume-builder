@@ -25,6 +25,7 @@ Every result in the review is **measured**: it comes from `measure.sh` or from a
    Under it, **reader impressions** is a bulleted list with one bullet per reader, in the order they see the page: HR or recruiter (a fast first screen, often non-technical), hiring manager, technical interviewer, and others only when they matter for this role. Each reader's sub-bullets give the first impression, what that reader looks for, and the question or concern this resume will raise for them. Tie each impression to something on the page.
 5. **Verify.** Screenshot the page with headless Chrome: `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --window-size=1400,1000 --screenshot=<scratchpad>/review.png file:///<absolute path>`. Check that every contents link's `href` matches a heading `id`. To see the notes, take a second screenshot with `--force-prefers-reduced-motion --window-size=1400,7600 --virtual-time-budget=5000`: notes draw only when on screen, and only instantly with reduced motion. Done when the screenshots show the cards, tables and preview laid out correctly, and each note sits on its words.
 6. **Report** to the user: the summary table, the top three fixes, and the page's path. Commit only when asked.
+7. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical lessons here: fixes the user accepts or rejects, checks they find noise, and a check this skill should add or change.
 
 ## Checks
 

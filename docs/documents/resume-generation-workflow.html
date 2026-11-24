@@ -78,6 +78,7 @@
 </figure>
 
 <p>Highlighted nodes are data; plain nodes are steps. Evidence is the hinge. Verify writes back into the same file distill wrote, and to-resume reads only evidence: never <code>raw/</code>, memory or an old resume. A new fact the user gives at step 4 goes back through verify into evidence first. Steer is how the user drives the resume after that: user facts (sections, education, personal projects) go straight into the YAML; each work claim is graded backed, stretched or unbacked against evidence, and an unbacked one is recorded in evidence with a <code>[me: …]</code> citation before it reaches the YAML.</p>
+<p>The pipeline also learns as it runs. When the user steers or corrects any step, Claude records the preference in <code>me.md</code> at the repo root (gitignored, loaded by <code>CLAUDE.md</code> each session). A lesson that would help any user goes into the skill or reference file it belongs to. Every skill ends with a Learn step that applies <code>.claude-dev/reference/learning.md</code>; <code>scripts/me.py</code> writes the bullets.</p>
 
 <h2 id="structure">Structure</h2>
 <pre><code class="language-text">raw/                                 # commit only the example
@@ -100,7 +101,8 @@ resume/                              # commit all except build/
 ├── build/&lt;slug&gt;/                    # PDF and page images (gitignored)
 └── review/                          # HTML reviews
 scripts/                             # commit all: written by the LLM
-└── …                                # load raw data, query it</code></pre>
+└── …                                # load raw data, query it, keep me.md
+me.md                                # my preferences and needs (gitignored)</code></pre>
 
 <table>
   <thead><tr><th>Folder</th><th>Committed</th><th>Written by</th></tr></thead>
@@ -109,6 +111,7 @@ scripts/                             # commit all: written by the LLM
     <tr><td><code>evidence/</code></td><td>All</td><td>Distill and verify, reviewed by the user</td></tr>
     <tr><td><code>resume/</code></td><td>All except <code>build/</code></td><td>To-resume (YAML, build), review-resume (<code>review/</code>), the user (header, education, projects)</td></tr>
     <tr><td><code>scripts/</code></td><td>All</td><td>LLM, when a step needs a reusable helper (Python, run with <code>uv</code>)</td></tr>
+    <tr><td><code>me.md</code></td><td>No</td><td>Every skill's Learn step, through <code>scripts/me.py</code>; the user may edit it</td></tr>
   </tbody>
 </table>
 
@@ -200,7 +203,7 @@ reviewed: yyyy-mm-dd     # set by verify; empty while the Summary is a draft
   <li><strong>Pick the target.</strong> <code>base</code> writes <code>resume/data/resume.yml</code>. A slug such as <code>2026-dec-acme-ml</code> writes <code>resume/versions/&lt;slug&gt;/resume.yml</code>, with the job ad saved beside it as <code>job-ad.md</code>.</li>
   <li><strong>Pick the evidence.</strong> Every reviewed file is used. For an unreviewed file the user chooses: verify it first, include its draft bullets, or leave it out.</li>
   <li><strong>Fill the facts evidence lacks</strong> from the user: employer name, job title, dates.</li>
-  <li><strong>Plan, then stop.</strong> The bullets per job, strongest first; for a version, the job ad's requirements sorted Direct, Bridge or Gap; the Remarks that limit each bullet; what to cut to fit <code>maxPages</code>. The user approves the plan before any YAML is written.</li>
+  <li><strong>Plan, then stop.</strong> The bullets per job, strongest first; whether each job uses labels, and if so its areas of work, with no two overlapping; for a version, the job ad's requirements sorted Direct, Bridge or Gap; the Remarks that limit each bullet; what to cut to fit <code>maxPages</code>. The user approves the plan before any YAML is written.</li>
   <li><strong>Write the bullets</strong> by the <code>resume</code> skill: British English, a plain verb first, one result, 25 words or fewer. Each carries a trace comment, such as <code># evidence/&lt;company&gt;/&lt;file&gt;.md B2</code>, marked <code>(draft)</code> for an unreviewed file.</li>
   <li><strong>Write the skills</strong> from the evidence <code>tools:</code> lines only.</li>
   <li><strong>Search for banned terms</strong> from <code>mapping.yml</code> until zero hits.</li>
@@ -229,6 +232,7 @@ reviewed: yyyy-mm-dd     # set by verify; empty while the Summary is a draft
     <tr><td><code>resume/scripts/check.py</code> (<code>mise run check</code>)</td><td>4</td><td>Validate every <code>resume.yml</code> against the schema</td></tr>
     <tr><td><code>.claude-dev/skills/review-resume/measure.sh</code></td><td>5</td><td>Build and measure a resume: positions, gaps, lengths, fonts, contrast, ATS text</td></tr>
     <tr><td><code>resume/review/scripts/line_lengths.py</code></td><td>5</td><td>Chart and tabulate line lengths</td></tr>
+    <tr><td><code>scripts/me.py init | add &lt;preference|need&gt; &lt;text&gt; | show</code></td><td>All</td><td>Create <code>me.md</code>, add a dated bullet (skipping duplicates), or print the bullets</td></tr>
   </tbody>
 </table>
 

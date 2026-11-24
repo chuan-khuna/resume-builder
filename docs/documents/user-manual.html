@@ -446,6 +446,17 @@ Add a bullet: "Led the move from Kafka to RabbitMQ, cutting failed jobs by half.
 /resume-evidence:steer 2026-dec-acme-ml
 Add a data-engineering bullet. Suggest the strongest one the evidence supports.</code></pre>
 
+<h3 id="learning">How the pipeline learns your preferences</h3>
+<p>Every skill ends with a Learn step. When you steer, correct or reject something, the LLM
+records it as a dated bullet in <code>me.md</code> at the repo root. <code>me.md</code> is
+gitignored, and <code>CLAUDE.md</code> loads it in every session, so later runs follow it. A
+lesson that helps any user goes into the skill itself, and the LLM tells you what it changed.</p>
+<ol>
+  <li>To read your preferences, run <code>uv run scripts/me.py show</code>.</li>
+  <li>To add one yourself, run <code>uv run scripts/me.py add preference "&lt;text&gt;"</code>.</li>
+  <li>To change or delete one, edit <code>me.md</code>.</li>
+</ol>
+
 <h2 id="troubleshooting">Troubleshooting</h2>
 <table>
   <thead><tr><th>Symptom</th><th>Cause</th><th>Action</th></tr></thead>

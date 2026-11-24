@@ -27,6 +27,27 @@ This repo helps the user build their resume.
   win over Kami's.
 - Python helpers live in `scripts/`; their dependencies are declared in `pyproject.toml`.
 
+## Self-evolving
+
+The repo learns from each session in two places. Update them as you go, in the same turn as
+the steer that teaches you something, not at the end of the session.
+
+The user's preferences and needs (gitignored, may be missing):
+
+@me.md
+
+1. **`me.md`: the user, privately.** When the user steers, corrects, rejects or confirms
+   something, or states a need, record it with `uv run scripts/me.py add preference|need
+   "<text>"`. Edit a bullet that changes; delete one that turns out wrong. Follow `me.md` in
+   every task; when it conflicts with a skill, it wins for this user.
+2. **`.claude-dev/`: the pipeline, for everyone.** When a lesson would help any user of the
+   pipeline (a rule a skill missed, a step that failed, a check worth adding), fix the skill,
+   reference file or script it belongs to. Tell the user in one line what you changed.
+
+The full rules are in `.claude-dev/reference/learning.md`; every skill ends with a step that
+applies them. They hold outside the skills too. Skills are committed, so they never hold the
+user's personal details, client names or anything `me.md` alone should know.
+
 ## Agent skills
 
 ### Issue tracker

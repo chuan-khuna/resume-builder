@@ -60,6 +60,9 @@ into the YAML.
 
 4. **Plan the content.** Write the plan and show it to the user before you write YAML:
    - each experience entry, and the evidence bullets under it, strongest first;
+   - for each entry, whether it uses labels, by the `resume` skill's Labels rule. When it
+     does, list its labels: areas of work that do not overlap, with each evidence bullet
+     under exactly one;
    - for a version, the `job-ad.md` requirements sorted as Direct, Bridge or Gap, as the
      `resume` skill's Tailoring steps define. A Gap is a question, never a bullet;
    - the Remarks that limit a bullet (a scope caveat, a number not to quote, a role it fits);
@@ -70,7 +73,8 @@ into the YAML.
 5. **Write the bullets.** For each planned bullet, start from its evidence Summary bullet and
    apply the `resume` skill (`.claude-dev/skills/resume/SKILL.md`): British English, a plain
    verb first, one result, 25 words or fewer, present tense for the current role and past for
-   the rest. Use the `{label, text}` form. Then check each bullet against its source:
+   the rest. Use the `{label, text}` form for an entry the plan labels, and `{text}` alone
+   for one it does not. Then check each bullet against its source:
    - it claims nothing the evidence bullet and its What I Did bullet do not support;
    - each number appears in the evidence Numbers with the same scope; a configured value reads
      "designed for";
@@ -83,12 +87,14 @@ into the YAML.
    ```yaml
    bullets:
      # evidence/company-a/2025-retail-shelf-cv.md B2
-     - label: Object detection
+     - label: Computer vision
        text: Trained YOLO and RF-DETR detectors for retail shelf products, reaching 0.92 product AP50.
      # evidence/company-a/2026-support-chatbot.md B1 (draft)
-     - label: LLM evaluation
+     - label: LLM applications
        text: Built an eval runner that replays 633 client test cases against the support chatbot.
    ```
+
+   An entry without labels writes each bullet as `- text: …`.
 
    One bullet may merge several evidence bullets: list each, as in `B1 + B3`. Mark a bullet
    from an unreviewed file `(draft)`.
@@ -112,6 +118,10 @@ into the YAML.
 9. **Review with the user.** Show the diff of the YAML and the page images. Apply
    corrections; each changed bullet keeps its trace comment. Then suggest
    `/resume-evidence:review-resume <slug>`. Commit only when the user asks.
+
+10. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+    lessons here: changes the user made to the plan (order, labels, what to cut), bullet
+    wording they rewrote, and the roles or job ads they target.
 
 ## Completion
 

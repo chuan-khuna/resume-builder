@@ -50,4 +50,8 @@ raw/*
 resume/build/
 
 # The user's preferences and needs, learned across sessions (see CLAUDE.md)
-me.md
+wiki/me.md
+
+# Wiki sources: may be copyrighted or private (commit only the README)
+wiki/raw/*
+!wiki/raw/README.md

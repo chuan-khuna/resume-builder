@@ -1,17 +1,17 @@
-"""Keep me.md, the user's preferences and needs, learned across sessions.
+"""Keep wiki/me.md, the user's preferences and needs, learned across sessions.
 
-me.md sits at the repo root and is gitignored. CLAUDE.md loads it into every session; its
+wiki/me.md sits in the wiki and is gitignored. CLAUDE.md loads it into every session; its
 "Self-evolving" section says when to write to it. This script keeps the file's layout fixed:
 two sections, `## Preferences` and `## Needs`, one bullet per fact, each ending `(yyyy-mm-dd)`.
 
 Commands:
-- init: create me.md with the empty layout, if it is missing.
-- add <preference|need> <text>: append a dated bullet to that section. Creates me.md if
+- init: create wiki/me.md with the empty layout, if it is missing.
+- add <preference|need> <text>: append a dated bullet to that section. Creates wiki/me.md if
   missing. Skips the bullet when the same text is already there. --skill names the skill or
   reference file that now holds the rule, for a lesson also written into .claude-dev/.
 - show: print the bullets, optionally of one section.
 
-To change or delete a bullet, edit me.md directly.
+To change or delete a bullet, edit wiki/me.md directly.
 
 Usage:
     uv run scripts/me.py init
@@ -30,7 +30,7 @@ import sys
 import textwrap
 from pathlib import Path
 
-ME = Path(__file__).resolve().parent.parent / "me.md"
+ME = Path(__file__).resolve().parent.parent / "wiki" / "me.md"
 SECTIONS = {"preference": "## Preferences", "need": "## Needs"}
 WIDTH = 96
 
@@ -48,7 +48,7 @@ that change. Rules that hold for anyone using the pipeline go into `.claude-dev/
 
 
 def init() -> bool:
-    """Create me.md with the empty layout. Return True if it was created."""
+    """Create wiki/me.md with the empty layout. Return True if it was created."""
     if ME.exists():
         return False
     ME.write_text(LAYOUT)
@@ -56,7 +56,7 @@ def init() -> bool:
 
 
 def bullets(text: str) -> dict[str, list[str]]:
-    """Split me.md into its sections' bullets, each joined onto one line."""
+    """Split wiki/me.md into its sections' bullets, each joined onto one line."""
     out: dict[str, list[str]] = {h: [] for h in SECTIONS.values()}
     current = None
     for line in text.splitlines():
@@ -100,7 +100,7 @@ def add(section: str, text: str, skill: str | None, date: str) -> str:
 
 def show(section: str | None) -> None:
     if not ME.exists():
-        print("me.md is missing; run: uv run scripts/me.py init")
+        print("wiki/me.md is missing; run: uv run scripts/me.py init")
         return
     for heading, items in bullets(ME.read_text()).items():
         if section and heading != SECTIONS[section]:
@@ -114,7 +114,7 @@ def show(section: str | None) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("init", help="create me.md if it is missing")
+    sub.add_parser("init", help="create wiki/me.md if it is missing")
     p_add = sub.add_parser("add", help="append a dated bullet")
     p_add.add_argument("section", choices=SECTIONS)
     p_add.add_argument("text")
@@ -125,7 +125,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.command == "init":
-        print("created me.md" if init() else "me.md already exists")
+        print("created wiki/me.md" if init() else "wiki/me.md already exists")
     elif args.command == "add":
         print(add(args.section, args.text, args.skill, args.date))
     else:

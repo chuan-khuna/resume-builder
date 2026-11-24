@@ -35,7 +35,8 @@ raw/                                   # gitignored except the example
     └── repos/<id>/<slug>/             # git clones of the sources, named by slug (ingest)
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers
-me.md                                  # the user's preferences and needs (gitignored)
+wiki/                                  # LLM wiki: raw/ (gitignored), notes/, logs/
+└── me.md                              # the user's preferences and needs (gitignored)
 ```
 
 - `raw/` holds real client names and a Jira token. It stays local.

@@ -66,7 +66,7 @@ sections before it reaches a bullet.
    Apply corrections, then set `reviewed:` to today. _Done when_ the user confirms the file.
 
 8. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). The facts the
-   user gives go into the evidence file, not `me.md`. Typical lessons here: how they like to be
+   user gives go into the evidence file, not `wiki/me.md`. Typical lessons here: how they like to be
    interviewed (round size, which questions to skip), and Summary wording they rewrote.
 
 ## Completion

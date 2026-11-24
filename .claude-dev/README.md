@@ -11,7 +11,7 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
 │   ├── workflow.md           # layout, mapping schema, script rules (all skills)
 │   ├── evidence.md           # evidence file schema, citations, anonymisation (distill, verify)
 │   ├── kami.md               # Kami design rules for the Typst resume (to-resume, review-resume)
-│   └── learning.md           # how every skill learns: me.md and skill fixes (all skills)
+│   └── learning.md           # how every skill learns: wiki/me.md and skill fixes (all skills)
 └── skills/
     ├── ingest/SKILL.md       # /resume-evidence:ingest <company>
     ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>
@@ -21,13 +21,17 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
     ├── review-resume/        # /resume-evidence:review-resume [slug] [template]
     │   ├── SKILL.md
     │   └── measure.sh
+    ├── wiki/SKILL.md         # /resume-evidence:wiki ingest | query | lint
     └── resume/SKILL.md       # /resume-evidence:resume (copied from chuan-khuna/altr-stack)
 ```
 
 `to-resume`, `steer` and `review-resume` work on the Typst resume in `resume/` (see `resume/README.md`).
 
+`wiki` maintains the knowledge base in `wiki/` (see `wiki/CLAUDE.md`). It is separate from
+the evidence pipeline: no resume claim may rest on a wiki note.
+
 The skills evolve: when a session teaches a lesson that holds for any user, Claude fixes the
-skill it belongs to. The user's own preferences go to the gitignored `me.md` at the repo root
+skill it belongs to. The user's own preferences go to the gitignored `wiki/me.md`
 instead, through `scripts/me.py`. Every skill ends with a Learn step that applies
 `reference/learning.md`.
 

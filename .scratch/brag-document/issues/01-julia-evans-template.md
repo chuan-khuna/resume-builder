@@ -1,6 +1,6 @@
 # 01: Bring Julia Evans's brag-document template into to-brag
 
-Status: needs-info
+Status: resolved (2026-11-24: applied with the recommended defaults: block inside the brag document, verify questions added now)
 
 Proposed 2026-11-24. Source: Julia Evans, "Get your work recognized: write a brag document"
 (2019), saved as `wiki/raw/2026-11-24-brag-documents.md`.

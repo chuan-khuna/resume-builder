@@ -70,6 +70,7 @@ What the work changed, whether it has a number or not. See Numbers & Impact rule
 ## Tools
 tools: <only tech actually used: dependency files, scripts, commands really run>
 Studied, not used: <researched or compared only>
+Learned: <skills, not tools, the user says they gained here> [me: yyyy-mm-dd]   # optional; verify asks
 
 ## Architecture
 A Mermaid diagram of the system or data flow, plus a short explanation.
@@ -183,6 +184,7 @@ One row per thing the work changed, `I1`, `I2`, … Every row has a Kind:
   | governance / compliance | approval obtained before sending data to an outside service | ADRs, tickets |
   | knowledge transfer | taught labelling; wrote handoffs | docs, tickets, the user |
   | rescue / takeover | took over legacy code and stabilised it | authorship history, tickets |
+  | recognition | client or team praise; asked to repeat the work elsewhere | the user, tickets, review notes |
 
 ## Private notes
 

@@ -410,13 +410,16 @@ form you can read in one sitting. Use it to prepare for interviews and reviews, 
 letter. The resume keeps a few bullets; the brag document keeps the rest, grouped by theme across
 projects. It does not feed the resume.</p>
 
-<blockquote><strong>Warning:</strong> do not edit <code>brag-document.md</code> by hand. The next
-run replaces it. Change the evidence through verify or steer instead.</blockquote>
+<blockquote><strong>Warning:</strong> do not edit <code>brag-document.md</code> by hand, except
+inside its <code>user:</code> blocks (Goals, Outside of work). The next run replaces everything
+else. Change the evidence through verify or steer instead.</blockquote>
 
 <ol>
   <li>Verify the <a class="term" href="#term-evidence-file">evidence files</a> of the company first.</li>
   <li>Type <code>/resume-evidence:to-brag company-a</code>.</li>
   <li>If you leave out the company, pick one from the list the LLM shows.</li>
+  <li>When the LLM asks, give your goals for this year and next, and your work outside the job.</li>
+  <li>If you tell the LLM about a project's work, verify that project's evidence file before you continue.</li>
   <li>Open <code>evidence/company-a/brag-document.md</code>.</li>
   <li>Read the themes and the interview stories.</li>
   <li>Read the Not yet confirmed section.</li>
@@ -434,11 +437,15 @@ run replaces it. Change the evidence through verify or steer instead.</blockquot
   <thead><tr><th>Section</th><th>Holds</th></tr></thead>
   <tbody>
     <tr><td>At a glance</td><td>Three to five sentences: what you did, the main themes, the strongest results</td></tr>
-    <tr><td>Themes</td><td>Every <a class="term" href="#term-summary">Summary</a> bullet of the company, under one theme each, starred by strength</td></tr>
-    <tr><td>Timeline</td><td>One row per evidence file, newest first: period, project, role, status, headline</td></tr>
-    <tr><td>Beyond the code</td><td>Team enablement, knowledge transfer, rescues, governance, adoption and avoided waste</td></tr>
-    <tr><td>Skills grown</td><td>The tools you first used each year, and where</td></tr>
+    <tr><td>Goals</td><td>Your goals for this year and next, in your words; kept on every rebuild</td></tr>
+    <tr><td>Projects by theme</td><td>Every <a class="term" href="#term-summary">Summary</a> bullet of the company, under one theme each, starred by strength, with your part in each project; then decisions and production support</td></tr>
+    <tr><td>Collaboration &amp; mentorship</td><td>Help, mentoring, onboarding, and code others built on</td></tr>
+    <tr><td>Design &amp; documentation</td><td>ADRs, design docs, specs, runbooks and developer docs</td></tr>
+    <tr><td>Company building</td><td>Work used beyond one project: shared templates, libraries, process rules</td></tr>
+    <tr><td>What I learned</td><td>Skills you gained, then the tools you first used each year</td></tr>
     <tr><td>Interview stories</td><td>Three to six projects as situation, task, action and result</td></tr>
+    <tr><td>Timeline</td><td>One row per evidence file, newest first: period, project, role, status, headline</td></tr>
+    <tr><td>Outside of work</td><td>Blog posts, talks, open source and recognition, in your words; kept on every rebuild</td></tr>
     <tr><td>Not yet confirmed</td><td>Unreviewed files and assessed impact, with what verify must settle</td></tr>
   </tbody>
 </table>

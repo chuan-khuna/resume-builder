@@ -105,11 +105,15 @@ mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─�
 
 **Optional: to brag** (`/resume-evidence:to-brag <company>`), any time after verify
 - The agent reads every evidence file of one company and writes
-  `evidence/<company>/brag-document.md`: at a glance, themes across projects, a timeline, work
-  beyond the code, skills grown, interview stories, and what is not yet confirmed.
+  `evidence/<company>/brag-document.md`, after Julia Evans's template: at a glance, goals,
+  projects by theme, collaboration and mentorship, design and documentation, company building,
+  what you learned, interview stories, a timeline, outside of work, and what is not yet
+  confirmed.
+- Goals and Outside of work come from you, not from evidence. The agent asks for them on the
+  first run and keeps them, inside their `user:` blocks, on every rebuild.
 - It is a view of the evidence, never a source: every line cites an evidence file and its IDs,
-  and no skill uses it to back a resume claim. Do not edit it by hand: change the evidence, then
-  run to-brag again.
+  and no skill uses it to back a resume claim. Do not edit it by hand, except the `user:` blocks:
+  change the evidence, then run to-brag again.
 - Lines from unreviewed files are marked `(draft)`, or the banner says so when every file is a
   draft. Assessed impact appears only under Not yet confirmed.
 

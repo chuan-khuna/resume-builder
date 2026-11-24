@@ -34,6 +34,12 @@ sections before it reaches a bullet.
    - every draft Summary bullet: is it correct, is there a number I don't want shown?
    - one question for the whole file: what held the work back (time, a skill I lacked then,
      interest, a scope cut)? The answer goes in the private note.
+   - four questions for the whole file, for the brag document (`to-brag`): whom did I help,
+     mentor or onboard, and what did others build on my work? What did I write that others
+     used (docs, ADRs, runbooks, templates)? What did I learn here: a skill, not a tool? Did
+     anyone praise the work or ask for more of it? Answers become What I Did items or `user`
+     Impact rows (team enablement, knowledge transfer, recognition), and a `Learned:` line
+     under Tools.
 
    Rank them: questions that decide a bullet (authorship, shipped or not, an outcome number)
    first, then context (role, team size, who asked), then detail.

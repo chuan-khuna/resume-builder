@@ -42,9 +42,9 @@ experiences:
         text: Analyse customer data with Recency, Frequency, Monetary (RFM) segmentation, visitor counts with face-embedding clustering, and Thai survey comments with n-grams, LDA, and LLMs.
       # evidence/themather/2025-time-series-sensor-data-aggregation-pipeline.md B1 (draft)
       # + evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md B1 (draft)
-      # + evidence/themather/2024-event-booth-visitor-cv-analytics.md B1 (draft)
+      # + evidence/themather/2024-event-booth-visitor-cv-analytics.md B1 + Numbers: 13 cameras [me: 2026-11-24] (draft)
       - label: Data engineering
-        text: Build Airflow pipelines that move energy telemetry, legacy point-of-sale data, and booth-camera events into TimescaleDB, PostgreSQL, and MongoDB.
+        text: Build Airflow pipelines that move energy telemetry, legacy point-of-sale data, and events from 13 motor-show cameras into TimescaleDB, PostgreSQL, and MongoDB.
       # evidence/themather/2023-life-insurance-website-cms-backend.md B1 (draft)
       # + evidence/themather/2024-municipal-building-permit-pdf-and-approval-backend.md B1 (draft)
       # + evidence/themather/2024-truck-dealer-website-cms-and-warranty-tracking-backend.md B1 (draft)

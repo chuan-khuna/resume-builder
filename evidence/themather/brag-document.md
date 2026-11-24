@@ -8,10 +8,11 @@ updated: 2026-11-24
 
 # Brag document: themather
 
-> Built from `evidence/themather/*.md` by `/resume-evidence:to-brag`. Do not edit by hand:
-> change the evidence and rebuild. Draft: 22 of 22 evidence files are not yet verified, so
+> Built from `evidence/themather/*.md` by `/resume-evidence:to-brag`, after Julia Evans's
+> brag-document template. Do not edit by hand, except inside the `user:` blocks: change the
+> evidence and rebuild. Draft: 22 of 22 evidence files are not yet verified, so
 > every line below is a draft claim. The files use the older evidence format, with no
-> strength stars and no Impact table: bullets keep each file's own order.
+> strength stars, no Impact table and no `Learned:` lines: bullets keep each file's own order.
 
 ## At a glance
 
@@ -23,7 +24,20 @@ retail-shelf analytics platform I designed and built alone, which a client trial
 crops. On a support chatbot, I measured a new retrieval source against the old one and kept it
 switched off when it scored 56.8% recall@1 against 91.3%.
 
-## Themes
+<!-- user:goals:start -->
+## Goals
+
+### This year
+
+- Not written yet: run `/resume-evidence:to-brag themather` and answer, or write your goals
+  here in your own words.
+
+### Next year
+
+- Not written yet.
+<!-- user:goals:end -->
+
+## Projects by theme
 
 ### Computer vision and video analytics (2023 → 2026)
 
@@ -34,6 +48,7 @@ recordings, and an evaluation of hosted vision decision models.
 
 **Retail shelf analytics platform** · 2026-03 ~ 2026-11 · shipped, client trial ·
 [retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md)
+My part: sole committer, from design to deployment. The frontend started from an open-source admin template, and the training labels came from a public dataset.
 - Designed and built a multi-tenant shelf-photo analytics platform end to end: one-pass YOLO
   product/logo/empty detection and DINOv2 brand matching on Modal serverless GPUs, Django REST
   API, and Next.js dashboards. (B1)
@@ -61,6 +76,7 @@ recordings, and an evaluation of hosted vision decision models.
 
 **Classroom video attention analysis** · 2026-02 ~ 2026-06 · shipped ·
 [classroom](2026-classroom-video-attention-and-survey-analysis-system.md)
+My part: main developer of both repos. A teammate wrote the recorder's Windows build script and some of its styling.
 - Built a RabbitMQ worker pipeline that scored student attention in ~930 webcam recordings
   (~64 h) from 2 schools, using MediaPipe face landmarks for gaze, blinks, head pose and
   emotion. (B1)
@@ -69,6 +85,7 @@ recordings, and an evaluation of hosted vision decision models.
 
 **CCTV people and security analytics** · 2025-11 ~ 2026-03 · shipped ·
 [cctv](2025-realtime-cctv-people-and-security-analytics-platform.md)
+My part: main developer of the backend and the AI service. Teammates built the QR scanner bridge, gate control, the later third-party integration and the frontends.
 - Built face-recognition check-in: InsightFace embeddings of registered visitors stored in
   pgvector and matched by cosine distance against Hikvision camera webhooks, limited to the
   appointment day. (B2)
@@ -78,6 +95,7 @@ recordings, and an evaluation of hosted vision decision models.
 
 **Road-safety video analytics** · 2025-05 ~ 2026-01 · wip, demo stage ·
 [road-safety](2025-ai-road-safety-video-analytics-platform.md)
+My part: main developer across most of the system. The backend's first commit came from a company starter template.
 - Designed and built a demo-stage road-safety video analytics system on footage from 3 roadside
   camera sites: queued detection workers, TimescaleDB time-series storage and a Django REST
   dashboard API. (B1)
@@ -100,6 +118,7 @@ recordings, and an evaluation of hosted vision decision models.
 
 **Crowd and face-analytics camera PoC** · 2023-04 ~ 2024-07 · wip, event demos ·
 [crowd-poc](2023-realtime-crowd-analytics-camera-poc.md)
+My part: main developer and nearly sole author of the five repos. A teammate wrote the age, gender and emotion model wrappers.
 - Built a real-time audience-analytics demo for a marketing event: Kafka topics carried face
   results, a pandas analyser aggregated age, gender and emotion, and Flask-SocketIO pushed them
   to a Next.js dashboard. (B1)
@@ -123,6 +142,7 @@ reusable chatbot core. Most of it is research or prototype work, and the bullets
 
 **Human-in-the-loop support chatbot** · 2026-09 ~ 2026-11 · wip ·
 [hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md)
+My part: one of four engineers; I joined a running proof of concept in 2026-09. Teammates built the webhook core, most dashboard pages and the intent router.
 - Evaluated the new retrieval against the existing knowledge base on the client's test
   questions before switching (recall@1 56.8% vs 91.3%) and kept it behind a default-off switch
   with one-variable rollback. (B2)
@@ -138,6 +158,7 @@ reusable chatbot core. Most of it is research or prototype work, and the bullets
 
 **Parallel LLM serving evaluation** · 2026-10 · wip, one-day spike ·
 [llm-serving](2026-parallel-llm-serving-engine-evaluation.md)
+My part: sole author of a one-day spike.
 - Built a concurrent streaming load tester for OpenAI-compatible LLM servers (Python asyncio +
   httpx) reporting per-request TTFT and throughput; it showed Ollama serving 4 concurrent
   requests one at a time (TTFT 0.1 → 4.4 s). (B1)
@@ -153,6 +174,7 @@ reusable chatbot core. Most of it is research or prototype work, and the bullets
 
 **RAG strategy comparison: Simple RAG, GraphRAG, LightRAG** · 2026-10 · wip ·
 [graphrag](2026-graphrag-lightrag-rag-strategy-comparison.md)
+My part: sole developer, working with an AI coding agent.
 - Built a research prototype that compares Simple RAG, GraphRAG and LightRAG side by side over
   one Neo4j-backed corpus, holding chunks, embeddings, LLMs, prompt and an 8k-token context
   budget constant. (B1)
@@ -173,6 +195,7 @@ reusable chatbot core. Most of it is research or prototype work, and the bullets
 
 **Chatbot core template** · 2026-11 · wip ·
 [chatbot-core](2026-chatbot-core-template-agent-framework-research.md)
+My part: sole author of the research and the prototype. The engineering brief was written by others.
 - Prototyped a reusable Python chatbot core that each client installs as a version-pinned
   wheel, proving two mock clients (insurance, real estate) could add business tools without
   changing the core. (B1)
@@ -188,6 +211,7 @@ reusable chatbot core. Most of it is research or prototype work, and the bullets
   response to the engineering brief, including the trade-offs the prototype exposed. (B5)
 
 **Decision-model R&D** · [decision-model](2026-decision-model-rd-reapplying-past-projects.md)
+My part: sole developer of the repo. The decision and chat models are third-party hosted models.
 - Prototyped a task-delegation tool: a decision model picks owner, type and severity, code
   checks capacity caps against live Jira load, and a chat model streams the reasoning. (B5)
 - Prototyped a support-chatbot intent router on a decision model (15 intents plus handoff and
@@ -202,6 +226,7 @@ detection and sensor results.
 
 **Sensor telemetry aggregation pipeline** · 2025-08 ~ 2026-07 · shipped ·
 [sensor-pipeline](2025-time-series-sensor-data-aggregation-pipeline.md)
+My part: sole developer of the pipeline. The InfluxDB ingestion and the dashboard sit outside it.
 - Built an Apache Airflow pipeline that aggregates raw InfluxDB energy telemetry (solar, grid,
   time-of-use, voltage, current, power) into 15-minute, hourly and daily TimescaleDB tables, in
   production since 2025-09. (B1)
@@ -221,6 +246,7 @@ detection and sensor results.
 
 **Legacy point-of-sale sync and membership analytics** · 2024-08 ~ 2025-02 · shipped ·
 [legacy-pos](2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md)
+My part: data sync, analytics pipelines and dashboard APIs. A teammate built the member app and the first Debezium setup.
 - Built Airflow ELT that copies 7 sales and payment tables daily from a legacy MySQL 5.5
   point-of-sale database into PostgreSQL, after Debezium change data capture proved unworkable
   on the old MySQL version. (B1)
@@ -234,6 +260,7 @@ detection and sensor results.
   bill and spend per customer, with gap-filled daily and monthly time series. (B4)
 
 **Exhibition booth visitor analytics** · [event-booth](2024-event-booth-visitor-cv-analytics.md)
+My part: main developer of the ETL pipeline and the dashboard API. Teammates built most of the dashboard frontend.
 - Built an Apache Airflow ETL pipeline that turned IP camera face-capture events from 12 booth
   camera zones into hourly visitor-count and age/gender aggregates for an exhibition analytics
   dashboard. (B1)
@@ -242,6 +269,7 @@ detection and sensor results.
 
 **LINE loyalty platform: RFM segmentation** · 2023-02 ~ 2023-05 · shipped ·
 [line-crm](2023-line-crm-loyalty-rfm-segmentation.md)
+My part: owner of the analytics and segmentation module in a team project. Teammates built the member app, receipts, points and the React app shell.
 - Built an RFM customer-segmentation module for a LINE loyalty platform: quintile scoring of
   approved receipts, 125 score codes mapped to 11 segments, and spend-based tiers, run as a
   scheduled Celery task. (B1)
@@ -291,6 +319,7 @@ systems in 2025–2026.
 
 **Life-insurance website CMS backend** · 2023-08 ~ 2026-05 · shipped, still in use ·
 [life-insurance-cms](2023-life-insurance-website-cms-backend.md)
+My part: one of three to four backend developers, and the largest committer in the build phase. Teammates built the LDAP login and most product modules.
 - Built the content APIs of a life-insurance company's corporate website CMS in Django REST
   Framework: news, articles, careers, investor reports and policy pages, each with admin CRUD
   and public read endpoints. (B1)
@@ -310,6 +339,7 @@ systems in 2025–2026.
 
 **Municipal building-permit backend** · 2024-02 ~ 2024-04 · shipped ·
 [municipal-permit](2024-municipal-building-permit-pdf-and-approval-backend.md)
+My part: one of three backend developers; I owned PDF generation, authentication and logging, and the dashboard API. Teammates wrote most form models and later form templates.
 - Built the PDF generation service for a municipal building-permit system in Django and
   WeasyPrint: HTML components render Thai official forms, merge officer review pages and ship
   attachments as a zip. (B1)
@@ -325,6 +355,7 @@ systems in 2025–2026.
 
 **Truck dealer warranty backend and website CMS** · 2024-04 ~ 2024-10 · shipped ·
 [truck-warranty](2024-truck-dealer-website-cms-and-warranty-tracking-backend.md)
+My part: main developer of the warranty backend and a contributor to the website CMS. Teammates built the website's other apps and the warranty notifications.
 - Built a Django REST backend for truck dealers to track vehicle warranties and maintenance,
   auto-scheduling service visits and coupons per vehicle from per-model configuration when a
   sale is recorded. (B1)
@@ -343,6 +374,7 @@ systems in 2025–2026.
 
 **Voice and video media-merge service** · 2025-07 ~ 2025-09 · shipped ·
 [media-merge](2025-voice-video-media-merge-service.md)
+My part: main developer of the worker; the API was built with three teammates. A teammate set up the NVIDIA runtime and the first GPU re-render.
 - Built a RabbitMQ-driven ffmpeg worker that turns a chatbot session into a personalised video:
   text-to-speech greeting, preset clips with transitions, and a 9:16 version with Thai text
   overlays. (B1)
@@ -405,6 +437,7 @@ and sentiment.
 
 **Employee survey text analytics** · 2023-05 ~ 2025-05 · shipped ·
 [survey](2023-survey-engagement-text-analytics.md)
+My part: the survey's free-text analytics, one of several developers on the report backend. Teammates built the report calculations, PDF export and deployment.
 - Built the Thai free-text word-cloud engine for an employee-survey reporting backend:
   PyThaiNLP tokenising with a custom dictionary, gensim phrase detection for bigrams and
   trigrams, and stopword filtering. (B1)
@@ -433,6 +466,7 @@ marketing site, and an upgrade of the live corporate site with new product pages
 
 **Corporate marketing website rebuild** · 2026-05 ~ 2026-06 · wip, not live ·
 [marketing-site](2026-corporate-marketing-website-astro.md)
+My part: sole developer, building with Claude Code. Site copy and client logos came from the live site.
 - Rebuilt the company's marketing website in Astro, Tailwind and React islands, moving every
   page section into schema-validated content collections and adding careers, blog, projects and
   announcement pages. (B1)
@@ -448,6 +482,7 @@ marketing site, and an upgrade of the live corporate site with new product pages
 
 **Live corporate website upgrade and product pages** · 2026-11 · shipped ·
 [website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md)
+My part: about 10% of a team-owned site's commits: the upgrade, the product pages and the docs. Teammates built the site, its CMS integration and its deployment.
 - Upgraded the company's live website from Astro 5 to Astro 7 and Tailwind 3 to 4, removing
   unused dependencies and checking page layouts against the old build on desktop and mobile.
   (B1)
@@ -461,75 +496,75 @@ marketing site, and an upgrade of the live corporate site with new product pages
 - Wrote onboarding, project-structure and styling docs and Thai content-update guides for the
   team site, and specified the product menu as tickets before building it. (B5)
 
-## Timeline
+### Decisions and production support
 
-| Period | Project | My role | Status | Headline |
-| ------ | ------- | ------- | ------ | -------- |
-| 2026-11 | [Chatbot core template](2026-chatbot-core-template-agent-framework-research.md) | AI engineer, sole author | wip | Prototyped a chatbot core that clients install as a pinned wheel |
-| 2026-11 | [Live website upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) | contributor to a team site | shipped | Upgraded the live site to Astro 7 and added product pages |
-| 2026-10 | [RAG strategy comparison](2026-graphrag-lightrag-rag-strategy-comparison.md) | sole developer | wip | Compared Simple RAG, GraphRAG and LightRAG on one corpus |
-| 2026-10 | [LLM serving evaluation](2026-parallel-llm-serving-engine-evaluation.md) | AI engineer, sole author | wip | Root-caused Ollama's one-at-a-time serving and recommended vLLM |
-| 2026-09 ~ 2026-11 | [Decision-model R&D](2026-decision-model-rd-reapplying-past-projects.md) | AI / backend engineer, sole developer | wip | Measured 89% top-1 brand recognition on 739 shelf crops |
-| 2026-09 ~ 2026-11 | [Support chatbot RAG](2026-hitl-customer-support-chatbot-rag.md) | AI / backend engineer, one of four | wip | Measured a new retrieval source and kept the weaker one off |
-| 2026-05 ~ 2026-06 | [Marketing website rebuild](2026-corporate-marketing-website-astro.md) | sole developer | wip | Rebuilt the marketing site in Astro with content collections |
-| 2026-03 ~ 2026-11 | [Retail shelf analytics](2026-retail-shelf-computer-vision-analytics-platform.md) | AI / full-stack engineer, sole committer | shipped | Designed and built a shelf-photo analytics platform in client trial |
-| 2026-02 ~ 2026-06 | [Classroom attention analysis](2026-classroom-video-attention-and-survey-analysis-system.md) | AI / data engineer, main developer | shipped | Scored attention in ~930 student webcam recordings |
-| 2025-11 ~ 2026-03 | [CCTV security analytics](2025-realtime-cctv-people-and-security-analytics-platform.md) | AI / backend engineer, main developer | shipped | Built face check-in and multi-camera threat detection |
-| 2025-08 ~ 2026-07 | [Sensor telemetry pipeline](2025-time-series-sensor-data-aggregation-pipeline.md) | data engineer, sole developer | shipped | Built and debugged an Airflow energy-telemetry pipeline in production |
-| 2025-07 ~ 2025-09 | [Media-merge service](2025-voice-video-media-merge-service.md) | backend engineer, main worker developer | shipped | Built a GPU ffmpeg worker that renders personalised videos |
-| 2025-05 ~ 2026-01 | [Road-safety video analytics](2025-ai-road-safety-video-analytics-platform.md) | AI / backend engineer, main developer | wip | Built a demo road-safety system on 3 camera sites |
-| 2024-11 ~ 2025-02 | [Exhibition visitor analytics](2024-event-booth-visitor-cv-analytics.md) | data / backend engineer, main developer | shipped | Estimated unique visitors by clustering face embeddings |
-| 2024-08 ~ 2025-02 | [Legacy POS sync and RFM](2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md) | data / backend engineer | shipped | Synced a legacy MySQL 5.5 POS into PostgreSQL with Airflow |
-| 2024-04 ~ 2024-10 | [Truck warranty backend](2024-truck-dealer-website-cms-and-warranty-tracking-backend.md) | backend developer, main warranty developer | shipped | Built warranty and service scheduling for truck dealers |
-| 2024-02 ~ 2024-04 | [Municipal permit backend](2024-municipal-building-permit-pdf-and-approval-backend.md) | backend engineer, one of three | shipped | Built PDF generation for Thai official permit forms |
-| 2023-12 ~ 2024-08 | [Forum scraping pipeline](2023-internal-social-forum-scraping-pipeline.md) | sole developer | wip | Built a queued forum-scraping service with Thai word clouds |
-| 2023-08 ~ 2026-05 | [Life-insurance CMS](2023-life-insurance-website-cms-backend.md) | backend developer, one of three to four | shipped | Built CMS content APIs and role-based access control |
-| 2023-05 ~ 2025-05 | [Survey text analytics](2023-survey-engagement-text-analytics.md) | data scientist / backend developer | shipped | Built the Thai word-cloud engine for survey reports |
-| 2023-04 ~ 2024-07 | [Crowd analytics PoC](2023-realtime-crowd-analytics-camera-poc.md) | AI / data engineer, main developer | wip | Built a real-time audience-analytics demo for a marketing event |
-| 2023-02 ~ 2023-05 | [LINE loyalty RFM](2023-line-crm-loyalty-rfm-segmentation.md) | data analyst / backend developer | shipped | Built RFM customer segmentation for a loyalty platform |
+Pointers to bullets above where the result was a decision, a fix in production or a security
+gain.
 
-## Beyond the code
-
-Work that helps the team or shows judgement, pointing to bullets in the themes above.
-
-- **Shared tooling for other engineers**: an internal detection library that ended copy-paste
-  between PoC and production code
-  ([road-safety](2025-ai-road-safety-video-analytics-platform.md) B4); a reusable long-running
-  RabbitMQ worker ([classroom](2026-classroom-video-attention-and-survey-analysis-system.md) B2);
-  a prototype chatbot core for client projects
-  ([chatbot-core](2026-chatbot-core-template-agent-framework-research.md) B1); an AI-assisted
-  content workflow for the marketing site
-  ([marketing-site](2026-corporate-marketing-website-astro.md) B4).
-- **Documentation and handover**: Thai runbooks from raw recordings to results
-  ([classroom](2026-classroom-video-attention-and-survey-analysis-system.md) B5); onboarding docs
-  and Thai content-update guides
-  ([website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) B5); a developer
-  docs site and design doc
-  ([chatbot-core](2026-chatbot-core-template-agent-framework-research.md) B5); a written decision
-  for a production login fix ([life-insurance-cms](2023-life-insurance-website-cms-backend.md)
-  B5).
 - **Decisions backed by measurement**: kept a weaker retrieval source switched off
-  ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) B2); traced a detection plateau to
-  the data, not the model
-  ([retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md) B5); chose batch sync
-  after change data capture proved unworkable
-  ([legacy-pos](2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md) B1); audited a
-  client database before building on it
-  ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) B6); advised against speculative
-  decoding at the target load
+  ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) B2); traced a detection plateau to the data, not the model
+  ([retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md) B5); chose batch sync after change data capture proved unworkable
+  ([legacy-pos](2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md) B1); audited a client database before building on it
+  ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) B6); advised against speculative decoding at the target load
   ([llm-serving](2026-parallel-llm-serving-engine-evaluation.md) B4).
 - **Production support**: diagnosed task failures, table growth and a silent sensor feed in a
-  live pipeline ([sensor-pipeline](2025-time-series-sensor-data-aggregation-pipeline.md) B3–B5);
-  fixed a production LDAP login failure
+  live pipeline ([sensor-pipeline](2025-time-series-sensor-data-aggregation-pipeline.md) B3–B5); fixed a production LDAP login failure
   ([life-insurance-cms](2023-life-insurance-website-cms-backend.md) B5).
-- **Security**: closed a cross-tenant event leak
-  ([retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md) B3); added a 7-day
-  minimum package release age
-  ([website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) B3); sanitised
-  rich-text HTML against script injection
-  ([life-insurance-cms](2023-life-insurance-website-cms-backend.md) B4).
+- **Security**: closed a cross-tenant event leak ([retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md) B3); sanitised rich-text
+  HTML against script injection ([life-insurance-cms](2023-life-insurance-website-cms-backend.md) B4).
 
-## Skills grown
+## Collaboration & mentorship
+
+Nothing about mentoring, onboarding or helping teammates is recorded in evidence yet: verify
+asks about it for each project. What evidence shows is code written for others to build on:
+
+- An internal detection library that ended copy-paste between proof-of-concept and production
+  code ([road-safety](2025-ai-road-safety-video-analytics-platform.md) B4; one consumer project so far).
+- A reusable long-running RabbitMQ task worker for multi-minute video jobs
+  ([classroom](2026-classroom-video-attention-and-survey-analysis-system.md) B2).
+- A chatbot core that each client project installs as a pinned wheel, with an extension
+  standard for tools and guardrails ([chatbot-core](2026-chatbot-core-template-agent-framework-research.md) B1, B3; prototype).
+- Evaluation tooling that runs the client's 633-case test set and compares graded runs ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) B4).
+
+## Design & documentation
+
+- **Design records**: ADRs, RFCs, plans and handoffs for the shelf-analytics platform
+  ([retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md) What I Did 20); ADRs on the rate-data scope, serving over ASGI and the
+  agent answer engine ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) What I Did 5, 6, 10); a written decision for a
+  production login fix ([life-insurance-cms](2023-life-insurance-website-cms-backend.md) B5).
+- **Design writing**: a design-doc response to an engineering brief and a versioned developer
+  docs site ([chatbot-core](2026-chatbot-core-template-agent-framework-research.md) B5); specs and vertical-slice tickets before code
+  ([decision-model](2026-decision-model-rd-reapplying-past-projects.md) Context); the product menu specified as tickets before building it
+  ([website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) B5).
+- **Runbooks and guides**: an issue write-up and an eight-change remediation plan
+  ([sensor-pipeline](2025-time-series-sensor-data-aggregation-pipeline.md) What I Did 8), plus its architecture guide and deploy how-to
+  (What I Did 14); Thai runbooks from raw recordings to results ([classroom](2026-classroom-video-attention-and-survey-analysis-system.md) B5);
+  onboarding map, deploy guide and manuals for the chatbot ([hitl-chatbot](2026-hitl-customer-support-chatbot-rag.md) What I Did 13);
+  onboarding docs and Thai content-update guides for the company site
+  ([website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) B5).
+
+## Company building
+
+Work for the company itself, beyond one client project:
+
+- **The company's own websites**: rebuilt the marketing site ([marketing-site](2026-corporate-marketing-website-astro.md) B1) and
+  upgraded the live site with pages for the company's video-analytics product
+  ([website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) B1–B2).
+- **Engineering standards**: a 7-day minimum package release age for the live site
+  ([website-upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) B3); a proposal for a standard chatbot core across client projects
+  ([chatbot-core](2026-chatbot-core-template-agent-framework-research.md) B1–B2; prototype).
+- **Internal tools and R&D**: a task-delegation tool for the tech team
+  ([decision-model](2026-decision-model-rd-reapplying-past-projects.md) B5; prototype); R&D on decision models that the shelf-analytics
+  product then took in as a second brand recognizer ([retail-shelf](2026-retail-shelf-computer-vision-analytics-platform.md) B6; unmerged branch).
+- **Content workflow**: a Claude Code skill and authoring guides for content editors who are
+  not developers ([marketing-site](2026-corporate-marketing-website-astro.md) B4; adoption to confirm).
+
+## What I learned
+
+Nothing recorded yet: the evidence files have no `Learned:` lines. Verify asks what you learned
+on each project, a skill and not a tool, such as performance analysis or a new domain.
+
+### Tools first used
 
 Tools by the start year of the project that first used them, from each file's `tools:` line.
 Tools a later project used again are not repeated.
@@ -645,10 +680,44 @@ Numbers rows 1–4; [retail-shelf](2026-retail-shelf-computer-vision-analytics-p
 Source: [llm-serving](2026-parallel-llm-serving-engine-evaluation.md) Context, What I Did 1–4,
 Numbers rows 3–4, B1–B4
 
+## Timeline
+
+| Period | Project | My role | Status | Headline |
+| ------ | ------- | ------- | ------ | -------- |
+| 2026-11 | [Chatbot core template](2026-chatbot-core-template-agent-framework-research.md) | AI engineer, sole author | wip | Prototyped a chatbot core that clients install as a pinned wheel |
+| 2026-11 | [Live website upgrade](2026-corporate-website-astro-upgrade-and-product-pages.md) | contributor to a team site | shipped | Upgraded the live site to Astro 7 and added product pages |
+| 2026-10 | [RAG strategy comparison](2026-graphrag-lightrag-rag-strategy-comparison.md) | sole developer | wip | Compared Simple RAG, GraphRAG and LightRAG on one corpus |
+| 2026-10 | [LLM serving evaluation](2026-parallel-llm-serving-engine-evaluation.md) | AI engineer, sole author | wip | Root-caused Ollama's one-at-a-time serving and recommended vLLM |
+| 2026-09 ~ 2026-11 | [Decision-model R&D](2026-decision-model-rd-reapplying-past-projects.md) | AI / backend engineer, sole developer | wip | Measured 89% top-1 brand recognition on 739 shelf crops |
+| 2026-09 ~ 2026-11 | [Support chatbot RAG](2026-hitl-customer-support-chatbot-rag.md) | AI / backend engineer, one of four | wip | Measured a new retrieval source and kept the weaker one off |
+| 2026-05 ~ 2026-06 | [Marketing website rebuild](2026-corporate-marketing-website-astro.md) | sole developer | wip | Rebuilt the marketing site in Astro with content collections |
+| 2026-03 ~ 2026-11 | [Retail shelf analytics](2026-retail-shelf-computer-vision-analytics-platform.md) | AI / full-stack engineer, sole committer | shipped | Designed and built a shelf-photo analytics platform in client trial |
+| 2026-02 ~ 2026-06 | [Classroom attention analysis](2026-classroom-video-attention-and-survey-analysis-system.md) | AI / data engineer, main developer | shipped | Scored attention in ~930 student webcam recordings |
+| 2025-11 ~ 2026-03 | [CCTV security analytics](2025-realtime-cctv-people-and-security-analytics-platform.md) | AI / backend engineer, main developer | shipped | Built face check-in and multi-camera threat detection |
+| 2025-08 ~ 2026-07 | [Sensor telemetry pipeline](2025-time-series-sensor-data-aggregation-pipeline.md) | data engineer, sole developer | shipped | Built and debugged an Airflow energy-telemetry pipeline in production |
+| 2025-07 ~ 2025-09 | [Media-merge service](2025-voice-video-media-merge-service.md) | backend engineer, main worker developer | shipped | Built a GPU ffmpeg worker that renders personalised videos |
+| 2025-05 ~ 2026-01 | [Road-safety video analytics](2025-ai-road-safety-video-analytics-platform.md) | AI / backend engineer, main developer | wip | Built a demo road-safety system on 3 camera sites |
+| 2024-11 ~ 2025-02 | [Exhibition visitor analytics](2024-event-booth-visitor-cv-analytics.md) | data / backend engineer, main developer | shipped | Estimated unique visitors by clustering face embeddings |
+| 2024-08 ~ 2025-02 | [Legacy POS sync and RFM](2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md) | data / backend engineer | shipped | Synced a legacy MySQL 5.5 POS into PostgreSQL with Airflow |
+| 2024-04 ~ 2024-10 | [Truck warranty backend](2024-truck-dealer-website-cms-and-warranty-tracking-backend.md) | backend developer, main warranty developer | shipped | Built warranty and service scheduling for truck dealers |
+| 2024-02 ~ 2024-04 | [Municipal permit backend](2024-municipal-building-permit-pdf-and-approval-backend.md) | backend engineer, one of three | shipped | Built PDF generation for Thai official permit forms |
+| 2023-12 ~ 2024-08 | [Forum scraping pipeline](2023-internal-social-forum-scraping-pipeline.md) | sole developer | wip | Built a queued forum-scraping service with Thai word clouds |
+| 2023-08 ~ 2026-05 | [Life-insurance CMS](2023-life-insurance-website-cms-backend.md) | backend developer, one of three to four | shipped | Built CMS content APIs and role-based access control |
+| 2023-05 ~ 2025-05 | [Survey text analytics](2023-survey-engagement-text-analytics.md) | data scientist / backend developer | shipped | Built the Thai word-cloud engine for survey reports |
+| 2023-04 ~ 2024-07 | [Crowd analytics PoC](2023-realtime-crowd-analytics-camera-poc.md) | AI / data engineer, main developer | wip | Built a real-time audience-analytics demo for a marketing event |
+| 2023-02 ~ 2023-05 | [LINE loyalty RFM](2023-line-crm-loyalty-rfm-segmentation.md) | data analyst / backend developer | shipped | Built RFM customer segmentation for a loyalty platform |
+
+<!-- user:outside:start -->
+## Outside of work
+
+- Not written yet: blog posts, talks, open source or recognition, in your own words.
+<!-- user:outside:end -->
+
 ## Not yet confirmed
 
 All 22 evidence files are drafts. Run `/resume-evidence:verify themather <id>` to confirm them.
-The files use the older format, so no `assessed` Impact rows exist yet. These outcomes are
+The files use the older format, so no `assessed` Impact rows exist yet. Collaboration,
+mentorship and what I learned have no answers yet: verify asks about them. These outcomes are
 marked "to confirm" in the files and matter most:
 
 - **Production use and go-live**:

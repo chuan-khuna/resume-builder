@@ -14,8 +14,10 @@ each question makes the wiki richer.
 Read `wiki/CLAUDE.md` first: the layout, the note format, the citation, link and contradiction
 rules, and the log format. Every step below follows it.
 
-Never edit, rename or delete anything in `wiki/raw/`. Never use a wiki note as evidence for
-the resume.
+Never edit, rename or delete anything in `wiki/raw/`. Never read or ingest the repo-root
+`raw/`: the wiki is committed, and `raw/` holds client names and credentials. Follow
+"Sensitive data" in `wiki/CLAUDE.md` in every note and log line. Never use a wiki note as
+evidence for the resume.
 
 ## Pick the operation
 
@@ -28,7 +30,8 @@ One source at a time, with the user in the loop, unless the user asks for a batc
 
 1. **Pick the source.** Take the file from the message, or the oldest from
    `uv run scripts/wiki.py pending`. If the user pasted content or a URL instead, save it to
-   `wiki/raw/<yyyy-mm-dd>-<slug>.md` first (today's date), with the URL at the top.
+   `wiki/raw/<yyyy-mm-dd>-<slug>.md` first (today's date), with the URL at the top. Name the
+   file by its topic, never by a client or private name.
 2. **Read it** in full. For a PDF over 20 pages, read it in page ranges. For images it links,
    read the text first, then view the images that matter.
 3. **Discuss.** Tell the user the 3–5 key takeaways and what they would change in the wiki:
@@ -42,10 +45,13 @@ One source at a time, with the user in the loop, unless the user asks for a batc
      view changed. Create a note for an entity or concept that two or more notes now mention.
    - Record each contradiction as the schema says; never overwrite an older claim silently.
    - Link first mentions both ways, so no new note is an orphan.
+   - Leave out every sensitive detail, as "Sensitive data" in `wiki/CLAUDE.md` lists. A private
+     source gives its lesson, not its names.
 6. **Update `notes/index.md`**: add every new note, refresh changed summaries and dates.
 7. **Log.** `uv run scripts/wiki.py log ingest "<source title>"` with a `--line` for the
    source, the notes created, the notes updated and any contradiction.
-8. **Lint.** Run `uv run scripts/wiki.py lint` and fix every error.
+8. **Lint.** Run `uv run scripts/wiki.py lint` and fix every error, sensitive terms first.
+   Then read each note you touched for client and person names the script cannot know.
    _Done when_ lint has no errors and the source no longer appears in `pending`.
 
 ## Query
@@ -65,6 +71,8 @@ One source at a time, with the user in the loop, unless the user asks for a batc
 
 1. **Run the checks.** `uv run scripts/wiki.py lint`. Fix every error.
 2. **Read for what a script cannot see.** Read the index and the notes, and list:
+   - sensitive details the script cannot see: client, colleague or recruiter names, exact
+     client figures, private hosts;
    - contradictions between notes not yet flagged;
    - claims a newer source has superseded;
    - orphans from the script's warnings, and where each should be linked from;
@@ -89,5 +97,6 @@ writing. A wiki convention goes into `wiki/CLAUDE.md`.
 ## Completion
 
 Every touched note follows `wiki/CLAUDE.md`, `notes/index.md` lists every note, the day's log
-has an entry for the operation, `scripts/wiki.py lint` reports no errors, and nothing in
-`wiki/raw/` changed.
+has an entry for the operation, `scripts/wiki.py lint` reports no errors (including no
+sensitive terms), no note holds a detail from the repo-root `raw/`, and nothing in `wiki/raw/`
+changed.

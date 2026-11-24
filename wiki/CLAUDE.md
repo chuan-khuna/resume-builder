@@ -27,8 +27,8 @@ wiki/
 - `me.md` is not a note: the root `CLAUDE.md` loads it each session, and
   `.claude-dev/reference/learning.md` says how to keep it. Follow it here too.
 - `raw/` is gitignored except its README: sources may be copyrighted or private. Notes and
-  logs are committed, so they follow the anonymisation rules in
-  `.claude-dev/reference/evidence.md`: no client names, hosts or credentials.
+  logs are committed and pushed, so they hold no sensitive detail: see
+  [Sensitive data](#sensitive-data).
 - Slugs are lowercase kebab-case and unique across `notes/`. A note's slug never changes;
   to rename, change its `title`.
 
@@ -72,6 +72,43 @@ Rules for every note:
   `> [!warning] Contradiction` callout, and add the question to Open questions. Never
   silently overwrite an older claim; mark it superseded and cite what superseded it.
 - Write in British English, plain and specific, by the `resume` skill's Grammar rules.
+
+## Sensitive data
+
+The repo-root `raw/` holds the user's work data: git clones, Jira exports, `mapping.yml` with
+credentials, and private notes. Everything in `wiki/notes/` and `wiki/logs/` is committed and
+pushed, so none of it may carry a detail from there. Keep the knowledge; drop what identifies
+it.
+
+1. **Never ingest the repo-root `raw/`.** The wiki's sources are `wiki/raw/` only. Do not
+   copy, quote, summarise or link a file from `raw/<company>/`. For knowledge from the user's
+   own work, link the anonymised evidence file instead (`evidence/<company>/<file>.md`), and
+   copy nothing from it that its own rules would not allow.
+2. **Banned in every note and log entry**, whatever the source:
+   - each `internal_name`, real repo name, source org and private host in any
+     `raw/<company>/mapping.yml`, and the Jira site;
+   - the `<company>` slug and any client, brand or product name met through the user's work;
+   - credentials, tokens, keys, env values, and the emails in `me.emails` or `jira.email`;
+   - infra identifiers: IPs, internal hostnames, bucket names, account IDs, ports, internal
+     paths;
+   - names, emails and phone numbers of colleagues, clients or recruiters: write the role
+     ("a recruiter", "a teammate");
+   - exact business figures of a client or employer: round them ("1,200+ stores").
+3. **Public facts stay.** A company, person or product named in a public source the user
+   chose (a published job ad, article, paper, talk) may have an `entity` note. The line is the
+   source: public knowledge is allowed; anything learned through the user's job is not.
+4. **`wiki/raw/` follows the same line.** Its files are private, but their paths appear in
+   committed `sources:` and citations. Name each file by its topic, never by a client or a
+   private name. A source that is itself private (a call transcript, an internal doc) gets
+   notes that state the lesson without the identifiers.
+5. **Replace, don't hint.** Use the placeholders from `.claude-dev/reference/evidence.md`
+   "Anonymisation": a client → "a retail client"; a repo → its role ("the backend repo").
+   No initials, partial names or nicknames that point back.
+6. **Check before you finish.** `uv run scripts/wiki.py lint` searches notes and logs for
+   every term from `raw/*/mapping.yml` and fails on a hit. It cannot know client or person
+   names met while reading, so read each note you touched for them too.
+7. **If a detail was already committed**, remove it, tell the user which commit holds it, and
+   let the user decide whether to rewrite history. Do not push until they decide.
 
 ## index.md
 

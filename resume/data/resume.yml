@@ -124,26 +124,27 @@ projects:
     hidden: true
 
 # Skills from the tools: lines of
-#   evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md
-#   evidence/themather/2025-realtime-cctv-people-and-security-analytics-platform.md
-#   evidence/themather/2024-event-booth-visitor-cv-analytics.md
-#   evidence/themather/2025-time-series-sensor-data-aggregation-pipeline.md
-#   evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md
 #   evidence/themather/2025-ai-road-safety-video-analytics-platform.md
-#   evidence/themather/2025-voice-video-media-merge-service.md
 #   evidence/themather/2026-hitl-customer-support-chatbot-rag.md
 #   evidence/themather/2026-parallel-llm-serving-engine-evaluation.md
+#   evidence/themather/2023-survey-engagement-text-analytics.md (SQL Server, NumPy, Matplotlib, seaborn, PyThaiNLP, gensim)
+#   evidence/themather/2023-realtime-crowd-analytics-camera-poc.md (DigitalOcean)
+#   evidence/themather/2026-graphrag-lightrag-rag-strategy-comparison.md (RAG, FastAPI)
+#   evidence/themather/2026-chatbot-core-template-agent-framework-research.md (MCP, Astro, mise)
+#   evidence/themather/2025-voice-video-media-merge-service.md (AWS S3, FastAPI)
+#   evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md (Celery, AWS EC2, mise)
+#   evidence/themather/2024-event-booth-visitor-cv-analytics.md (Airflow, MongoDB, Bitbucket Pipelines)
+#   evidence/themather/2025-realtime-cctv-people-and-security-analytics-platform.md (Nginx, Cloudflare Tunnel)
+# Haskell: the user's personal project (wordle-game-by-haskell), no evidence file.
 skills:
   - category: Languages
-    items: [Python, TypeScript]
-  - category: Computer vision and ML
-    items: [PyTorch, YOLO, RF-DETR, DINOv2, InsightFace, DeepFace, scikit-learn, ONNX Runtime, OpenCV, Supervision, Modal]
-  - category: LLM and vector search
-    items: [Qdrant, pgvector, ChromaDB, Langfuse, Ollama, vLLM]
-  - category: Data and backend
-    items: [Airflow, pandas, Django REST Framework, PostgreSQL, TimescaleDB, MongoDB, InfluxDB, Celery, RabbitMQ, Redis, Kafka, ffmpeg]
-  - category: Frontend and DevOps
-    items: [Next.js, React, Streamlit, Docker Compose, uv, CUDA]
+    items: [Python, TypeScript, SQL, Haskell]
+  - category: Data, ML and LLM
+    items: [pandas, NumPy, Matplotlib, seaborn, YOLO, RF-DETR, OpenCV, Supervision, PyThaiNLP, Gensim, Qdrant, Ollama, vLLM, RAG, MCP]
+  - category: Backend and web
+    items: [Django, Django REST Framework, FastAPI, Streamlit, Astro, React, PostgreSQL, TimescaleDB, MongoDB, Redis, Kafka, RabbitMQ, Celery, Airflow]
+  - category: DevOps and cloud
+    items: [Docker, Nginx, Cloudflare, AWS, DigitalOcean, Bitbucket Pipelines, uv, just, mise]
 
 educations:
   - id: kmutnb-computer-engineering

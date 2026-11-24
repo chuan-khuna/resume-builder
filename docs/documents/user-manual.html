@@ -264,10 +264,10 @@ first commit in the project. Its sections:</p>
   <thead><tr><th>Section</th><th>Holds</th></tr></thead>
   <tbody>
     <tr><td>Frontmatter</td><td>Title, period, role, status (<code>shipped</code>, <code>wip</code>, <code>dropped</code>), the <code>verified:</code> commit read per repo, and <code>reviewed:</code></td></tr>
-    <tr><td>Summary</td><td>Three to six resume bullets and a Remark for each; a draft until verify</td></tr>
+    <tr><td>Summary</td><td>Resume bullets grouped by area of work, starred by strength (★★★, ★★, ★), and a Remark for each; a draft until verify</td></tr>
     <tr><td>Context</td><td>Who the project was for, the problem, rough scale</td></tr>
     <tr><td>What I Did</td><td>One cited bullet per thing you owned, decided or built</td></tr>
-    <tr><td>Numbers</td><td>Measured outcomes and scale, each with its scope and source</td></tr>
+    <tr><td>Numbers &amp; Impact</td><td>Every figure once, with its kind, scope and source; and each <a class="term" href="#term-impact-item">Impact item</a>: what the work changed, as a fact, an assessment or your account</td></tr>
     <tr><td>Tools</td><td>Technology actually used, and what was only studied</td></tr>
     <tr><td>Architecture</td><td>A Mermaid diagram and a short explanation</td></tr>
     <tr><td>Not mine</td><td>Parts others built, named by role</td></tr>
@@ -309,6 +309,7 @@ It then rewrites the <a class="term" href="#term-summary">Summary</a> as confirm
   <li>If you leave out the arguments, pick a file from the list. The list shows which files are reviewed and how many open questions each has.</li>
   <li>Answer each round of questions. A round has four questions or fewer.</li>
   <li>If you do not know an answer, say "don't know".</li>
+  <li>For each assessed <a class="term" href="#term-impact-item">Impact item</a>, confirm it or reject it. A rejected item is deleted; the facts under it stay.</li>
   <li>To end the interview early, tell the LLM to stop.</li>
   <li>Read the rewritten Summary and the diff of the evidence sections.</li>
   <li>Correct anything wrong.</li>
@@ -348,9 +349,10 @@ names a repository or Jira project not in <code>mapping.yml</code>, the LLM tell
 records it in <a class="term" href="#term-todo">TODO.md</a>.</p>
 
 <h3>Use the result</h3>
-<p>Copy the bullets under <code>## Summary → ### Resume bullets</code> into your resume. Read the
-Remarks before you choose: each one names the claim the bullet traces to, its strength, its caveat
-and the roles it fits.</p>
+<p>Pick bullets from <code>## Summary</code> for your resume. They are grouped by area of work; start
+with the ★★★ ones. Read the Remarks before you choose: each one names the claim the bullet traces
+to, the numbers and impact it uses, its caveat and the roles it fits. Leave out any impact that is
+still <code>assessed</code>: confirm it in verify first.</p>
 
 <h2 id="to-resume">4 · Write the resume</h2>
 <p>The resume lives in <code>resume/</code>. Its content is one YAML file: <code>resume/data/resume.yml</code>
@@ -502,6 +504,8 @@ grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></
   <dd>The configuration for one company at <code>raw/&lt;company&gt;/mapping.yml</code>. Only you edit it.</dd>
   <dt id="term-open-question">Open question</dt>
   <dd>A gap in an evidence file that git and Jira cannot answer. Verify asks you each one.</dd>
+  <dt id="term-impact-item">Impact item</dt>
+  <dd>A row under <code>## Numbers &amp; Impact → ### Impact</code> in an evidence file: one thing the work changed, such as faster, cheaper, safer, adopted or delivered under a deadline. Its kind is <code>fact</code> (the sources prove it), <code>assessed</code> (the LLM's reading of the facts, usable only after you confirm it in verify) or <code>user</code> (your account).</dd>
   <dt id="term-plugin">Plugin</dt>
   <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the seven skills.</dd>
   <dt id="term-private-note">Private note</dt>
@@ -511,7 +515,7 @@ grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></
   <dt id="term-trace-comment">Trace comment</dt>
   <dd>A YAML comment above a resume bullet that names its evidence file and Summary bullet, for example <code># evidence/company-a/2025-retail-shelf-cv.md B2</code>.</dd>
   <dt id="term-summary">Summary</dt>
-  <dd>The top section of an evidence file: three to six resume bullets and their Remarks. A draft until verify sets <code>reviewed:</code>.</dd>
+  <dd>The top section of an evidence file: resume bullets grouped by area of work, starred by strength, with their Remarks. A pool the resume picks from; a draft until verify sets <code>reviewed:</code>.</dd>
   <dt id="term-todo">TODO.md</dt>
   <dd><code>raw/&lt;company&gt;/TODO.md</code>: projects to add to <code>mapping.yml</code> and leads for distill.</dd>
 </dl>

@@ -7,8 +7,8 @@ disable-model-invocation: true
 # Distill
 
 Turn one project's data in `raw/<company>/` into `evidence/<company>/<yyyy>-<id>.md`: the
-ground truth of **what I did**, where every claim cites its evidence and no real name leaks,
-topped by a draft Summary of the resume bullets it supports.
+ground truth of **what I did** and what it changed, where every claim cites its evidence and no
+real name leaks, topped by a draft Summary: the resume bullets it supports, grouped by area.
 
 Read [`../../reference/workflow.md`](../../reference/workflow.md) first: it defines the layout,
 the mapping schema and the rules for scripts. The evidence file's schema, citation forms and
@@ -21,7 +21,8 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
    folder is named by its `slug` from `mapping.yml`: cite the repo by that slug, in
    citations and in `verified:`.
    - An evidence file matching `evidence/<company>/*-<id>.md` exists: **update** mode. Read it;
-     its `verified:` shas mark where the new commits start.
+     its `verified:` shas mark where the new commits start. If it is in the older format (a
+     flat Summary, a plain `## Numbers`), migrate it in steps 5 and 6, as `evidence.md` says.
    - None exists: **new** mode.
 
    If `raw/<company>/repos/<id>/` has no repos, ask the user: run ingest first, or build the
@@ -36,12 +37,15 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
    at most four questions, as verify step 3 does. Cover, in this order:
    - the context: who it was for, the problem, the team and my role in it, the period;
    - each responsibility: what I owned, decided or built, how, and the trade-off taken;
-   - what others built (Not mine), outcomes and numbers with their scope, the tools I used,
-     and the system's shape (for the Architecture diagram);
+   - what others built (Not mine), outcomes and numbers with their scope, what the work
+     changed (the Impact types in `evidence.md`: faster, cheaper, safer, adopted, delivered
+     under a deadline), the tools I used, and the system's shape (for the Architecture
+     diagram);
    - what held the work back, for the private note.
 
-   Write each responsibility as one What I Did bullet, citing `[me: yyyy-mm-dd]`. A
-   responsibility the user describes only vaguely goes to Open questions, not to What I Did.
+   Write each responsibility as one What I Did bullet, citing `[me: yyyy-mm-dd]`, and each
+   outcome the user gives as a `user` Impact item. A responsibility the user describes only
+   vaguely goes to Open questions, not to What I Did.
    For anonymisation, the real names the user gives (employer, client, product) are banned
    terms. If the project has no `mapping.yml` entry, tell the user to add one with its `id`,
    `internal_name` and `title` and no `sources`.
@@ -86,21 +90,37 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
    sections first; in update mode, add new bullets and keep the existing ones as written.
    _Done when_ every What I Did bullet carries at least one citation.
 
-6. **Draft the Summary.** From What I Did and Numbers, write `## Summary` at the top of the
-   file, following the Summary rules in `evidence.md`. Every bullet traces to a What I Did
-   bullet; every gap a bullet depends on (outcome, scale, shipped or not) is a Remark and an
-   Open question.
+   Then build `## Numbers & Impact` by the Numbers & Impact rules in `evidence.md`:
+   - **Numbers**: every figure the sources give, one row each with an ID, Kind and Scope. Look
+     in reports and docs, commit messages, ADRs and tickets. Count `fix:` commits and resolved
+     Jira Bug tickets for `bugs / incidents`, and read commit dates per feature and ticket
+     created → resolved times for `delivery speed`.
+   - **Impact**: for every Impact type in the table, check its signals in the sources. Write a
+     `fact` row for each change the sources prove, then an `assessed` row for each reading those
+     facts support, naming the IDs it rests on and a Confidence. Leave out a type with no basis.
+
+   _Done when_ every figure in the file has a Numbers row, and every Impact row cites its
+   basis.
+
+6. **Draft the Summary.** From What I Did and Numbers & Impact, write `## Summary` at the top
+   of the file, following the Summary rules in `evidence.md`: name the areas of work first, put
+   every What I Did bullet under exactly one, then write one starred bullet per distinct
+   outcome in each area. Every bullet traces to a What I Did bullet; an `assessed` Impact item
+   stays out of the bullets until verify confirms it; every gap a bullet depends on (outcome,
+   scale, shipped or not) is a Remark and an Open question.
    - New mode, or `reviewed:` is empty: write or replace the draft.
    - `reviewed:` is set: keep the confirmed bullets as written, add draft bullets for the new
-     work marked `(draft)`, and add an Open question that the Summary predates the new commits.
-   _Done when_ every bullet has a Remark naming the What I Did bullet it traces to, and every
-   number in Numbers is either in a bullet or in a Remark.
+     work marked `(draft)` under their areas, and add an Open question that the Summary
+     predates the new commits.
+   _Done when_ every What I Did bullet sits in one area, every bullet has a Remark naming the
+   What I Did bullet and the Numbers and Impact IDs it uses, and every Numbers row and Impact
+   item is either used by a bullet or named in a Remark.
 
 7. **Anonymise.** Apply the anonymisation rules in `evidence.md`, then run the banned-term
    search. _Done when_ it returns zero hits.
 
-8. **Review with the user.** Show the Summary first, then the file, and list the Open
-   questions. Fold in any account the
+8. **Review with the user.** Show the Summary first, then the `assessed` Impact items, then the
+   file, and list the Open questions. Fold in any account the
    user gives with a `[me: yyyy-mm-dd]` citation; a limit of my own work goes in the private
    note, by the Private notes rules in `evidence.md`. _Done when_ the user confirms the file; the
    Open questions left are for `/resume-evidence:verify`.
@@ -115,6 +135,6 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
 ## Completion
 
 The file follows the schema, every What I Did bullet is cited, the draft Summary follows the
-Summary rules, the banned-term search returns
+Summary rules, every Impact item cites its basis, the banned-term search returns
 zero hits, `verified:` holds the HEAD sha read for every repo (empty in interview mode), the
 user has confirmed it, and the project's leads in `TODO.md` are resolved.

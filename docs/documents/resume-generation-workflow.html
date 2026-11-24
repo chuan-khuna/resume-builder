@@ -162,17 +162,18 @@ projects:
   <li><strong>Establish authorship.</strong> <code>scripts/authorship.py</code> lists my commits on every branch and my share of blame lines per directory. Blame reads the checked-out branch, or the branch holding my work (<code>--ref &lt;slug&gt;=&lt;ref&gt;</code>) when <code>branches_ahead</code> names one. Each area is classed mine, shared or not mine.</li>
   <li><strong>Read the sources and Jira.</strong> Code, my main diffs, dependency files and docs for the areas that are mine or shared; the tickets from <code>scripts/jira_tickets.py</code>.</li>
   <li><strong>Write the evidence file</strong> at <code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code>, where <code>yyyy</code> is the year of my first commit. Every What I Did bullet cites its evidence.</li>
-  <li><strong>Draft the Summary</strong>: three to six resume bullets, each with a Remark naming what it traces to and what limits it.</li>
+  <li><strong>Build Numbers &amp; Impact.</strong> Every figure the sources give goes in Numbers once, with an ID, a kind (before → after, performance, accuracy, cost, scale, bugs fixed, delivery speed, configured, estimated) and its scope. Impact lists what the work changed: a <code>fact</code> the sources prove, an <code>assessed</code> reading built on facts, or a <code>user</code> account. An assessed item reaches a bullet only after verify confirms it.</li>
+  <li><strong>Draft the Summary</strong>: resume bullets grouped by area of work, with no two areas overlapping and no fixed count. Each bullet is starred by strength (★★★, ★★, ★) and has a Remark naming what it traces to and what limits it. The resume picks from this pool.</li>
   <li><strong>Anonymise</strong> and run the banned-term search until it returns zero hits.</li>
 </ol>
 
 <h2 id="verify">3 · Verify</h2>
 <p>Git told distill what I did; verify asks what it was worth.</p>
 <ol>
-  <li><strong>Build the question list</strong> from Open questions, guessed frontmatter, configured or estimated numbers, bullets with no outcome, and every draft Summary bullet. Questions that decide a bullet come first.</li>
+  <li><strong>Build the question list</strong> from Open questions, guessed frontmatter, configured or estimated numbers, assessed Impact items, bullets with no outcome, and every draft Summary bullet. Questions that decide a bullet come first.</li>
   <li><strong>Interview the user</strong> in rounds of at most four. "Don't know" is an answer.</li>
   <li><strong>Fold the answers in</strong> to the evidence sections, each cited <code>[me: yyyy-mm-dd]</code>. An unknown stays under Open questions, dated.</li>
-  <li><strong>Rewrite the Summary</strong>, anonymise, and set <code>reviewed:</code> when the user confirms the file.</li>
+  <li><strong>Rewrite the Summary</strong>: confirm or delete each assessed Impact item, migrate an older-format file, anonymise, and set <code>reviewed:</code> when the user confirms the file.</li>
 </ol>
 
 <h2 id="truth">Evidence file</h2>
@@ -188,15 +189,16 @@ verified:
 reviewed: yyyy-mm-dd     # set by verify; empty while the Summary is a draft
 ---
 
-## Summary           # resume bullets + remarks; distill drafts, verify confirms
+## Summary           # ### per area of work: starred bullets; ### Remarks. Distill drafts, verify confirms
 ## Context
 ## What I Did        # every bullet cites [slug:path 92%], [slug@sha], [KEY-123] or [me: date]
-## Numbers           # value | scope | source
+## Numbers &amp; Impact  # ### Numbers: ID | value | kind | scope | source
+                    # ### Impact: ID | fact/assessed/user | type | claim | basis | confidence | status
 ## Tools             # tools: … (used) / Studied, not used: …
 ## Architecture
 ## Not mine          # parts built by others
 ## Open questions</code></pre>
-<p>The full schema, Summary rules and anonymisation rules are in <code>.claude-dev/reference/evidence.md</code>.</p>
+<p>The full schema, Summary rules, Numbers &amp; Impact rules and anonymisation rules are in <code>.claude-dev/reference/evidence.md</code>.</p>
 
 <h2 id="to-resume">4 · To resume</h2>
 <p>Writes the resume's content from evidence. The YAML is the ground truth for the printed resume; Typst only lays it out.</p>

@@ -42,12 +42,12 @@ Read these first:
    _Done when_ every item is a user fact or a work claim.
 
 3. **Match each work claim to evidence.** Search `evidence/*/*.md`: the Summary bullets, What I
-   Did, Numbers, Tools and the Remarks. Grade the claim:
-   - **backed**: What I Did supports every part, and each number is in Numbers with the same
-     scope;
+   Did, Numbers & Impact, Tools and the Remarks. Grade the claim:
+   - **backed**: What I Did supports every part, each number is in Numbers with the same
+     scope, and each impact claim is a `fact`, `user` or `confirmed` Impact item;
    - **stretched**: part of it outruns the evidence: `wip` or `dropped` work read as delivered,
      shared work read as mine alone, a configured value read as a result, a number with a wider
-     scope, or a claim a Remark caveat rules out;
+     scope, an impact that is only `assessed`, or a claim a Remark caveat rules out;
    - **unbacked**: no evidence file holds it.
 
    A skill is backed only when a used file's `tools:` line lists it; "Studied, not used" is
@@ -60,8 +60,8 @@ Read these first:
      Numbers row that requires it;
    - for **unbacked**: two routes. Record the user's account in an evidence file now (step 5),
      then write the bullet; or leave it out;
-   - stronger evidence the user did not mention: a measured number, a related Summary bullet,
-     a project that fits the same topic.
+   - stronger evidence the user did not mention: a measured number, a `fact` Impact item, a
+     related Summary bullet in the same area, a project that fits the same topic.
 
    Ask the user to choose per item: their wording (backed only), the rewrite, record and write,
    or leave out.
@@ -69,7 +69,7 @@ Read these first:
 
 5. **Record the user's account.** For each item routed to evidence, edit the evidence file the
    way verify folds in an answer: a What I Did bullet citing `[me: yyyy-mm-dd]`, a number as a
-   user-reported Numbers row with its scope. If the file has `reviewed:` set, add an Open
+   user-reported Numbers row with its ID, Kind and scope, an outcome as a `user` Impact item. If the file has `reviewed:` set, add an Open
    question that its Summary predates the new account. If no evidence file fits (a project or
    employer with none), stop for that item and point the user to
    `/resume-evidence:distill` in interview mode. Run the banned-term search from `evidence.md`

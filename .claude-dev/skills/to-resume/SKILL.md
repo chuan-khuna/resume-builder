@@ -26,7 +26,7 @@ Run every `mise` command from the repo root as `mise -C resume …`, or from ins
 
 | Resume part | Source |
 | ----------- | ------ |
-| `experiences[].bullets` | The `## Summary` bullets of the evidence files, and the What I Did and Numbers they trace to |
+| `experiences[].bullets` | The `## Summary` bullets of the evidence files, and the What I Did and Numbers & Impact they trace to |
 | `skills` | The `tools:` lines of the evidence files used. Never "Studied, not used". |
 | `experiences[]`: `company`, `jobTitle`, `time` | The user. Evidence holds only the company slug and project periods. |
 | `header`, `educations`, `activities`, `interests` | The user. Keep the values already in the YAML unless the user changes them. |
@@ -50,6 +50,8 @@ into the YAML.
    and whether `reviewed:` is set. Use every reviewed file. For each file without `reviewed:`,
    ask the user: verify it first (recommended), include its draft bullets, or leave it out.
    Read each file used in full: Summary and Remarks first, then the sections they rest on.
+   The Summary is a pool grouped by area and starred by strength: pick from it, do not copy
+   it whole.
    _Done when_ every evidence file is used, marked draft, or left out by the user.
 
 3. **Fill the facts evidence lacks.** For each company slug in the files used, find its entry
@@ -59,10 +61,13 @@ into the YAML.
    `header` field that is empty.
 
 4. **Plan the content.** Write the plan and show it to the user before you write YAML:
-   - each experience entry, and the evidence bullets under it, strongest first;
+   - each experience entry, and the evidence bullets picked for it, strongest first: start
+     from the ★★★ bullets, then ★★ ones the role or job ad calls for; a ★ bullet only when it
+     fills a gap;
    - for each entry, whether it uses labels, by the `resume` skill's Labels rule. When it
      does, list its labels: areas of work that do not overlap, with each evidence bullet
-     under exactly one;
+     under exactly one. Start from the evidence areas, merging areas across projects that
+     name the same work;
    - for a version, the `job-ad.md` requirements sorted as Direct, Bridge or Gap, as the
      `resume` skill's Tailoring steps define. A Gap is a question, never a bullet;
    - the Remarks that limit a bullet (a scope caveat, a number not to quote, a role it fits);
@@ -78,6 +83,8 @@ into the YAML.
    - it claims nothing the evidence bullet and its What I Did bullet do not support;
    - each number appears in the evidence Numbers with the same scope; a configured value reads
      "designed for";
+   - each impact claim is a `fact`, `user` or `confirmed` Impact item; an `assessed` one stays
+     out;
    - shared work keeps "with a teammate" or "contributed to"; `wip` or `dropped` work reads
      as prototyped or evaluated, never as delivered;
    - names stay anonymised as the evidence has them.

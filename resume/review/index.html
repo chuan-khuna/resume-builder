@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume review: base, classic</title>
+<link rel="stylesheet" href="styles/review.css">
+<script src="scripts/rough-notation.iife.js" defer></script>
+<script src="scripts/review.js" defer></script>
+</head>
+<body>
+<main>
+
+<div class="layout">
+<div>
+
+<header>
+  <table class="details">
+    <tr><th scope="row">Resume</th><td><code>build/base/classic.pdf</code>, 1 page, A4</td></tr>
+    <tr><th scope="row">Content</th><td><code>data/resume.yml</code></td></tr>
+    <tr><th scope="row">Template</th><td><code>classic</code>; <code>rail</code> built too, for line length</td></tr>
+    <tr><th scope="row">Fonts</th><td>Geist Serif Regular, Geist Medium, Geist Regular: all embedded, all with a Unicode map</td></tr>
+    <tr><th scope="row">Source</th><td>commit <code>4056a3d</code></td></tr>
+    <tr><th scope="row">Reviewed</th><td>24 November 2026</td></tr>
+  </table>
+  <h1>Resume review: base, classic</h1>
+  <p class="lede">The page is clean, one column, machine-readable and fully traced to evidence. <span data-note="highlight">The new scope-style bullets read naturally but carry no figures at all (0 of 9)</span>, one bullet claims adoption the evidence does not record, and a 2-year gap after graduation is unexplained. Fix those three before sending. Skills now uses 4 groups and covers every tool the bullets name except Podman, which you left out by choice.</p>
+
+  <div class="scores">
+    <div class="score"><b>Evidence</b><span><span class="badge warn">Fair</span></span><small>All 6 bullets traced; 1 claim outruns its evidence; 14 files still drafts</small></div>
+    <div class="score"><b>Screening</b><span><span class="badge fail">Fix</span></span><small>2-year 3-month gap between education and first job</small></div>
+    <div class="score"><b>CV standards</b><span><span class="badge fail">Fix</span></span><small>0 of 9 bullets carry a number</small></div>
+    <div class="score"><b>Readability</b><span><span class="badge warn">Fair</span></span><small>Median bullet line 117 characters</small></div>
+    <div class="score"><b>Format</b><span><span class="badge warn">Fair</span></span><small>Body 8.8 pt, below 9.5 pt</small></div>
+    <div class="score"><b>ATS and access</b><span><span class="badge pass">Good</span></span><small>All text extracts; AA contrast; tagged PDF</small></div>
+  </div>
+</header>
+
+<h2 id="summary">Summary</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Area</th><th>Result</th><th>Status</th><th>Top improvement</th></tr>
+  <tr><td>Evidence traceability</td><td>6 of 6 bullets traced; 0 banned-term hits in 64 terms; 1 claim stretched</td><td class="status"><span class="badge fail">Fix</span></td><td>Reword the chatbot-core sentence so it does not say client projects install it</td></tr>
+  <tr><td>Screening</td><td>Gap of 2y 3m (Apr 2020 → Jul 2022); Experience heading at 31% of the page</td><td class="status"><span class="badge fail">Fix</span></td><td>Explain the gap before sending</td></tr>
+  <tr><td>CV standards</td><td><span data-note="circle">0 of 9</span> bullets carry a figure; 6 bullets in the job</td><td class="status"><span class="badge fail">Fix</span></td><td>Put scale figures inside the scope sentences</td></tr>
+  <tr><td>Readability</td><td>Bullet lines median 117, max 129 characters; bullets 18–29 words</td><td class="status"><span class="badge warn">Improve</span></td><td>Try the rail template (median 99)</td></tr>
+  <tr><td>Format and typography</td><td>1 page, A4, margins 15 × 13 mm; body 8.8 pt</td><td class="status"><span class="badge warn">Improve</span></td><td>9.5 pt fits only without Activities</td></tr>
+  <tr><td>ATS</td><td>431 words, 0 ligatures, 0 replacement characters; Skills keep their labels</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Contrast and accessibility</td><td>All text ≥ 5.43:1; tagged; title set; <code>/Lang(en)</code></td><td class="status"><span class="badge warn">Improve</span></td><td>Set <code>/Lang</code> to <code>en-GB</code> (one-word change, tested)</td></tr>
+</table>
+</div>
+
+<h2 id="adviser">Career adviser's view</h2>
+<p class="opinion-note">Opinion, not measured: how the resume positions you, read as a careers adviser would.</p>
+<ul class="opinion">
+  <li><strong>Choose the title the bullets earn.</strong> The six bullets show pipelines, backends, deployment and LLM systems more than statistics or experiments. The evidence itself records "AI and backend engineer" for 2025–2026. "Data Scientist" invites questions about A/B tests and modelling that the page does not answer; "AI Engineer" or "Machine Learning Engineer" matches what is printed. Keep a data-science version for data-science ads.</li>
+  <li><strong>Keep the scope style, but give it scale.</strong> The bullets now read like a confident role summary, which suits a consultancy role across many clients. What they lose is size: a reader cannot tell a demo from a system on 3 camera sites. One figure of scale per bullet (sites, recordings, test cases, camera zones) keeps the style and gives the reader something to weigh.</li>
+  <li><strong>Show the growth inside the role.</strong> One entry spans Jul 2022 to now, from Django content systems to LLM serving and agents. Printed as one block, that progression is invisible. If your title changed, split the entry by period; if not, order the labels so the 2025–2026 work leads, as it does now.</li>
+  <li><strong>Close the gap before a recruiter asks.</strong> Graduation (Apr 2020) to the first job (Jul 2022) is 2 years 3 months with nothing printed. One line (an earlier job, study, or a project with dates) removes the question.</li>
+</ul>
+
+<h3 id="readers">Reader impressions</h3>
+<p class="opinion-note">Opinion: how each reader is likely to take the page, in the order they usually see it.</p>
+<ul class="opinion readers">
+  <li><strong>HR or recruiter</strong> <span class="muted">· a first screen of under a minute</span>
+    <ul>
+      <li><b>First impression:</b> tidy, one page, broad keyword coverage: YOLO, RAG, Airflow, Django, Docker.</li>
+      <li><b>Looks for:</b> title match, dates, gaps, years of experience.</li>
+      <li><b>Likely question:</b> "What did you do between April 2020 and July 2022?"</li>
+    </ul></li>
+  <li><strong>Hiring manager</strong> <span class="muted">· an AI or data team lead</span>
+    <ul>
+      <li><b>First impression:</b> a generalist who ships end to end, from models to deployment.</li>
+      <li><b>Looks for:</b> scale and outcomes: how many users, sites or records, and whether systems run in production.</li>
+      <li><b>Likely question:</b> "Which of these are in production, and how big are they?" No bullet says.</li>
+    </ul></li>
+  <li><strong>Technical interviewer</strong> <span class="muted">· an ML or backend engineer</span>
+    <ul>
+      <li><b>First impression:</b> wide tool list, each tied to a system.</li>
+      <li><b>Looks for:</b> depth: one system to dig into.</li>
+      <li><b>Likely question:</b> "Walk me through the retail-shelf pipeline" or "How did you evaluate the RAG source?" Your brag document's interview stories answer both well.</li>
+    </ul></li>
+</ul>
+
+<h2 id="evidence">1. Evidence traceability</h2>
+<p>Each bullet's trace comment was followed to its evidence file, and the wording compared with that file's Summary bullet, What I Did and Remarks. Banned terms were searched with a script over every name in <code>raw/themather/mapping.yml</code>.</p>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>Trace comments</td><td>6 of 6 bullets traced. 5 cite Summary bullets; Deployment and CI cites a cctv Remark and a retail-shelf Context line, not a <code>B&lt;n&gt;</code></td><td class="status"><span class="badge warn">Improve</span></td><td>Run verify on the cctv file and add the on-premises deployment (What I Did: "Scripted the on-premises deployment") to a Summary bullet</td></tr>
+  <tr><td>Claims</td><td>LLM applications: <span data-note="underline">"a reusable chatbot core that client projects install"</span>. Evidence: a prototype proven with two <em>mock</em> clients; adoption "to confirm"</td><td class="status"><span class="badge fail">Fix</span></td><td>"Prototype a reusable chatbot core, packaged as a versioned wheel for client projects." (13 words; bullet total 29)</td></tr>
+  <tr><td>Claims, minor</td><td>LDA comes from a prototype comparison app (survey B3); the classroom attention method's authorship is open (classroom Remarks)</td><td class="status"><span class="badge warn">Improve</span></td><td>Be ready to say "prototype" for LDA in interview; answer the authorship question in verify</td></tr>
+  <tr><td>Numbers</td><td>No figures printed, so none to mismatch</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">See CV standards for the cost of having none</td></tr>
+  <tr><td>Impact</td><td>No impact claims (faster, adopted, delivered)</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Review state</td><td><span data-note="circle" data-note-tone="warn">14 of 14</span> traced files have no <code>reviewed:</code></td><td class="status"><span class="badge warn">Improve</span></td><td>Run <code>/resume-evidence:verify</code>, starting with hitl-chatbot, chatbot-core and cctv</td></tr>
+  <tr><td>Skills</td><td>Every listed skill appears in a <code>tools:</code> line, except Haskell (your personal project, marked in the YAML comment). Bullet tools covered, except Podman, left out by choice</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">Drop Podman from the Deployment and CI bullet too, if you want the two to match</td></tr>
+  <tr><td>Untraced sections</td><td>3 projects and 1 activity have no evidence file: your own account</td><td class="status"><span class="badge warn">Improve</span></td><td class="muted">Fine for personal projects; keep the repos public</td></tr>
+  <tr><td>Banned terms</td><td>0 hits for 64 names, repos and hosts from <code>mapping.yml</code></td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+</table>
+</div>
+
+<h2 id="screening">2. Screening: the first look</h2>
+<p>Positions come from Typst's own layout; the gap from the dates in the YAML.</p>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>Section positions</td><td>Skills 17%, Experience heading 263 pt (31%): inside the top third</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">Optional: Experience above Skills moves it to 17% (tested before the Skills change, still 1 page)</td></tr>
+  <tr><td>Employment gaps</td><td><span data-note="box">GAP 2y 3m</span> between education (Apr 2020) and Data Scientist (Jul 2022)</td><td class="status"><span class="badge fail">Fix</span></td><td>Add the earlier role, study or dated project, or a one-line note</td></tr>
+  <tr><td>Recency</td><td>Current role dated "Jul 2022 – Present", in the date column</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Title match</td><td>No job ad. Header "Data Scientist and Developer", job "Data Scientist"; evidence roles "data and backend developer" then "AI and backend engineer"</td><td class="status"><span class="badge warn">Improve</span></td><td>Decide the title per target, see the adviser's view</td></tr>
+  <tr><td>Progression</td><td>One entry, 4 years 4 months, scope grew from Django backends to LLM systems</td><td class="status"><span class="badge warn">Improve</span></td><td>Split by period if the title changed</td></tr>
+</table>
+</div>
+
+<h2 id="cv">3. CV standards</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>Measurable outcomes</td><td>0 of 9 bullets carry a figure (years excluded)</td><td class="status"><span class="badge fail">Fix</span></td><td>Add scale inside the scope sentence; drafts below, all from evidence Numbers</td></tr>
+  <tr><td>Bullets per job</td><td>6</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Headline</td><td>No headline; the introduction opens "I am a data scientist and developer", repeating the job title under the name</td><td class="status"><span class="badge warn">Improve</span></td><td>Open with the claim instead: "I build computer vision, data and LLM systems and deploy them to production."</td></tr>
+  <tr><td>Verbs and tense</td><td>Every bullet starts with a verb; present tense in the current job and current projects</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Spelling</td><td>British forms throughout (analyse, visualises, standardise); no US spellings found by reading the page</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Personal details</td><td>No photo, birth date, nationality or marital status</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Consistency</td><td>Date without a month: <span data-note="box" data-note-tone="warn">2025 – Present</span> (Astro Digital Garden). Project without a link: POS Rewrite in Rust</td><td class="status"><span class="badge warn">Improve</span></td><td>Add the start month; link the repo or mark it private</td></tr>
+</table>
+</div>
+
+<h3 id="cv-figures">Scale figures that fit the scope style</h3>
+<div class="compare">
+  <div><b>Now</b>Build vision pipelines for vehicle and accident detection, face-recognition check-in, classroom attention, and retail shelves, and train detection models with YOLO and RF-DETR. (25)</div>
+  <div><b>Fix</b>Build vision pipelines for road safety on 3 camera sites, face-recognition check-in, classroom attention in ~930 recordings, and retail shelves, and train models with YOLO and RF-DETR. (29; road-safety B1, classroom B1)</div>
+</div>
+<div class="compare">
+  <div><b>Now</b>Build a Qdrant RAG source and an evaluation runner for a client's support chatbot. Prototype a reusable chatbot core that client projects install as a versioned package. (29)</div>
+  <div><b>Fix</b>Build a Qdrant RAG source and a runner for a client's 633-case chatbot test set. Prototype a reusable chatbot core, packaged as a versioned wheel for client projects. (30; hitl-chatbot B4, chatbot-core B1)</div>
+</div>
+<div class="compare">
+  <div><b>Now</b>Build Airflow pipelines that move energy telemetry, legacy point-of-sale data, and booth-camera events into TimescaleDB, PostgreSQL, and MongoDB. (20)</div>
+  <div><b>Fix</b>Build Airflow pipelines that move energy telemetry, legacy point-of-sale data, and events from 12 booth camera zones into TimescaleDB, PostgreSQL, and MongoDB. (24; event-booth B1)</div>
+</div>
+
+<h2 id="readability">4. Readability</h2>
+<p>Line lengths from <code>pdftotext -layout</code> for both templates. Bullet words from the merged YAML, label included.</p>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>Line length</td><td>Classic: median <span data-note="underline" data-note-tone="warn">117</span>, max 129 characters; 9 of 13 lines over 100</td><td class="status"><span class="badge warn">Improve</span></td><td>Rail template: median 99, max 105. A larger body size alone barely moves it (115 at 9.5 pt)</td></tr>
+  <tr><td>Bullet length</td><td>25, 29, 25, 20, 26, 18 words</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">Your limit is 30 (wiki/me.md); this skill's own threshold says 25, which flags 29 and 26. See the method note</td></tr>
+  <tr><td>Wrapped lines</td><td>Last lines of 11, 10, 5 and 10 words</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Summary</td><td>41 words</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+</table>
+</div>
+<figure class="chart">
+  <img src="base-line-length.svg" alt="Line length in characters. Classic bullet lines: 13 lines, min 33, median 117, max 129, 9 over 100. Classic summary lines: 3, min 9, median 124, max 125. Rail bullet lines: 13, min 33, median 99, max 105, 6 over 100. Rail summary lines: 3, min 56, median 100, max 102.">
+  <figcaption>Characters per printed line; the band marks 45–90. Made by <code>uv run review/scripts/line_lengths.py --slug base</code>.</figcaption>
+</figure>
+<div class="table-wrap">
+<table class="stats">
+  <tr><th>Lines</th><th>n</th><th>min</th><th>median</th><th>max</th><th>&gt; 100</th></tr>
+  <tr class="group"><td colspan="6">Classic</td></tr>
+  <tr><td>Bullet lines</td><td class="num">13</td><td class="num">33</td><td class="num median">117</td><td class="num">129</td><td class="num">9</td></tr>
+  <tr><td>Summary lines</td><td class="num">3</td><td class="num">9</td><td class="num median">124</td><td class="num">125</td><td class="num">2</td></tr>
+  <tr class="group"><td colspan="6">Rail</td></tr>
+  <tr><td>Bullet lines</td><td class="num">13</td><td class="num">33</td><td class="num median">99</td><td class="num">105</td><td class="num">6</td></tr>
+  <tr><td>Summary lines</td><td class="num">3</td><td class="num">56</td><td class="num median">100</td><td class="num">102</td><td class="num">1</td></tr>
+</table>
+</div>
+
+<h2 id="format">5. Format and typography</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>Length</td><td>1 page, <code>maxPages</code> 1, 431 words</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Paper and margins</td><td>A4; margins 15 mm × 13 mm</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Type sizes</td><td>Body <span data-note="underline">8.8 pt</span>; smallest 8.5 pt</td><td class="status"><span class="badge warn">Improve</span></td><td>Tested again with the new Skills: 9.0, 9.2 and 9.5 pt overflow to 2 pages; 9.5 pt fits once Activities is dropped</td></tr>
+  <tr><td>Fonts</td><td>3 fonts, all embedded, all with a Unicode map</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>File name</td><td>Built as <code>classic.pdf</code></td><td class="status"><span class="badge warn">Improve</span></td><td>Send as <code>Phattharanat-Khunakornophat-Resume.pdf</code></td></tr>
+</table>
+</div>
+
+<h2 id="ats">6. ATS</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>Text</td><td>431 words; 0 ligatures; 0 replacement characters</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Structure</td><td>One column; standard section names; contact details in the body</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Skills order</td><td><code>-raw</code> keeps each label with its skills, e.g. "Data, ML and LLM pandas, NumPy, …"</td><td class="status"><span class="badge pass">Pass</span></td><td class="muted">—</td></tr>
+  <tr><td>Keywords</td><td>No job ad. Common data-science terms missing from the page: statistics, experiments, MLflow, Spark. SQL and AWS are now in Skills</td><td class="status"><span class="badge warn">Improve</span></td><td>Add only those you use</td></tr>
+</table>
+</div>
+
+<h2 id="access">7. Contrast and accessibility</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Colour</th><th>Used for</th><th>Status</th><th>Ratio and improvement</th></tr>
+  <tr><td><span class="sw" style="background:#141413"></span><code>#141413</code></td><td>Body text</td><td class="status"><span class="badge pass">AAA</span></td><td class="num">18.43:1</td></tr>
+  <tr><td><span class="sw" style="background:#3d3d3a"></span><code>#3d3d3a</code></td><td>Contact line</td><td class="status"><span class="badge pass">AAA</span></td><td class="num">10.90:1</td></tr>
+  <tr><td><span class="sw" style="background:#504e49"></span><code>#504e49</code></td><td>Entry descriptions</td><td class="status"><span class="badge pass">AAA</span></td><td class="num">8.31:1</td></tr>
+  <tr><td><span class="sw" style="background:#6b6a64"></span><code>#6b6a64</code></td><td>Dates, skill labels</td><td class="status"><span class="badge pass">AA</span></td><td class="num">5.43:1</td></tr>
+  <tr><td><span class="sw" style="background:#1b365d"></span><code>#1b365d</code></td><td>Job title, links</td><td class="status"><span class="badge pass">AAA</span></td><td class="num">12.12:1; link text is the address, so colour is not the only cue</td></tr>
+  <tr><td><span class="sw" style="background:#e8e6dc"></span><code>#e8e6dc</code></td><td>Section rules</td><td class="status"><span class="badge pass">Exempt</span></td><td class="num">1.25:1; decorative</td></tr>
+</table>
+</div>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Check</th><th>Result</th><th>Status</th><th>Improvement</th></tr>
+  <tr><td>PDF accessibility</td><td>Tagged yes; title set; <code>/Lang(en)</code></td><td class="status"><span class="badge warn">Improve</span></td><td>Add <code>region: "gb"</code> to <code>set text(lang: "en")</code> in <code>lib/style.typ</code>: tested, gives <code>/Lang(en-GB)</code></td></tr>
+</table>
+</div>
+
+<h2 id="fixes">Fixes, in priority order</h2>
+<div class="table-wrap">
+<table class="results">
+  <tr><th>Fix</th><th>Where</th><th>Effort</th><th>Impact</th></tr>
+  <tr><td><span data-note="box" data-note-tone="accent">1. Reword the chatbot-core sentence</span></td><td><code>data/resume.yml</code>, LLM applications</td><td class="status"><span class="badge pass">Quick</span></td><td>Removes the one claim the evidence does not back</td></tr>
+  <tr><td>2. Explain the Apr 2020 – Jul 2022 gap</td><td>Experience or a note</td><td class="status"><span class="badge pass">Quick</span></td><td>Answers the recruiter's first question</td></tr>
+  <tr><td>3. Add scale figures to 3 bullets</td><td>Computer vision, LLM applications, Data engineering</td><td class="status"><span class="badge pass">Quick</span></td><td>0 → 3 bullets with a number, style unchanged</td></tr>
+  <tr><td>4. Move Experience above Skills (optional)</td><td><code>sections</code></td><td class="status"><span class="badge pass">Quick</span></td><td>First job higher on the page; already passes at 31%</td></tr>
+  <tr><td>5. Set <code>/Lang</code> to en-GB</td><td><code>lib/style.typ</code></td><td class="status"><span class="badge pass">Quick</span></td><td>Screen readers and spellcheckers use British English</td></tr>
+  <tr><td>6. Settle the job title</td><td><code>header.jobTitle</code>, experience <code>jobTitle</code></td><td class="status"><span class="badge warn">Medium</span></td><td>Title matches the work printed</td></tr>
+  <tr><td>7. Raise body size to 9.5 pt</td><td><code>lib/style.typ</code>; drop Activities</td><td class="status"><span class="badge warn">Medium</span></td><td>Meets the 9.5 pt body threshold</td></tr>
+  <tr><td>8. Try the rail template</td><td><code>templates/rail.typ</code></td><td class="status"><span class="badge warn">Medium</span></td><td>Median line 117 → 99 characters</td></tr>
+  <tr><td>9. Verify the 14 draft evidence files</td><td><code>/resume-evidence:verify</code></td><td class="status"><span class="badge warn">Medium</span></td><td>Turns every trace from draft to reviewed</td></tr>
+  <tr><td>10. Add the month to Astro Digital Garden; link POS Rewrite</td><td><code>projects</code></td><td class="status"><span class="badge pass">Quick</span></td><td>Consistent dates and links</td></tr>
+</table>
+</div>
+
+<footer>
+  Method: <code>measure.sh base classic</code> (run from a patched copy: the script fails on macOS bash 3.2 when <code>input</code> is an empty array), <code>line_lengths.py --slug base</code>, <code>pdftotext -raw</code>, a Python search of the YAML for every term in <code>mapping.yml</code>, and grep over the evidence files for each claim. Fixes 5 and 7 and the section-order change were built, measured and reverted; 7 was re-tested after the Skills change. Word limit: the <code>resume</code> skill and <code>wiki/me.md</code> say 30 words; this review skill, <code>to-resume</code> and <code>kami.md</code> say 25. This review used 30, as <code>me.md</code> wins for this user. Not checked: rendering in specific ATS products.
+</footer>
+
+</div>
+
+<aside class="side">
+  <figure class="preview">
+    <button type="button" data-lightbox aria-label="Open the preview full size">
+      <img src="resume.png" alt="The one-page resume: header, Skills, Experience with six labelled bullets, Projects, Education and Activities.">
+    </button>
+    <figcaption>classic template, page 1 · click to enlarge</figcaption>
+  </figure>
+
+  <nav class="toc" aria-label="Contents">
+    <b>Contents</b>
+    <ol>
+      <li><a href="#summary">Summary</a></li>
+      <li><a href="#adviser">Career adviser's view</a>
+        <ol><li><a href="#readers">Reader impressions</a></li></ol>
+      </li>
+      <li><a href="#evidence">1. Evidence traceability</a></li>
+      <li><a href="#screening">2. Screening</a></li>
+      <li><a href="#cv">3. CV standards</a>
+        <ol><li><a href="#cv-figures">Scale figures</a></li></ol>
+      </li>
+      <li><a href="#readability">4. Readability</a></li>
+      <li><a href="#format">5. Format and typography</a></li>
+      <li><a href="#ats">6. ATS</a></li>
+      <li><a href="#access">7. Contrast and accessibility</a></li>
+      <li><a href="#fixes">Fixes, in priority order</a></li>
+    </ol>
+  </nav>
+</aside>
+</div>
+
+</main>
+
+<dialog class="lightbox" aria-label="Preview">
+  <button type="button" class="close" aria-label="Close">×</button>
+  <img src="" alt="">
+</dialog>
+</body>
+</html>

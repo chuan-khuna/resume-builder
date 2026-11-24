@@ -17,6 +17,7 @@ A local Claude Code plugin, `resume-evidence`, in the marketplace `resume-builde
     ├── distill/SKILL.md      # /resume-evidence:distill <company> <id>
     ├── verify/SKILL.md       # /resume-evidence:verify <company> <id>
     ├── to-resume/SKILL.md    # /resume-evidence:to-resume [base | <slug>]
+    ├── to-brag/SKILL.md      # /resume-evidence:to-brag <company>
     ├── steer/SKILL.md        # /resume-evidence:steer [base | <slug>] <what to change>
     ├── review-resume/        # /resume-evidence:review-resume [slug] [template]
     │   ├── SKILL.md

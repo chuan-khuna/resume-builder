@@ -12,11 +12,11 @@
 
 <header class="doc-head">
   <h1>Resume generation workflow</h1>
-  <p class="byline">Draft · 2026-11-23 · Design of the six steps: ingest, distill, verify, to-resume, review-resume and steer. Each step's full rules are in its skill under <code>.claude-dev/skills/</code>; how to run them is in the <a href="user-manual.html">user manual</a>.</p>
+  <p class="byline">Draft · 2026-11-23 · Design of the six steps (ingest, distill, verify, to-resume, review-resume and steer) and the optional to-brag branch. Each step's full rules are in its skill under <code>.claude-dev/skills/</code>; how to run them is in the <a href="user-manual.html">user manual</a>.</p>
 </header>
 
 <h2 id="overview">Overview</h2>
-<p>Six steps, each a Claude Code skill in the <code>resume-evidence</code> plugin. Steps 1–3 turn raw work data into <strong>evidence</strong>: one anonymised, cited Markdown file per project. Steps 4–5 turn evidence into a <strong>resume</strong>: YAML that Typst typesets into a PDF, then a review of that PDF. Step 6 lets the user steer the resume directly: the user names the change, and evidence backs or corrects each work claim. Each step reads only what the step before it wrote.</p>
+<p>Six steps, each a Claude Code skill in the <code>resume-evidence</code> plugin. Steps 1–3 turn raw work data into <strong>evidence</strong>: one anonymised, cited Markdown file per project. Steps 4–5 turn evidence into a <strong>resume</strong>: YAML that Typst typesets into a PDF, then a review of that PDF. Step 6 lets the user steer the resume directly: the user names the change, and evidence backs or corrects each work claim. Each step reads only what the step before it wrote. One optional skill, to-brag, branches off after step 3: it turns one company's evidence into a brag document, and it does not feed the resume.</p>
 
 <table>
   <thead><tr><th>Step</th><th>Skill</th><th>Reads</th><th>Output</th></tr></thead>
@@ -24,13 +24,14 @@
     <tr><td>1 · Ingest</td><td><code>/resume-evidence:ingest &lt;company&gt;</code></td><td><code>raw/&lt;company&gt;/mapping.yml</code>, the git remotes, Jira</td><td><code>raw/&lt;company&gt;/repos/&lt;id&gt;/&lt;slug&gt;/</code>, <code>commit-summary.json</code>, <code>jira/&lt;yyyy&gt;.json</code>, <code>jira/merged.json</code>, updated <code>TODO.md</code></td></tr>
     <tr><td>2 · Distill</td><td><code>/resume-evidence:distill &lt;company&gt; &lt;id&gt;</code></td><td>One project's clones and Jira tickets; with no repos, the user's account in an interview</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code> with a draft Summary</td></tr>
     <tr><td>3 · Verify</td><td><code>/resume-evidence:verify &lt;company&gt; &lt;id&gt;</code></td><td>The evidence file, the user's answers</td><td>The same file: gaps answered, Summary confirmed, <code>reviewed:</code> set</td></tr>
+    <tr><td>Optional, after 3 · To brag</td><td><code>/resume-evidence:to-brag &lt;company&gt;</code></td><td>Every evidence file of one company</td><td><code>evidence/&lt;company&gt;/brag-document.md</code>: themes, timeline, interview stories; a view of evidence, never a source</td></tr>
     <tr><td>4 · To resume</td><td><code>/resume-evidence:to-resume [base | &lt;slug&gt;]</code></td><td>Evidence files, the user's job facts, a job ad for a version</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code>, and the PDF in <code>resume/build/&lt;slug&gt;/</code></td></tr>
     <tr><td>5 · Review resume</td><td><code>/resume-evidence:review-resume [slug] [template]</code></td><td>The built PDF, its YAML, the evidence its bullets trace to</td><td><code>resume/review/&lt;slug&gt;.html</code> (<code>index.html</code> for base)</td></tr>
     <tr><td>6 · Steer</td><td><code>/resume-evidence:steer [base | &lt;slug&gt;] &lt;what to change&gt;</code></td><td>The user's changes: sections, projects, education, the bullets they want; evidence files</td><td>The target <code>resume.yml</code>; an evidence file, when the user gives a new account of their work</td></tr>
   </tbody>
 </table>
 
-<figure class="diagram" data-diagram data-title="Six steps" data-height="900">
+<figure class="diagram" data-diagram data-title="Six steps and the to-brag branch" data-height="980">
 <script type="text/plain" class="mermaid-src">flowchart TB
   M[(mapping.yml)] --> RP
   M --> J
@@ -57,6 +58,10 @@
     direction LR
     R[Measure and judge] --> H[(review HTML)]
   end
+  subgraph SB["To brag (optional)"]
+    direction LR
+    TG[Group themes, pick stories] --> BD[(brag-document.md)]
+  end
   subgraph S6["6 · Steer"]
     direction LR
     SM[Match each change to evidence] --> SS[Suggest wording, write the YAML]
@@ -68,16 +73,17 @@
   E --> Q
   V --> E
   E --> P
+  E -. after verify .-> TG
   PDF --> R
   U --> SM
   E --> SM
   SS --> RY
   SS -. new account .-> E
-  class M,CS,JM,E,RY,PDF,H accent
+  class M,CS,JM,E,RY,PDF,H,BD accent
 </script>
 </figure>
 
-<p>Highlighted nodes are data; plain nodes are steps. Evidence is the hinge. Verify writes back into the same file distill wrote, and to-resume reads only evidence: never <code>raw/</code>, memory or an old resume. A new fact the user gives at step 4 goes back through verify into evidence first. Steer is how the user drives the resume after that: user facts (sections, education, personal projects) go straight into the YAML; each work claim is graded backed, stretched or unbacked against evidence, and an unbacked one is recorded in evidence with a <code>[me: …]</code> citation before it reaches the YAML.</p>
+<p>Highlighted nodes are data; plain nodes are steps. Evidence is the hinge. Verify writes back into the same file distill wrote, and to-resume reads only evidence: never <code>raw/</code>, memory or an old resume. A new fact the user gives at step 4 goes back through verify into evidence first. Steer is how the user drives the resume after that: user facts (sections, education, personal projects) go straight into the YAML; each work claim is graded backed, stretched or unbacked against evidence, and an unbacked one is recorded in evidence with a <code>[me: …]</code> citation before it reaches the YAML. To-brag also reads only evidence, but nothing reads its output back: the brag document is a view of the evidence, never a source for a resume claim.</p>
 <p>The pipeline also learns as it runs. When the user steers or corrects any step, Claude records the preference in <code>wiki/me.md</code> (gitignored, loaded by <code>CLAUDE.md</code> each session). A lesson that would help any user goes into the skill or reference file it belongs to. Every skill ends with a Learn step that applies <code>.claude-dev/reference/learning.md</code>; <code>scripts/me.py</code> writes the bullets.</p>
 
 <h2 id="structure">Structure</h2>
@@ -93,7 +99,9 @@
     └── repos/&lt;id&gt;/
         └── &lt;slug&gt;/                  # git clone, named by its slug
 evidence/                            # commit all: anonymised data
-└── &lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md         # ground truth, one file per project
+└── &lt;company&gt;/
+    ├── &lt;yyyy&gt;-&lt;id&gt;.md               # ground truth, one file per project
+    └── brag-document.md             # view of the evidence, built by to-brag
 resume/                              # commit all except build/
 ├── data/resume.yml                  # base resume; every work bullet traced to evidence
 ├── versions/&lt;slug&gt;/                 # resume.yml overrides and job-ad.md for one application
@@ -109,7 +117,7 @@ wiki/                                # LLM wiki: raw/ (gitignored), notes/, logs
   <thead><tr><th>Folder</th><th>Committed</th><th>Written by</th></tr></thead>
   <tbody>
     <tr><td><code>raw/</code></td><td>Only <code>repository-mapping.example.yml</code></td><td>User (<code>mapping.yml</code>), distill and verify (<code>notes/</code>), scripts (everything else)</td></tr>
-    <tr><td><code>evidence/</code></td><td>All</td><td>Distill and verify, reviewed by the user</td></tr>
+    <tr><td><code>evidence/</code></td><td>All</td><td>Distill and verify, reviewed by the user; to-brag (<code>brag-document.md</code>)</td></tr>
     <tr><td><code>resume/</code></td><td>All except <code>build/</code></td><td>To-resume (YAML, build), review-resume (<code>review/</code>), the user (header, education, projects)</td></tr>
     <tr><td><code>scripts/</code></td><td>All</td><td>LLM, when a step needs a reusable helper (Python, run with <code>uv</code>)</td></tr>
     <tr><td><code>wiki/me.md</code></td><td>No</td><td>Every skill's Learn step, through <code>scripts/me.py</code>; the user may edit it</td></tr>
@@ -212,6 +220,17 @@ reviewed: yyyy-mm-dd     # set by verify; empty while the Summary is a draft
   <li><strong>Search for banned terms</strong> from <code>mapping.yml</code> until zero hits.</li>
   <li><strong>Check and build.</strong> <code>mise -C resume run check</code> validates the YAML against <code>resume/data/resume.schema.json</code>; <code>mise -C resume run build</code> (or <code>version &lt;slug&gt;</code>) compiles the PDF with Typst. The build fails past <code>maxPages</code>; the lowest-ranked bullets are cut first.</li>
 </ol>
+
+<h2 id="to-brag">To brag (optional)</h2>
+<p>Builds <code>evidence/&lt;company&gt;/brag-document.md</code>: a readable account of everything done at one company, grouped by theme across projects, for interviews, reviews, LinkedIn and cover letters. The resume keeps a handful of bullets; the brag document keeps the rest. It is a view of the evidence, never a source: it adds no claim of its own, and verify, to-resume and steer skip it when they list <code>evidence/*/*.md</code>.</p>
+<ol>
+  <li><strong>Read the company's evidence.</strong> Every evidence file except <code>brag-document.md</code>: front matter, Summary, Remarks, Numbers &amp; Impact, Tools and Not mine.</li>
+  <li><strong>Group the themes.</strong> Every Summary bullet goes under exactly one of two to six themes: areas of work that do not overlap, each spanning the years of its projects.</li>
+  <li><strong>Pick the stories.</strong> Three to six projects: ★★★ work first, then a spread across themes, then the most Numbers &amp; Impact. Reviewed files come first.</li>
+  <li><strong>Write the document</strong>: At a glance, Themes, Timeline, Beyond the code, Skills grown, Interview stories (situation, task, action, result) and Not yet confirmed. Every line cites its evidence file and IDs, such as <code>B2</code> or <code>N1</code>. A line from an unreviewed file is marked <code>(draft)</code>; an <code>assessed</code> Impact item appears only under Not yet confirmed.</li>
+  <li><strong>Check it.</strong> The banned-term search from <code>mapping.yml</code> returns zero hits, and every citation names a file and ID that exist.</li>
+</ol>
+<p>Nobody edits the brag document by hand. To change it, change the evidence through verify or steer, then run to-brag again.</p>
 
 <h2 id="review-resume">5 · Review resume</h2>
 <p>Measures the built PDF and writes an HTML review. Every result is measured, except the career adviser's view and reader impressions, which are labelled as opinion.</p>

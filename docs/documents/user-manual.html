@@ -43,6 +43,7 @@ suggestions backed by them. Steps 1–5 below build that reference data.</blockq
   IN --> D
   D --> V["3 · Verify<br/>LLM interviews you"]
   V --> R["4 · To resume<br/>LLM writes resume.yml"]
+  V -. optional .-> BR["To brag<br/>LLM writes the brag document"]
   R --> RV["5 · Review<br/>LLM measures the PDF"]
   RV --> OUT[(resume/build/ PDF)]
   U([you]) --> ST["6 · Steer<br/>you edit, LLM checks against evidence"]
@@ -57,6 +58,7 @@ suggestions backed by them. Steps 1–5 below build that reference data.</blockq
     <tr><td>1 · Configure</td><td>Write <code>mapping.yml</code>, then start ingest</td><td>Clones repos, downloads Jira tickets, counts your commits</td><td><code>raw/&lt;company&gt;/</code></td></tr>
     <tr><td>2 · Distill</td><td>Start distill for one project, review the file</td><td>Reads your code and tickets (or, with no repos, interviews you on your responsibilities), writes a cited, anonymised file with a draft Summary</td><td><code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code></td></tr>
     <tr><td>3 · Verify</td><td>Answer questions, confirm the bullets</td><td>Folds your answers into the file, rewrites the Summary</td><td>Same file, with <code>reviewed:</code> set</td></tr>
+    <tr><td>Optional · To brag</td><td>Start to-brag for one company, read the result</td><td>Groups your evidence by theme, writes a timeline and interview stories</td><td><code>evidence/&lt;company&gt;/brag-document.md</code></td></tr>
     <tr><td>4 · To resume</td><td>Approve the plan, check the bullets</td><td>Writes the resume YAML from the evidence, with a trace comment per bullet, then builds it</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code></td></tr>
     <tr><td>5 · Review</td><td>Read the review, pick the fixes</td><td>Measures the PDF and checks every bullet against its evidence</td><td><code>resume/review/&lt;slug&gt;.html</code></td></tr>
     <tr><td>6 · Steer</td><td>Name the change you want</td><td>Checks each work claim against the evidence, suggests wording, writes the YAML</td><td>The target <code>resume.yml</code></td></tr>
@@ -71,7 +73,7 @@ suggestions backed by them. Steps 1–5 below build that reference data.</blockq
     <tr><td><a href="https://docs.astral.sh/uv/">uv</a></td><td>Runs the Python scripts in <code>scripts/</code> and installs their dependencies</td><td><code>mise install</code> (from <code>mise.toml</code>)</td></tr>
     <tr><td><a href="https://typst.app">Typst</a></td><td>Builds the resume PDF in <code>resume/</code></td><td><code>mise trust resume</code>, then <code>mise -C resume install</code></td></tr>
     <tr><td>poppler</td><td>Gives <code>pdftotext</code>, <code>pdfinfo</code> and <code>pdffonts</code> for the resume review</td><td><code>brew install poppler</code></td></tr>
-    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the seven <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-resume, steer, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
+    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the eight <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-brag, to-resume, steer, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
     <tr><td>git</td><td>Clones and reads your repositories</td><td>Already on macOS with the Xcode command line tools</td></tr>
   </tbody>
 </table>
@@ -79,7 +81,7 @@ suggestions backed by them. Steps 1–5 below build that reference data.</blockq
 URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or <code>ssh -T git@github.com</code>.</p>
 
 <h2 id="setup">Before you start</h2>
-<p>The <a class="term" href="#term-plugin">plugin</a> holds the seven
+<p>The <a class="term" href="#term-plugin">plugin</a> holds the eight
 <a class="term" href="#term-skill">skills</a>.</p>
 <ol>
   <li>Open a terminal at the repository root.</li>
@@ -88,7 +90,7 @@ URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or
   <li>Install the Python dependencies: <code>uv sync</code>.</li>
   <li>Install the <a class="term" href="#term-plugin">plugin</a> for this repository: <code>mise run plugins</code>.</li>
   <li>Start Claude Code: <code>claude</code>.</li>
-  <li>Type <code>/resume-evidence</code> and make sure the seven skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-resume</code>, <code>steer</code>, <code>resume</code>, <code>review-resume</code>.</li>
+  <li>Type <code>/resume-evidence</code> and make sure the eight skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-brag</code>, <code>to-resume</code>, <code>steer</code>, <code>resume</code>, <code>review-resume</code>.</li>
 </ol>
 <p>To try the plugin for one session without installing it, start Claude Code with
 <code>claude --plugin-dir ./.claude-dev</code>.</p>
@@ -402,6 +404,55 @@ mise -C resume run version &lt;slug&gt;   # a version   -&gt; resume/build/&lt;s
 <blockquote><strong>Warning:</strong> the build fails if the resume runs past <code>maxPages</code>
 (default 1). Cut or hide bullets before you raise <code>maxPages</code>.</blockquote>
 
+<h2 id="to-brag">Write a brag document (optional)</h2>
+<p>A <a class="term" href="#term-brag-document">brag document</a> holds all your work at one company in a
+form you can read in one sitting. Use it to prepare for interviews and reviews, or to write a cover
+letter. The resume keeps a few bullets; the brag document keeps the rest, grouped by theme across
+projects. It does not feed the resume.</p>
+
+<blockquote><strong>Warning:</strong> do not edit <code>brag-document.md</code> by hand. The next
+run replaces it. Change the evidence through verify or steer instead.</blockquote>
+
+<ol>
+  <li>Verify the <a class="term" href="#term-evidence-file">evidence files</a> of the company first.</li>
+  <li>Type <code>/resume-evidence:to-brag company-a</code>.</li>
+  <li>If you leave out the company, pick one from the list the LLM shows.</li>
+  <li>Open <code>evidence/company-a/brag-document.md</code>.</li>
+  <li>Read the themes and the interview stories.</li>
+  <li>Read the Not yet confirmed section.</li>
+  <li>For each claim under Not yet confirmed, run <code>/resume-evidence:verify</code> on its evidence file.</li>
+  <li>If a claim is wrong, correct its evidence file through verify or steer.</li>
+  <li>After each change to the evidence, run to-brag again.</li>
+  <li>Commit the brag document when it is correct.</li>
+</ol>
+<p>Each line cites the evidence file and the IDs it comes from, such as <code>B2</code> or
+<code>N1</code>. A line from an unreviewed file is marked <code>(draft)</code>. An assessed
+<a class="term" href="#term-impact-item">Impact item</a> appears only under Not yet confirmed. No
+<a class="term" href="#term-skill">skill</a> uses the brag document to back a resume claim.</p>
+
+<table>
+  <thead><tr><th>Section</th><th>Holds</th></tr></thead>
+  <tbody>
+    <tr><td>At a glance</td><td>Three to five sentences: what you did, the main themes, the strongest results</td></tr>
+    <tr><td>Themes</td><td>Every <a class="term" href="#term-summary">Summary</a> bullet of the company, under one theme each, starred by strength</td></tr>
+    <tr><td>Timeline</td><td>One row per evidence file, newest first: period, project, role, status, headline</td></tr>
+    <tr><td>Beyond the code</td><td>Team enablement, knowledge transfer, rescues, governance, adoption and avoided waste</td></tr>
+    <tr><td>Skills grown</td><td>The tools you first used each year, and where</td></tr>
+    <tr><td>Interview stories</td><td>Three to six projects as situation, task, action and result</td></tr>
+    <tr><td>Not yet confirmed</td><td>Unreviewed files and assessed impact, with what verify must settle</td></tr>
+  </tbody>
+</table>
+<h4>Example prompts: brag document</h4>
+<pre><code class="language-text">/resume-evidence:to-brag company-a
+
+/resume-evidence:to-brag company-a
+I have a backend interview next week. Pick the interview stories from the
+backend and data work first.
+
+/resume-evidence:to-brag company-a
+I verified two more files since the last run. Rebuild the document and
+tell me what moved out of Not yet confirmed.</code></pre>
+
 <h2 id="review">5 · Review the resume</h2>
 <ol>
   <li>Type <code>/resume-evidence:review-resume</code> for the base resume, or <code>/resume-evidence:review-resume &lt;slug&gt;</code> for a version.</li>
@@ -498,6 +549,8 @@ grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></
   <dd>Your share of a repository, per directory: your commit count and your share of <code>git blame</code> lines at HEAD. Distill claims only paths where your share is real.</dd>
   <dt id="term-banned-term-search">Banned-term search</dt>
   <dd>A grep of the evidence file for every real name: internal names, repo names, hosts, the Jira site, clients and people. It passes at zero hits.</dd>
+  <dt id="term-brag-document">Brag document</dt>
+  <dd><code>evidence/&lt;company&gt;/brag-document.md</code>: a readable account of all your work at one company, grouped by theme, that to-brag builds from the evidence files. A view of the evidence, never a source: no resume claim traces to it.</dd>
   <dt id="term-evidence-file">Evidence file</dt>
   <dd>The anonymised, cited record of one project at <code>evidence/&lt;company&gt;/&lt;yyyy&gt;-&lt;id&gt;.md</code>. The ground truth for every resume claim.</dd>
   <dt id="term-mapping">mapping.yml</dt>
@@ -507,7 +560,7 @@ grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></
   <dt id="term-impact-item">Impact item</dt>
   <dd>A row under <code>## Numbers &amp; Impact → ### Impact</code> in an evidence file: one thing the work changed, such as faster, cheaper, safer, adopted or delivered under a deadline. Its kind is <code>fact</code> (the sources prove it), <code>assessed</code> (the LLM's reading of the facts, usable only after you confirm it in verify) or <code>user</code> (your account).</dd>
   <dt id="term-plugin">Plugin</dt>
-  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the seven skills.</dd>
+  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the eight skills.</dd>
   <dt id="term-private-note">Private note</dt>
   <dd><code>raw/&lt;company&gt;/notes/&lt;id&gt;.md</code>: the honest account of what held your work back on one project. It stays local and never reaches the resume. It records facts, never blame of others.</dd>
   <dt id="term-skill">Skill</dt>

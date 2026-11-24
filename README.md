@@ -30,18 +30,21 @@ them. The pipeline below builds that reference data.
 The step-by-step guide is
 [`docs/documents/user-manual.html`](docs/documents/user-manual.html). It covers the
 prerequisites, installing the plugin, writing `mapping.yml`, running ingest, distill and
-verify, building the resume with `to-resume`, `review-resume` and `steer`, and troubleshooting.
+verify, building the resume with `to-resume`, `review-resume` and `steer`, building a brag
+document with `to-brag`, and troubleshooting.
 
 ## How it works
 
 Six steps, each a Claude Code skill in the `resume-evidence` plugin. The first three build the
-evidence; the last three build the resume from it.
+evidence; the last three build the resume from it. One optional skill, `to-brag`, branches off
+after verify: it turns one company's evidence into a brag document and does not feed the resume.
 
 | Step | Skill | Output |
 | ---- | ----- | ------ |
 | 1. Ingest | `/resume-evidence:ingest <company>` | `raw/<company>/repos/<id>/<slug>/` clones, `commit-summary.json`, `jira/<yyyy>.json` and `jira/merged.json`, updated `TODO.md` |
 | 2. Distill | `/resume-evidence:distill <company> <id>` | `evidence/<company>/<yyyy>-<id>.md` with a draft Summary |
 | 3. Verify | `/resume-evidence:verify <company> <id>` | the same evidence file, Summary confirmed, `reviewed:` set |
+| Optional, after 3: To brag | `/resume-evidence:to-brag <company>` | `evidence/<company>/brag-document.md`: themes, timeline, interview stories; a view of evidence, never a source |
 | 4. To resume | `/resume-evidence:to-resume [base \| <slug>]` | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, and the PDF Typst builds in `resume/build/<slug>/` |
 | 5. Review resume | `/resume-evidence:review-resume [slug] [template]` | `resume/review/<slug>.html` (`index.html` for base) |
 | 6. Steer | `/resume-evidence:steer [base \| <slug>] <what to change>` | the target `resume.yml`, changed as you direct |
@@ -49,7 +52,8 @@ evidence; the last three build the resume from it.
 ```
 mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─▶ evidence (reviewed)
                             ▲                                         │
-  no repos: you ─interview──┘                                         │
+  no repos: you ─interview──┘                                         ├─to-brag─▶ brag-document.md
+                                                                      │
                      review page ◀─review-resume─ PDF ◀─Typst─ resume.yml ◀─to-resume
                                                                   ▲
                                           you ─steer (checked against evidence)
@@ -99,11 +103,21 @@ mapping.yml ─ingest─▶ raw/ ─distill─▶ evidence (draft) ─verify─�
    - An unbacked claim you keep is recorded in evidence with a `[me: yyyy-mm-dd]` citation
      first.
 
+**Optional: to brag** (`/resume-evidence:to-brag <company>`), any time after verify
+- The agent reads every evidence file of one company and writes
+  `evidence/<company>/brag-document.md`: at a glance, themes across projects, a timeline, work
+  beyond the code, skills grown, interview stories, and what is not yet confirmed.
+- It is a view of the evidence, never a source: every line cites an evidence file and its IDs,
+  and no skill uses it to back a resume claim. Do not edit it by hand: change the evidence, then
+  run to-brag again.
+- Lines from unreviewed files are marked `(draft)`, or the banner says so when every file is a
+  draft. Assessed impact appears only under Not yet confirmed.
+
 `/resume-evidence:resume` holds the writing rules the agent applies to every bullet: British
 English, a plain verb first, one result, 25 words or fewer. You can also call it on its own to
 proofread any resume text.
 
-The design of all six steps, with each step's inputs and outputs, is in
+The design of all six steps and to-brag, with each step's inputs and outputs, is in
 [`docs/documents/resume-generation-workflow.html`](docs/documents/resume-generation-workflow.html).
 The resume layout, YAML keys and build commands are in [`resume/README.md`](resume/README.md).
 

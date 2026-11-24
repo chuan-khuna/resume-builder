@@ -41,7 +41,7 @@ Read these first:
 
    _Done when_ every item is a user fact or a work claim.
 
-3. **Match each work claim to evidence.** Search `evidence/*/*.md`: the Summary bullets, What I
+3. **Match each work claim to evidence.** Search `evidence/*/*.md`, except `brag-document.md`: the Summary bullets, What I
    Did, Numbers & Impact, Tools and the Remarks. Grade the claim:
    - **backed**: What I Did supports every part, each number is in Numbers with the same
      scope, and each impact claim is a `fact`, `user` or `confirmed` Impact item;

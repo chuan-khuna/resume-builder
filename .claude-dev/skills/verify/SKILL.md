@@ -18,7 +18,7 @@ sections before it reaches a bullet.
 ## Steps
 
 1. **Pick the file.** Take `<company>` and `<id>`, or a path, from the user's message. If none
-   is given, list `evidence/*/*.md` with, for each, whether it has `reviewed:` and how many Open
+   is given, list `evidence/*/*.md` (except `brag-document.md`) with, for each, whether it has `reviewed:` and how many Open
    questions it holds, and ask which to verify. Read the whole file.
 
 2. **Build the question list.** One question per gap:

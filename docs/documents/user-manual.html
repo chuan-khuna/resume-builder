@@ -515,12 +515,13 @@ lesson that helps any user goes into the skill itself, and the LLM tells you wha
 <p><code>wiki/</code> is a knowledge base the LLM writes for you: job ads, companies,
 technologies, articles and talks you want to remember. You add sources and ask questions; the
 LLM writes and links the notes. Open <code>wiki/</code> as an Obsidian vault to browse them.
-A wiki note never backs a resume bullet; only evidence does. Notes are committed, so they never
-hold client names, credentials or anything else from <code>raw/</code>; lint fails on any term
-from your <code>mapping.yml</code> files. The rules are in
+A wiki note never backs a resume bullet; only evidence does. Sources, notes and logs are all
+committed, so they never hold client names, credentials or anything else from
+<code>raw/</code>; lint fails on any term from your <code>mapping.yml</code> files. The rules are in
 <code>wiki/CLAUDE.md</code>.</p>
 <ol>
-  <li>Save a source to <code>wiki/raw/</code> as <code>&lt;yyyy-mm-dd&gt;-&lt;slug&gt;.&lt;ext&gt;</code>. The LLM never edits this folder.</li>
+  <li>Save a public source to <code>wiki/raw/</code> as <code>&lt;yyyy-mm-dd&gt;-&lt;slug&gt;.&lt;ext&gt;</code>. The LLM never edits this folder.</li>
+  <li>If a source is private, such as a call transcript or an internal doc, do not save it. <code>wiki/raw/</code> is committed.</li>
   <li>Type <code>/resume-evidence:wiki ingest</code>. The LLM tells you the key points; say what to emphasise.</li>
   <li>To ask a question, type <code>/resume-evidence:wiki query</code>, then the question. Keep a good answer as a note.</li>
   <li>From time to time, type <code>/resume-evidence:wiki lint</code> to find contradictions, orphans and gaps.</li>

@@ -25,6 +25,9 @@ sections before it reaches a bullet.
    - every item under Open questions;
    - frontmatter values marked "to confirm", or a `period`/`role` git could only guess;
    - every Numbers row that is configured or estimated, or a measured value with no baseline;
+   - every `assessed` Impact item: is the reading right, and may it back a bullet? Ask for the
+     numbers that would turn it into a measured row (for a rushed delivery: the deadline and
+     who set it; for a performance or cost gain: the before and after);
    - every What I Did bullet with no outcome: ask for the before → after, the scale (users,
      requests, data volume, clients), the money or hours saved, and whether it shipped;
    - every Not mine item whose author is uncertain;
@@ -44,7 +47,10 @@ sections before it reaches a bullet.
 
 4. **Fold the answers in.** Edit the evidence sections, citing each answer `[me: yyyy-mm-dd]`:
    - a confirmed or corrected claim → its What I Did bullet, Not mine item or frontmatter field;
-   - a number → a Numbers row with its scope, marked user-reported;
+   - a number → a Numbers row with its ID, Kind and scope, marked user-reported;
+   - an `assessed` Impact item the user confirms → Status `confirmed`, with the answer cited in
+     its Basis; one the user rejects → delete the row (its basis rows stay); a new outcome →
+     a `user` Impact item;
    - a "don't know" → stays under Open questions, suffixed "(asked yyyy-mm-dd: unknown)";
    - a limit of my own work → `raw/<company>/notes/<id>.md`, by the Private notes rules in
      `evidence.md`; if it narrows a bullet's claim, also a neutral caveat Remark;
@@ -54,8 +60,10 @@ sections before it reaches a bullet.
    Remove each answered item from Open questions.
 
 5. **Rewrite `## Summary`.** Follow the Summary rules in `evidence.md`, starting from distill's
-   draft. Replace the section whole and drop every `(draft)` mark. _Done when_ every bullet has
-   a Remark naming the What I Did bullet it traces to.
+   draft: areas that do not overlap, starred bullets, and confirmed Impact items now usable in
+   bullets. A file in the older format is migrated here, as `evidence.md` says. Replace the
+   section whole and drop every `(draft)` mark. _Done when_ every bullet has a Remark naming the
+   What I Did bullet and the Numbers and Impact IDs it uses.
 
 6. **Anonymise.** Apply the anonymisation rules in `evidence.md` to the whole file, then run the
    banned-term search. Answers are where new client and person names arrive. _Done when_ the
@@ -65,8 +73,13 @@ sections before it reaches a bullet.
    private note.
    Apply corrections, then set `reviewed:` to today. _Done when_ the user confirms the file.
 
+8. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). The facts the
+   user gives go into the evidence file, not `wiki/me.md`. Typical lessons here: how they like to be
+   interviewed (round size, which questions to skip), and Summary wording they rewrote.
+
 ## Completion
 
 Every gap from step 2 is answered or left as a dated unknown, every answer is cited in the
-evidence sections, `## Summary` holds confirmed bullets that each carry a Remark, the
+evidence sections, `## Summary` holds confirmed bullets grouped by area that each carry a
+Remark, no Impact item is left `assessed`, the
 banned-term search returns zero hits, and `reviewed:` holds the date the user confirmed it.

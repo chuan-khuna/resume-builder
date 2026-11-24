@@ -1,7 +1,8 @@
 # Evidence workflow: shared reference
 
 Read by the `ingest`, `distill` and `verify` skills. The evidence file's own format is in
-[`evidence.md`](evidence.md).
+[`evidence.md`](evidence.md). How every skill learns from the user is in
+[`learning.md`](learning.md).
 
 ## Steps
 
@@ -12,8 +13,9 @@ Read by the `ingest`, `distill` and `verify` skills. The evidence file's own for
 | 3. Verify | `/resume-evidence:verify <company> <id>` | the evidence file, the user's answers | the same file, Summary confirmed, `reviewed:` set |
 | 4. To resume | `/resume-evidence:to-resume [base \| <slug>]` | evidence files, the user's job facts | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, built PDF |
 | 5. Review resume | `/resume-evidence:review-resume [slug] [template]` | the built PDF and its YAML | `resume/review/<slug>.html` (`index.html` for base) |
+| 6. Steer | `/resume-evidence:steer [base \| <slug>] <what to change>` | the user's changes, evidence files | the target `resume.yml`; evidence files, for accounts the user gives |
 
-Steps 4 and 5 use the `resume` skill for wording. Their rules are in each skill and in
+Steps 4–6 use the `resume` skill for wording. Their rules are in each skill and in
 `resume/README.md`.
 
 ## Layout
@@ -33,6 +35,8 @@ raw/                                   # gitignored except the example
     └── repos/<id>/<slug>/             # git clones of the sources, named by slug (ingest)
 evidence/<company>/<yyyy>-<id>.md      # committed, anonymised
 scripts/                               # committed helpers
+wiki/                                  # LLM wiki: raw/ (gitignored), notes/, logs/
+└── me.md                              # the user's preferences and needs (gitignored)
 ```
 
 - `raw/` holds real client names and a Jira token. It stays local.

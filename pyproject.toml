@@ -17,3 +17,6 @@ resume-builder = "resume_builder:main"
 [build-system]
 requires = ["uv_build>=0.13.7,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.uv]
+package = false # scripts only: nothing to build or install

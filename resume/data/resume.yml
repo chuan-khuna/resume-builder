@@ -23,27 +23,28 @@ experiences:
     company: The Mather
     time: Jul 2022 - Present
     bullets:
-      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B2 (draft)
-      - label: RAG evaluation
-        text: Compared a new RAG source with the existing knowledge base on the client's test questions, and kept it switched off when it scored 56.8% recall@1 against 91.3%.
-      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B1 (draft)
-      - label: RAG knowledge source
-        text: Built a second RAG source for a human-in-the-loop support chatbot, with a background indexer that chunks and embeds uploaded documents into Qdrant and streams its progress.
-      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B1 (draft)
-      - label: Video analytics
-        text: Designed and built a demo-stage road-safety video analytics system on footage from 3 camera sites, with queued detection workers, TimescaleDB storage, and a Django REST API.
-      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B3 (draft)
-      - label: Object detection
-        text: Trained an RF-DETR accident-detection model to replace a YOLO model with frequent false positives, and built a lane-straddling detector from per-lane polygon zones.
-      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B2 (draft)
-      - label: Pipeline migration
-        text: Migrated the detection pipeline from Kafka frame streaming to a RabbitMQ task queue when requirements moved to upload-then-process, with heartbeats for multi-minute jobs.
+      # evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B1 (draft)
+      # + evidence/themather/2025-realtime-cctv-people-and-security-analytics-platform.md B2 (draft)
+      # + evidence/themather/2024-event-booth-visitor-cv-analytics.md B2 (draft)
+      - label: Computer vision
+        text: Built a shelf-photo analytics platform with YOLO and DINOv2 on serverless GPUs, face-recognition check-in on InsightFace and pgvector, and HDBSCAN face clustering to estimate unique visitors.
+      # evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B5 (draft)
+      # + evidence/themather/2026-hitl-customer-support-chatbot-rag.md B2 (draft)
+      - label: Model evaluation
+        text: Traced a detection plateau to the data by training two architectures, and kept a new RAG source off after it scored 56.8% recall@1 against 91.3%.
+      # evidence/themather/2025-time-series-sensor-data-aggregation-pipeline.md B1 + B3 (draft)
+      # + evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md B1 + B2 (draft)
+      - label: Data pipelines
+        text: Built Airflow pipelines for energy telemetry, legacy point-of-sale sync and RFM customer segmentation, and traced lost data points to 9 jobs firing in the same minute.
+      # evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B2 (draft)
+      # + evidence/themather/2025-ai-road-safety-video-analytics-platform.md B2 (draft)
+      # + evidence/themather/2025-voice-video-media-merge-service.md B1 + B2 (draft)
+      - label: Backend systems
+        text: Built Django REST backends with Celery and RabbitMQ queues for multi-minute inference jobs, and an ffmpeg video worker that picks NVIDIA or Apple encoders automatically.
       # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B4 (draft)
-      - label: LLM evaluation
-        text: Built an eval runner that replays the client's 633-case multi-turn test set against the support chatbot, and a React and TypeScript app that compares runs.
-      # evidence/themather/2026-parallel-llm-serving-engine-evaluation.md B1 (draft)
-      - label: LLM serving
-        text: Built an asyncio load tester for OpenAI-compatible LLM servers, which showed Ollama serving 4 concurrent requests one at a time on a laptop.
+      # + evidence/themather/2026-parallel-llm-serving-engine-evaluation.md B1 (draft)
+      - label: LLM tooling
+        text: Built an eval runner for a client's 633-case chatbot test set, and a load tester that showed Ollama serving 4 concurrent requests one at a time.
 
 projects:
   - id: the-bazaar-tracker
@@ -110,18 +111,26 @@ projects:
     hidden: true
 
 # Skills from the tools: lines of
+#   evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md
+#   evidence/themather/2025-realtime-cctv-people-and-security-analytics-platform.md
+#   evidence/themather/2024-event-booth-visitor-cv-analytics.md
+#   evidence/themather/2025-time-series-sensor-data-aggregation-pipeline.md
+#   evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md
 #   evidence/themather/2025-ai-road-safety-video-analytics-platform.md
+#   evidence/themather/2025-voice-video-media-merge-service.md
 #   evidence/themather/2026-hitl-customer-support-chatbot-rag.md
 #   evidence/themather/2026-parallel-llm-serving-engine-evaluation.md
 skills:
   - category: Languages
     items: [Python, TypeScript]
-  - category: Data, ML and LLM
-    items: [PyTorch, YOLO, RF-DETR, OpenCV, Supervision, EasyOCR, Weights & Biases, Qdrant, Langfuse, Ollama, vLLM]
-  - category: Backend and web
-    items: [Django, Django REST Framework, PostgreSQL, TimescaleDB, Redis, Kafka, RabbitMQ, React, Streamlit]
-  - category: DevOps and tooling
-    items: [Docker Compose, uv, just, CUDA]
+  - category: Computer vision and ML
+    items: [PyTorch, YOLO, RF-DETR, DINOv2, InsightFace, DeepFace, scikit-learn, ONNX Runtime, OpenCV, Supervision, Modal]
+  - category: LLM and vector search
+    items: [Qdrant, pgvector, ChromaDB, Langfuse, Ollama, vLLM]
+  - category: Data and backend
+    items: [Airflow, pandas, Django REST Framework, PostgreSQL, TimescaleDB, MongoDB, InfluxDB, Celery, RabbitMQ, Redis, Kafka, ffmpeg]
+  - category: Frontend and DevOps
+    items: [Next.js, React, Streamlit, Docker Compose, uv, CUDA]
 
 educations:
   - id: kmutnb-computer-engineering

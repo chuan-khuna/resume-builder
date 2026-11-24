@@ -142,6 +142,9 @@ The skills are in the `resume-evidence` plugin in `../.claude-dev/skills/`:
 
 - `/resume-evidence:to-resume [base | <slug>]` writes `data/resume.yml` or a
   version from the evidence files, with a trace comment above each bullet.
+- `/resume-evidence:steer [base | <slug>] <what to change>` changes the YAML
+  as you direct (sections, projects, education, the bullets you want) and
+  checks each work claim against the evidence, suggesting wording it supports.
 - `/resume-evidence:resume` writes and proofreads resume text in British
   English. Copied from [chuan-khuna/altr-stack](https://github.com/chuan-khuna/altr-stack).
 - `/resume-evidence:review-resume [slug] [template]` measures a built resume

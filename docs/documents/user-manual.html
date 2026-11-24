@@ -23,6 +23,18 @@ confirm the <a class="term" href="#term-summary">Summary</a>. Last, it writes th
 from the evidence files and reviews the built PDF. Every resume bullet traces to a cited claim
 in an evidence file.</p>
 
+<blockquote><strong>Fastest way to a resume:</strong> edit the resume directly. You need no skill
+and no evidence file for this.
+<ol>
+  <li>Write the content in <code>resume/data/resume.yml</code>: header, skills, experience, projects, education.</li>
+  <li>To change the layout, edit a template in <code>resume/templates/</code>: <code>classic.typ</code> or <code>rail.typ</code>.</li>
+  <li>Build the PDF: <code>mise -C resume run build</code>.</li>
+  <li>Open <code>resume/build/base/classic.pdf</code>.</li>
+</ol>
+<code>raw/</code> and <code>evidence/</code> are reference data for you: what you did, with proof.
+Read them to find and check your claims, or type <code>/resume-evidence:steer</code> to get
+suggestions backed by them. Steps 1–5 below build that reference data.</blockquote>
+
 <figure class="diagram" data-diagram data-title="From repositories to a reviewed resume" data-height="360">
 <script type="text/plain" class="mermaid-src">flowchart LR
   A["1 · Configure<br/>you edit mapping.yml"] --> I["ingest<br/>LLM loads repos and Jira"]
@@ -33,6 +45,8 @@ in an evidence file.</p>
   V --> R["4 · To resume<br/>LLM writes resume.yml"]
   R --> RV["5 · Review<br/>LLM measures the PDF"]
   RV --> OUT[(resume/build/ PDF)]
+  U([you]) --> ST["6 · Steer<br/>you edit, LLM checks against evidence"]
+  ST --> OUT
   class OUT accent
 </script>
 </figure>
@@ -45,6 +59,7 @@ in an evidence file.</p>
     <tr><td>3 · Verify</td><td>Answer questions, confirm the bullets</td><td>Folds your answers into the file, rewrites the Summary</td><td>Same file, with <code>reviewed:</code> set</td></tr>
     <tr><td>4 · To resume</td><td>Approve the plan, check the bullets</td><td>Writes the resume YAML from the evidence, with a trace comment per bullet, then builds it</td><td><code>resume/data/resume.yml</code> or <code>resume/versions/&lt;slug&gt;/resume.yml</code></td></tr>
     <tr><td>5 · Review</td><td>Read the review, pick the fixes</td><td>Measures the PDF and checks every bullet against its evidence</td><td><code>resume/review/&lt;slug&gt;.html</code></td></tr>
+    <tr><td>6 · Steer</td><td>Name the change you want</td><td>Checks each work claim against the evidence, suggests wording, writes the YAML</td><td>The target <code>resume.yml</code></td></tr>
   </tbody>
 </table>
 
@@ -56,7 +71,7 @@ in an evidence file.</p>
     <tr><td><a href="https://docs.astral.sh/uv/">uv</a></td><td>Runs the Python scripts in <code>scripts/</code> and installs their dependencies</td><td><code>mise install</code> (from <code>mise.toml</code>)</td></tr>
     <tr><td><a href="https://typst.app">Typst</a></td><td>Builds the resume PDF in <code>resume/</code></td><td><code>mise trust resume</code>, then <code>mise -C resume install</code></td></tr>
     <tr><td>poppler</td><td>Gives <code>pdftotext</code>, <code>pdfinfo</code> and <code>pdffonts</code> for the resume review</td><td><code>brew install poppler</code></td></tr>
-    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the six <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-resume, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
+    <tr><td><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></td><td>Runs the seven <a class="term" href="#term-skill">skills</a>: ingest, distill, verify, to-resume, steer, resume, review-resume</td><td><code>curl -fsSL https://claude.ai/install.sh | bash</code>, then run <code>claude</code> once to sign in</td></tr>
     <tr><td>git</td><td>Clones and reads your repositories</td><td>Already on macOS with the Xcode command line tools</td></tr>
   </tbody>
 </table>
@@ -64,7 +79,7 @@ in an evidence file.</p>
 URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or <code>ssh -T git@github.com</code>.</p>
 
 <h2 id="setup">Before you start</h2>
-<p>The <a class="term" href="#term-plugin">plugin</a> holds the six
+<p>The <a class="term" href="#term-plugin">plugin</a> holds the seven
 <a class="term" href="#term-skill">skills</a>.</p>
 <ol>
   <li>Open a terminal at the repository root.</li>
@@ -73,7 +88,7 @@ URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or
   <li>Install the Python dependencies: <code>uv sync</code>.</li>
   <li>Install the <a class="term" href="#term-plugin">plugin</a> for this repository: <code>mise run plugins</code>.</li>
   <li>Start Claude Code: <code>claude</code>.</li>
-  <li>Type <code>/resume-evidence</code> and make sure the six skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-resume</code>, <code>resume</code>, <code>review-resume</code>.</li>
+  <li>Type <code>/resume-evidence</code> and make sure the seven skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-resume</code>, <code>steer</code>, <code>resume</code>, <code>review-resume</code>.</li>
 </ol>
 <p>To try the plugin for one session without installing it, start Claude Code with
 <code>claude --plugin-dir ./.claude-dev</code>.</p>
@@ -180,7 +195,8 @@ You can run ingest again at any time to pick up new commits.</p>
 <pre><code class="language-sh">uv run scripts/ingest_repos.py company-a   # clone or fetch the repos, count your commits
 uv run scripts/ingest_jira.py company-a    # download your Jira tickets (needs jira.api_token)
 uv run scripts/jira_tickets.py company-a retail-shelf-cv   # one project's tickets
-uv run scripts/jira_tickets.py company-a --unmapped        # tickets no project selects</code></pre>
+uv run scripts/jira_tickets.py company-a --unmapped        # tickets no project selects
+uv run scripts/my_commits.py company-a                     # your commits as CSV, in raw/company-a/</code></pre>
 <h4>Example prompts: ingest</h4>
 <pre><code class="language-text">/resume-evidence:ingest company-a
 
@@ -248,10 +264,10 @@ first commit in the project. Its sections:</p>
   <thead><tr><th>Section</th><th>Holds</th></tr></thead>
   <tbody>
     <tr><td>Frontmatter</td><td>Title, period, role, status (<code>shipped</code>, <code>wip</code>, <code>dropped</code>), the <code>verified:</code> commit read per repo, and <code>reviewed:</code></td></tr>
-    <tr><td>Summary</td><td>Three to six resume bullets and a Remark for each; a draft until verify</td></tr>
+    <tr><td>Summary</td><td>Resume bullets grouped by area of work, starred by strength (★★★, ★★, ★), and a Remark for each; a draft until verify</td></tr>
     <tr><td>Context</td><td>Who the project was for, the problem, rough scale</td></tr>
     <tr><td>What I Did</td><td>One cited bullet per thing you owned, decided or built</td></tr>
-    <tr><td>Numbers</td><td>Measured outcomes and scale, each with its scope and source</td></tr>
+    <tr><td>Numbers &amp; Impact</td><td>Every figure once, with its kind, scope and source; and each <a class="term" href="#term-impact-item">Impact item</a>: what the work changed, as a fact, an assessment or your account</td></tr>
     <tr><td>Tools</td><td>Technology actually used, and what was only studied</td></tr>
     <tr><td>Architecture</td><td>A Mermaid diagram and a short explanation</td></tr>
     <tr><td>Not mine</td><td>Parts others built, named by role</td></tr>
@@ -293,6 +309,7 @@ It then rewrites the <a class="term" href="#term-summary">Summary</a> as confirm
   <li>If you leave out the arguments, pick a file from the list. The list shows which files are reviewed and how many open questions each has.</li>
   <li>Answer each round of questions. A round has four questions or fewer.</li>
   <li>If you do not know an answer, say "don't know".</li>
+  <li>For each assessed <a class="term" href="#term-impact-item">Impact item</a>, confirm it or reject it. A rejected item is deleted; the facts under it stay.</li>
   <li>To end the interview early, tell the LLM to stop.</li>
   <li>Read the rewritten Summary and the diff of the evidence sections.</li>
   <li>Correct anything wrong.</li>
@@ -332,9 +349,10 @@ names a repository or Jira project not in <code>mapping.yml</code>, the LLM tell
 records it in <a class="term" href="#term-todo">TODO.md</a>.</p>
 
 <h3>Use the result</h3>
-<p>Copy the bullets under <code>## Summary → ### Resume bullets</code> into your resume. Read the
-Remarks before you choose: each one names the claim the bullet traces to, its strength, its caveat
-and the roles it fits.</p>
+<p>Pick bullets from <code>## Summary</code> for your resume. They are grouped by area of work; start
+with the ★★★ ones. Read the Remarks before you choose: each one names the claim the bullet traces
+to, the numbers and impact it uses, its caveat and the roles it fits. Leave out any impact that is
+still <code>assessed</code>: confirm it in verify first.</p>
 
 <h2 id="to-resume">4 · Write the resume</h2>
 <p>The resume lives in <code>resume/</code>. Its content is one YAML file: <code>resume/data/resume.yml</code>
@@ -389,7 +407,7 @@ mise -C resume run version &lt;slug&gt;   # a version   -&gt; resume/build/&lt;s
   <li>Type <code>/resume-evidence:review-resume</code> for the base resume, or <code>/resume-evidence:review-resume &lt;slug&gt;</code> for a version.</li>
   <li>Open <code>resume/review/&lt;slug&gt;.html</code> in a browser. The base resume writes <code>index.html</code>.</li>
   <li>Fix every <code>fail</code> row first. Start with the Evidence traceability group.</li>
-  <li>Apply the fixes you agree with through <code>/resume-evidence:to-resume</code>.</li>
+  <li>Apply the fixes you agree with through <code>/resume-evidence:to-resume</code> or <code>/resume-evidence:steer</code>.</li>
   <li>Run the review again.</li>
 </ol>
 <p>The review measures the PDF for screening, CV standards, readability, format, ATS, contrast and
@@ -406,6 +424,59 @@ keyword match with the job ad.
 Apply fixes 1 to 3 from resume/review/2026-dec-acme-ml.html. Skip fix 4:
 I keep the projects section.</code></pre>
 
+
+<h2 id="steer">6 · Steer the resume</h2>
+<p>Use steer to change the resume yourself: sections, their order, a project, an education line,
+or the experience bullet you want to write. The LLM checks each work claim against the evidence
+and suggests wording the evidence supports.</p>
+<ol>
+  <li>Type <code>/resume-evidence:steer</code>, then the change you want. Add a slug to change a version.</li>
+  <li>Read the grade of each work claim: backed, stretched or unbacked.</li>
+  <li>For a stretched claim, choose the suggested rewrite or leave the claim out.</li>
+  <li>For an unbacked claim, give your account to record in evidence, or leave the claim out.</li>
+  <li>Read the page images and the YAML diff.</li>
+</ol>
+<p>Sections, education, activities, interests and personal projects need no evidence. A claim
+about your work always traces to an evidence file. If no evidence file fits, run
+<code>/resume-evidence:distill</code> in interview mode first.</p>
+<h4>Example prompts: steer</h4>
+<pre><code class="language-text">/resume-evidence:steer
+Put Projects above Experience, and hide the POS rewrite project.
+
+/resume-evidence:steer
+Add a bullet: "Led the move from Kafka to RabbitMQ, cutting failed jobs by half."
+
+/resume-evidence:steer 2026-dec-acme-ml
+Add a data-engineering bullet. Suggest the strongest one the evidence supports.</code></pre>
+
+<h3 id="learning">How the pipeline learns your preferences</h3>
+<p>Every skill ends with a Learn step. When you steer, correct or reject something, the LLM
+records it as a dated bullet in <code>wiki/me.md</code>. <code>wiki/me.md</code> is
+gitignored, and <code>CLAUDE.md</code> loads it in every session, so later runs follow it. A
+lesson that helps any user goes into the skill itself, and the LLM tells you what it changed.</p>
+<ol>
+  <li>To read your preferences, run <code>uv run scripts/me.py show</code>.</li>
+  <li>To add one yourself, run <code>uv run scripts/me.py add preference "&lt;text&gt;"</code>.</li>
+  <li>To change or delete one, edit <code>wiki/me.md</code>.</li>
+</ol>
+
+<h2 id="wiki">Wiki</h2>
+<p><code>wiki/</code> is a knowledge base the LLM writes for you: job ads, companies,
+technologies, articles and talks you want to remember. You add sources and ask questions; the
+LLM writes and links the notes. Open <code>wiki/</code> as an Obsidian vault to browse them.
+A wiki note never backs a resume bullet; only evidence does. Notes are committed, so they never
+hold client names, credentials or anything else from <code>raw/</code>; lint fails on any term
+from your <code>mapping.yml</code> files. The rules are in
+<code>wiki/CLAUDE.md</code>.</p>
+<ol>
+  <li>Save a source to <code>wiki/raw/</code> as <code>&lt;yyyy-mm-dd&gt;-&lt;slug&gt;.&lt;ext&gt;</code>. The LLM never edits this folder.</li>
+  <li>Type <code>/resume-evidence:wiki ingest</code>. The LLM tells you the key points; say what to emphasise.</li>
+  <li>To ask a question, type <code>/resume-evidence:wiki query</code>, then the question. Keep a good answer as a note.</li>
+  <li>From time to time, type <code>/resume-evidence:wiki lint</code> to find contradictions, orphans and gaps.</li>
+</ol>
+<pre><code class="language-sh">uv run scripts/wiki.py pending   # sources not yet ingested
+uv run scripts/wiki.py lint      # broken links, index gaps, bad frontmatter, sensitive terms
+grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></pre>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 <table>
@@ -433,8 +504,10 @@ I keep the projects section.</code></pre>
   <dd>The configuration for one company at <code>raw/&lt;company&gt;/mapping.yml</code>. Only you edit it.</dd>
   <dt id="term-open-question">Open question</dt>
   <dd>A gap in an evidence file that git and Jira cannot answer. Verify asks you each one.</dd>
+  <dt id="term-impact-item">Impact item</dt>
+  <dd>A row under <code>## Numbers &amp; Impact → ### Impact</code> in an evidence file: one thing the work changed, such as faster, cheaper, safer, adopted or delivered under a deadline. Its kind is <code>fact</code> (the sources prove it), <code>assessed</code> (the LLM's reading of the facts, usable only after you confirm it in verify) or <code>user</code> (your account).</dd>
   <dt id="term-plugin">Plugin</dt>
-  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the six skills.</dd>
+  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the seven skills.</dd>
   <dt id="term-private-note">Private note</dt>
   <dd><code>raw/&lt;company&gt;/notes/&lt;id&gt;.md</code>: the honest account of what held your work back on one project. It stays local and never reaches the resume. It records facts, never blame of others.</dd>
   <dt id="term-skill">Skill</dt>
@@ -442,7 +515,7 @@ I keep the projects section.</code></pre>
   <dt id="term-trace-comment">Trace comment</dt>
   <dd>A YAML comment above a resume bullet that names its evidence file and Summary bullet, for example <code># evidence/company-a/2025-retail-shelf-cv.md B2</code>.</dd>
   <dt id="term-summary">Summary</dt>
-  <dd>The top section of an evidence file: three to six resume bullets and their Remarks. A draft until verify sets <code>reviewed:</code>.</dd>
+  <dd>The top section of an evidence file: resume bullets grouped by area of work, starred by strength, with their Remarks. A pool the resume picks from; a draft until verify sets <code>reviewed:</code>.</dd>
   <dt id="term-todo">TODO.md</dt>
   <dd><code>raw/&lt;company&gt;/TODO.md</code>: projects to add to <code>mapping.yml</code> and leads for distill.</dd>
 </dl>

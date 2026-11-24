@@ -105,15 +105,11 @@ def trim(issue: dict) -> dict:
     parent = f.get("parent")
     parent_type = name_of((parent or {}).get("fields", {}).get("issuetype"))
     epic = None
-    # The parent's type is missing from some MCP views. In Jira's hierarchy the parent of a
-    # ticket that is not a sub-task is an epic, so infer it.
-    if (
-        parent
-        and (parent_type or "").lower() == "epic"
-        or parent
-        and not parent_type
-        and not is_subtask(f.get("issuetype"))
-    ):
+    # In Jira's hierarchy the parent of a ticket that is not a sub-task sits at the epic level,
+    # whatever the site names that level ("Epic", or a custom type such as "Project"). The
+    # parent's type is also missing from some MCP views. So any parent of a non-sub-task is
+    # the epic; a sub-task's parent is a story or task.
+    if parent and ((parent_type or "").lower() == "epic" or not is_subtask(f.get("issuetype"))):
         epic = {"key": parent.get("key"), "title": parent.get("fields", {}).get("summary")}
     description = f.get("description")
     detail = (plain(description) if isinstance(description, str) else adf_text(description)).strip()

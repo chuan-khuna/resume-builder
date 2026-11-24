@@ -23,28 +23,41 @@ experiences:
     company: The Mather
     time: Jul 2022 - Present
     bullets:
-      # evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B1 (draft)
+      # evidence/themather/2025-ai-road-safety-video-analytics-platform.md B1 + B3 (draft)
       # + evidence/themather/2025-realtime-cctv-people-and-security-analytics-platform.md B2 (draft)
-      # + evidence/themather/2024-event-booth-visitor-cv-analytics.md B2 (draft)
+      # + evidence/themather/2026-classroom-video-attention-and-survey-analysis-system.md B1 (draft)
+      # + evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B1 + B5 (draft)
       - label: Computer vision
-        text: Built a shelf-photo analytics platform with YOLO and DINOv2 on serverless GPUs, face-recognition check-in on InsightFace and pgvector, and HDBSCAN face clustering to estimate unique visitors.
-      # evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B5 (draft)
-      # + evidence/themather/2026-hitl-customer-support-chatbot-rag.md B2 (draft)
-      - label: Model evaluation
-        text: Traced a detection plateau to the data by training two architectures, and kept a new RAG source off after it scored 56.8% recall@1 against 91.3%.
-      # evidence/themather/2025-time-series-sensor-data-aggregation-pipeline.md B1 + B3 (draft)
-      # + evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md B1 + B2 (draft)
-      - label: Data pipelines
-        text: Built Airflow pipelines for energy telemetry, legacy point-of-sale sync and RFM customer segmentation, and traced lost data points to 9 jobs firing in the same minute.
-      # evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B2 (draft)
+        text: Build vision pipelines for vehicle and accident detection, face-recognition check-in, classroom attention, and retail shelves, and train detection models with YOLO and RF-DETR.
+      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B1 + B4 (draft)
+      # + evidence/themather/2026-chatbot-core-template-agent-framework-research.md B1 (draft)
+      - label: LLM applications
+        text: Build a Qdrant RAG source and an evaluation runner for a client's support chatbot. Prototype a reusable chatbot core that client projects install as a versioned package.
+      # evidence/themather/2023-line-crm-loyalty-rfm-segmentation.md B1 (draft)
+      # + evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md B2 (draft)
+      # + evidence/themather/2024-event-booth-visitor-cv-analytics.md B2 (draft)
+      # + evidence/themather/2023-survey-engagement-text-analytics.md B1 + B3 (draft)
+      # + evidence/themather/2026-classroom-video-attention-and-survey-analysis-system.md B3 (draft)
+      - label: Data science
+        text: Analyse customer data with Recency, Frequency, Monetary (RFM) segmentation, visitor counts with face-embedding clustering, and Thai survey comments with n-grams, LDA, and LLMs.
+      # evidence/themather/2025-time-series-sensor-data-aggregation-pipeline.md B1 (draft)
+      # + evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md B1 (draft)
+      # + evidence/themather/2024-event-booth-visitor-cv-analytics.md B1 (draft)
+      - label: Data engineering
+        text: Build Airflow pipelines that move energy telemetry, legacy point-of-sale data, and booth-camera events into TimescaleDB, PostgreSQL, and MongoDB.
+      # evidence/themather/2023-life-insurance-website-cms-backend.md B1 (draft)
+      # + evidence/themather/2024-municipal-building-permit-pdf-and-approval-backend.md B1 (draft)
+      # + evidence/themather/2024-truck-dealer-website-cms-and-warranty-tracking-backend.md B1 (draft)
+      # + evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md B2 (draft)
       # + evidence/themather/2025-ai-road-safety-video-analytics-platform.md B2 (draft)
-      # + evidence/themather/2025-voice-video-media-merge-service.md B1 + B2 (draft)
       - label: Backend systems
-        text: Built Django REST backends with Celery and RabbitMQ queues for multi-minute inference jobs, and an ffmpeg video worker that picks NVIDIA or Apple encoders automatically.
-      # evidence/themather/2026-hitl-customer-support-chatbot-rag.md B4 (draft)
-      # + evidence/themather/2026-parallel-llm-serving-engine-evaluation.md B1 (draft)
-      - label: LLM tooling
-        text: Built an eval runner for a client's 633-case chatbot test set, and a load tester that showed Ollama serving 4 concurrent requests one at a time.
+        text: Develop Django REST backends for a life-insurance CMS, a building-permit system, and dealer warranty tracking, and Celery and RabbitMQ job queues for AI inference.
+      # evidence/themather/2024-truck-dealer-website-cms-and-warranty-tracking-backend.md B5 (draft)
+      # + evidence/themather/2024-legacy-pos-cdc-sync-and-membership-analytics-dashboard.md B5 (draft)
+      # + evidence/themather/2025-realtime-cctv-people-and-security-analytics-platform.md Remarks: on-premises deployment (draft)
+      # + evidence/themather/2026-retail-shelf-computer-vision-analytics-platform.md Context: Cloudflare Tunnel host (draft)
+      - label: Deployment and CI
+        text: Deploy services with Docker Compose, Podman, and Cloudflare Tunnel, and automate releases with Bitbucket Pipelines.
 
 projects:
   - id: the-bazaar-tracker

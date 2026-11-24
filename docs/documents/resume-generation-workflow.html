@@ -229,7 +229,7 @@ reviewed: yyyy-mm-dd     # set by verify; empty while the Summary is a draft
     <tr><td><code>scripts/ingest_repos.py &lt;company&gt;</code></td><td>1</td><td>Check sources, clone or fetch and fast-forward, count my commits, write <code>commit-summary.json</code></td></tr>
     <tr><td><code>scripts/ingest_jira.py &lt;company&gt;</code></td><td>1</td><td>Download my Jira tickets (REST API or <code>--from-raw</code> MCP results) into yearly files and <code>merged.json</code></td></tr>
     <tr><td><code>scripts/jira_tickets.py &lt;company&gt; [&lt;id&gt; | --unmapped]</code></td><td>1, 2</td><td>Print one project's tickets by its selectors, or the tickets no project selects</td></tr>
-    <tr><td><code>scripts/my_commits.py &lt;company&gt;</code></td><td>1, 2</td><td>Export my commits on all refs of every cloned repo to <code>raw/&lt;company&gt;/my-commits.csv</code>: timestamp, hash, title, description, author</td></tr>
+    <tr><td><code>scripts/my_commits.py &lt;company&gt;</code></td><td>1, 2</td><td>Export my commits on all refs of every cloned repo to <code>raw/&lt;company&gt;/my-commits.csv</code>: timestamp, project (<code>&lt;id&gt;/&lt;slug&gt;</code>), hash, title, description, author</td></tr>
     <tr><td><code>scripts/authorship.py &lt;company&gt; &lt;id&gt;</code></td><td>2</td><td>Show my commits, blame share per directory and branches ahead; <code>--ref</code> blames another branch</td></tr>
     <tr><td><code>resume/scripts/check.py</code> (<code>mise run check</code>)</td><td>4</td><td>Validate every <code>resume.yml</code> against the schema</td></tr>
     <tr><td><code>.claude-dev/skills/review-resume/measure.sh</code></td><td>5</td><td>Build and measure a resume: positions, gaps, lengths, fonts, contrast, ATS text</td></tr>

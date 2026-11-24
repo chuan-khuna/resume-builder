@@ -42,7 +42,7 @@ switched off when it scored 56.8% recall@1 against 91.3%.
 ### Computer vision and video analytics (2023 → 2026)
 
 The work grew from a face-analytics demo for a marketing event (2023) to face-embedding visitor
-counts at an exhibition (2024), then road-safety and CCTV detection services (2025). In 2026 it
+counts from 13 cameras at a motor-show booth (2024), then road-safety and CCTV detection services (2025). In 2026 it
 became a shelf-analytics platform in client trial, a classroom attention pipeline run on real
 recordings, and an evaluation of hosted vision decision models.
 
@@ -263,7 +263,8 @@ My part: data sync, analytics pipelines and dashboard APIs. A teammate built the
 My part: main developer of the ETL pipeline and the dashboard API. Teammates built most of the dashboard frontend.
 - Built an Apache Airflow ETL pipeline that turned IP camera face-capture events from 12 booth
   camera zones into hourly visitor-count and age/gender aggregates for an exhibition analytics
-  dashboard. (B1)
+  dashboard. (B1; Numbers: 13 cameras at the booth, the 12 zones plus 1 wide-angle,
+  user-reported)
 - Precomputed dashboard data as Airflow cache collections, so API requests read daily and
   per-cluster summaries instead of recomputing clusters. (B5)
 

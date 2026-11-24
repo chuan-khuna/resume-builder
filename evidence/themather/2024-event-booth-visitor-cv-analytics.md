@@ -41,6 +41,8 @@ reviewed:
 - B5: traces to the cache-collection bullet · a design choice for read speed · no latency
   figure; outcome to confirm · roles: data, backend.
 - `12 camera zones`, `1 wide-angle camera`: configured; B1 quotes the 12 zones as scale.
+  `13 cameras`: the user's camera list confirms one camera per zone plus the wide-angle one, so
+  "13 cameras" is the physical count a bullet can quote [me: 2026-11-24].
 - `~17-day event window`: configured DAG start/end dates; left out of bullets, can be phrased as
   "a two-week exhibition".
 - `100 detections` (bucket size), `÷5` (noise divider), `0.25` (cosine distance cut-off),
@@ -56,6 +58,17 @@ reviewed:
 An analytics system for an automotive brand's booth at a motor show in Thailand. IP cameras
 around the booth ran on-device face capture and sent events (timestamp, camera channel, face
 crop, age, age group, gender, expression); a wide-angle camera sent region-entrance events.
+The booth's equipment list shows 13 IP cameras on a local network with a 16-channel network
+video recorder (NVR), a PoE switch and a 4G Wi-Fi router [me: 2026-11-24]; who installed and
+configured it is not recorded. Models, from the same list (serial numbers and IPs left out):
+
+| Equipment | Model | Count |
+| --------- | ----- | ----- |
+| Face-capture IP camera (Hikvision DeepinView) | iDS-2CD7146G0-IZS | 10 (cameras 01–10) |
+| IP camera, model not given in the list | — | 3 (cameras 11–13) |
+| Network video recorder, 16 channels, 16 PoE ports (Hikvision DeepinView) | iDS-7716NXI-I4/16P/X | 1 |
+| PoE switch (Hikvision) | DS-3E1518P-SI | 1 |
+| 4G LTE Wi-Fi router (TP-Link) | Archer MR400 | 1 |
 The raw events landed in MongoDB. The system's job was to turn them into a dashboard of hourly
 visitor counts, demographics per zone, and, in a later phase, a unique-visitor estimate and
 repeat-visitor lookup from face embeddings, separating booth staff from visitors. The event
@@ -126,6 +139,7 @@ the dashboard frontend. [airflow:airflow/dags 94%] [backend@36d6fda15] [IPCAM-12
 | ----- | ----- | ------ |
 | 12 camera zones | face-capture cameras around the booth (configured zone list) | [airflow@02dcc44] |
 | 1 wide-angle camera | region-entrance counting, separate DAG and API (configured) | [airflow@26deac6] [IPCAM-57] |
+| 13 cameras | IP cameras at the motor-show booth: the 12 face-capture zones plus the 1 wide-angle camera (user-reported from the booth's camera list; 10 of 13 share one face-capture model) | [me: 2026-11-24] |
 | ~17-day event window | DAG start/end dates for the embedding and visitor-count runs (configured) | [airflow@deea090] |
 | ≥ 100 detections | cluster size treated as a noise "bucket" (configured) | [airflow@02dcc44] |
 | noise ÷ 5 | estimate of visitors among noise detections (configured) | [airflow@982b39f] |
@@ -176,10 +190,13 @@ collections. The API reads those caches and queries ChromaDB for the same person
   blame share overstates my part.
 
 ## Open questions
+- Booth network: did you install or configure the cameras, NVR, PoE switch and 4G router, or
+  only consume their events? [me: 2026-11-24] gives the equipment, not who set it up.
 - Event server: Jira assigns me "Refactor the camera event server code" (FastAPI, save to MongoDB
   and S3 separately; the ticket names the camera vendor, Hikvision) [IPCAM-75] and "implement
   event API server via Go Fiber" (2025-03) [IPCAM-78]. Neither repo was ingested. Did you write
-  them, and are the cameras Hikvision (the event format matches its ISAPI `EventNotificationAlert`)?
+  them? (The cameras are Hikvision: the equipment list in Context settles it [me: 2026-11-24].)
+  Which model are cameras 11–13; is one of them the wide-angle camera?
 - Manual staff/visitor labelling: Jira [IPCAM-54] says I built a system to label staff vs
   visitors. Git shows only the `is_staff` / `is_monitor_image` flags, their defaults and their
   use downstream. What was the labelling tool (notebook, script, UI), and who labelled?

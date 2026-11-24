@@ -1,0 +1,137 @@
+# Project settings for scripts/skill_graph.py: a short label, the areas (the first is the main
+# one) and a 10-20 word description for each project's hover text. Keys are evidence `id:`s.
+# A view of the evidence, like brag-document.md: each description restates that file's bullets.
+# Areas and colours: .claude-dev/reference/skill-taxonomy.yml.
+projects:
+  retail-shelf-computer-vision-analytics-platform:
+    label: Retail shelf analytics
+    areas: [cv, be, devops, fe]
+    description: >-
+      Designed and built alone a multi-tenant shelf-photo analytics platform: YOLO detection,
+      DINOv2 brand matching, Django API, Next.js dashboards.
+  decision-model-rd-reapplying-past-projects:
+    label: Decision-model R&D
+    areas: [llm, cv, nlp]
+    description: >-
+      Evaluated hosted vision decision models for shelf brand recognition, reaching 89% top-1
+      accuracy on 739 labelled crops.
+  classroom-video-attention-and-survey-analysis-system:
+    label: Classroom attention analysis
+    areas: [cv, nlp, de]
+    description: >-
+      Built a RabbitMQ worker pipeline scoring student attention in ~930 webcam recordings, plus a
+      PyQt6 desktop recorder.
+  realtime-cctv-people-and-security-analytics-platform:
+    label: CCTV security analytics
+    areas: [cv, be]
+    description: >-
+      Built face-recognition check-in and a multi-camera YOLO detection service for weapons,
+      violence and falls.
+  ai-road-safety-video-analytics-platform:
+    label: Road-safety video analytics
+    areas: [cv, be, de]
+    description: >-
+      Built a demo road-safety video analytics system on 3 camera sites, training an RF-DETR
+      accident detector.
+  event-booth-visitor-cv-analytics:
+    label: Exhibition visitor analytics
+    areas: [cv, de, ds, be]
+    description: >-
+      Estimated unique and repeat booth visitors by clustering face embeddings, with an Airflow
+      ETL and dashboard API.
+  realtime-crowd-analytics-camera-poc:
+    label: Crowd analytics PoC
+    areas: [cv, de, fe]
+    description: >-
+      Built a real-time audience-analytics demo streaming camera faces through Kafka to age,
+      gender and emotion models.
+  hitl-customer-support-chatbot-rag:
+    label: Support chatbot RAG
+    areas: [llm, be]
+    description: >-
+      Built a second RAG knowledge source for a support chatbot, measured it, and kept the weaker
+      retrieval off.
+  parallel-llm-serving-engine-evaluation:
+    label: LLM serving evaluation
+    areas: [llm, devops]
+    description: >-
+      Load-tested LLM serving engines, root-caused Ollama's one-at-a-time serving, and recommended
+      vLLM for the GPU server.
+  graphrag-lightrag-rag-strategy-comparison:
+    label: RAG strategy comparison
+    areas: [llm, fe]
+    description: >-
+      Compared Simple RAG, GraphRAG and LightRAG side by side on one Neo4j corpus, implementing
+      GraphRAG from its paper.
+  chatbot-core-template-agent-framework-research:
+    label: Chatbot core template
+    areas: [llm, be]
+    description: >-
+      Prototyped a reusable chatbot core that clients install as a pinned wheel, with an extension
+      standard and guardrails.
+  time-series-sensor-data-aggregation-pipeline:
+    label: Sensor telemetry pipeline
+    areas: [de, devops]
+    description: >-
+      Built an Airflow pipeline aggregating energy telemetry into TimescaleDB, and debugged its
+      production task failures and data loss.
+  legacy-pos-cdc-sync-and-membership-analytics-dashboard:
+    label: Legacy POS sync and RFM
+    areas: [de, ds, be]
+    description: >-
+      Synced a legacy MySQL 5.5 point-of-sale database into PostgreSQL with Airflow, and built RFM
+      segmentation and dashboard APIs.
+  line-crm-loyalty-rfm-segmentation:
+    label: LINE loyalty RFM
+    areas: [ds, be, fe]
+    description: >-
+      Built RFM customer segmentation, analytics APIs and a React admin dashboard for a LINE
+      loyalty platform.
+  life-insurance-website-cms-backend:
+    label: Life-insurance CMS
+    areas: [be]
+    description: >-
+      Built content APIs, role-based access control and editor workflows for a life-insurance
+      company's website CMS.
+  municipal-building-permit-pdf-and-approval-backend:
+    label: Municipal permit backend
+    areas: [be, devops]
+    description: >-
+      Built PDF generation for Thai official permit forms, plus authentication, audit logging and
+      dashboard APIs.
+  truck-dealer-website-cms-and-warranty-tracking-backend:
+    label: Truck warranty backend
+    areas: [be]
+    description: >-
+      Built a Django backend for truck dealers that auto-schedules warranty service visits and
+      coupons per vehicle.
+  voice-video-media-merge-service:
+    label: Media-merge service
+    areas: [be, devops]
+    description: >-
+      Built a RabbitMQ-driven GPU ffmpeg worker that renders personalised videos from chatbot
+      sessions with text-to-speech.
+  survey-engagement-text-analytics:
+    label: Survey text analytics
+    areas: [nlp, ds]
+    description: >-
+      Built the Thai free-text word-cloud engine for employee-survey reports, using PyThaiNLP and
+      gensim phrase detection.
+  internal-social-forum-scraping-pipeline:
+    label: Forum scraping pipeline
+    areas: [de, be, nlp]
+    description: >-
+      Built a queued forum-scraping service with a multi-process worker, MongoDB storage and Thai
+      n-gram word clouds.
+  corporate-marketing-website-astro:
+    label: Marketing website rebuild
+    areas: [fe]
+    description: >-
+      Rebuilt the company's marketing website in Astro with schema-validated content collections
+      and a scroll-driven profile deck.
+  corporate-website-astro-upgrade-and-product-pages:
+    label: Live website upgrade
+    areas: [fe, devops]
+    description: >-
+      Upgraded the live company website to Astro 7 and Tailwind 4, and added bilingual product
+      pages.

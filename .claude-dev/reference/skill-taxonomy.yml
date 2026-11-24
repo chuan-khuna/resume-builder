@@ -1,0 +1,177 @@
+# Shared taxonomy for scripts/skill_graph.py, which draws evidence/<company>/skill-graph.html.
+#
+# - areas: the colour groups. Colours are hex because vis-network cannot parse oklch().
+# - tools: matched case-insensitively against each evidence file's `tools:` line, stopping at
+#   "Studied, not used:". Each `match` is a regular expression; the default is the escaped name.
+#   Tools left out of this list are not drawn (Python, NumPy, ruff and other noise).
+# - keywords: matched case-insensitively against the Summary and What I Did sections only, never
+#   "Not mine" or Summary's Remarks. Items with a caveat ("do not claim", "reverted") are
+#   skipped too, so a keyword marks work the evidence says was the user's.
+#
+# Generic: no client names. Add a tool or keyword when a new evidence file needs one.
+
+areas:
+  cv: { label: Computer vision, color: "#e0533d" }
+  llm: { label: LLM and AI infra, color: "#8b5cf6" }
+  nlp: { label: Thai NLP, color: "#d99a0b" }
+  ds: { label: Data science, color: "#3fa34d" }
+  de: { label: Data engineering, color: "#1f7fd6" }
+  devops: { label: DevOps and infra, color: "#6b7280" }
+  be: { label: Backend, color: "#0e9a94" }
+  fe: { label: Frontend and web, color: "#d9468f" }
+
+tools:
+  # backend
+  Django / DRF: { area: be, match: '\bdjango\b' }
+  FastAPI: { area: be }
+  Flask / Socket.IO: { area: be, match: '\bflask\b' }
+  PostgreSQL: { area: be, match: 'postgres' }
+  MongoDB: { area: be }
+  MySQL: { area: be }
+  SQLite: { area: be }
+  pgvector: { area: be }
+  ChromaDB: { area: be, match: '\bchroma' }
+  Weaviate: { area: be }
+  Celery: { area: be }
+  Redis: { area: be }
+  RabbitMQ: { area: be }
+  Django Channels: { area: be }
+  GraphQL: { area: be, match: 'graphql|graphene' }
+  pytest: { area: be }
+  PyMonad: { area: be }
+  Pydantic: { area: be, match: '\bpydantic\b' }
+  httpx: { area: be }
+  WeasyPrint: { area: be }
+  ffmpeg: { area: be }
+  LDAP: { area: be, match: 'ldap' }
+  # data engineering
+  Apache Airflow: { area: de, match: 'airflow' }
+  Kafka: { area: de, match: '\bkafka' }
+  Apache Flink: { area: de, match: 'flink' }
+  Debezium: { area: de }
+  TimescaleDB: { area: de }
+  InfluxDB: { area: de }
+  SQL Server: { area: de }
+  SQLAlchemy: { area: de }
+  BeautifulSoup: { area: de }
+  # data science
+  pandas: { area: ds }
+  scikit-learn: { area: ds }
+  Jupyter: { area: ds }
+  Streamlit: { area: ds }
+  matplotlib / seaborn: { area: ds, match: 'matplotlib|seaborn' }
+  Leiden (graspologic): { area: ds, match: 'leiden' }
+  # Thai NLP
+  PyThaiNLP: { area: nlp }
+  gensim: { area: nlp }
+  Typhoon2: { area: nlp, match: 'typhoon2' }
+  # computer vision
+  Ultralytics YOLO: { area: cv, match: 'ultralytics|\byolo' }
+  RF-DETR: { area: cv }
+  supervision / ByteTrack: { area: cv, match: '\bsupervision\b' }
+  PyTorch: { area: cv }
+  OpenCV: { area: cv }
+  MediaPipe: { area: cv }
+  ONNX Runtime: { area: cv, match: '\bonnx' }
+  DeepFace: { area: cv }
+  InsightFace: { area: cv }
+  DINOv2: { area: cv }
+  EasyOCR: { area: cv }
+  Weights & Biases: { area: cv }
+  # LLM
+  Ollama: { area: llm }
+  LangChain: { area: llm }
+  vLLM: { area: llm, match: '\bvllm\b' }
+  OpenRouter: { area: llm }
+  Qdrant: { area: llm }
+  Neo4j: { area: llm }
+  Langfuse: { area: llm }
+  Tau agent: { area: llm, match: '\btau\b|tau-ai' }
+  MCP SDK: { area: llm, match: '\bmcp\b' }
+  Claude Code: { area: llm }
+  # frontend
+  React: { area: fe, match: '\breact\b' }
+  Next.js: { area: fe }
+  TypeScript: { area: fe }
+  Tailwind CSS: { area: fe, match: 'tailwind' }
+  shadcn/ui: { area: fe, match: 'shadcn' }
+  Astro: { area: fe, match: '\bastro\b' }
+  Vite: { area: fe, match: '\bvite\b' }
+  Nivo / Recharts: { area: fe, match: '\bnivo\b|recharts' }
+  Leaflet: { area: fe }
+  Three.js: { area: fe }
+  PyQt6: { area: fe }
+  Bun: { area: fe, match: '\bbun\b' }
+  # devops
+  Docker Compose: { area: devops, match: 'docker' }
+  uv: { area: devops, match: '\buv\b' }
+  just / mise: { area: devops, match: '\bjust\b|\bmise\b' }
+  Bitbucket Pipelines: { area: devops }
+  Prometheus / Grafana: { area: devops, match: 'prometheus|grafana' }
+  Nginx: { area: devops }
+  PM2: { area: devops }
+  Cloudflare: { area: devops }
+  Modal: { area: devops, match: '\bmodal\b' }
+  CUDA / NVENC: { area: devops, match: '\bcuda\b|nvenc|nvidia' }
+  AWS: { area: devops, match: '\baws\b' }
+  MinIO / RustFS: { area: devops, match: 'minio|rustfs' }
+  Podman: { area: devops }
+
+keywords:
+  # computer vision
+  Object detection: { area: cv, match: 'detection (model|service|worker)|\byolo|rf-detr|object detect|product/logo/empty detection' }
+  Multi-object tracking: { area: cv, match: 'bytetrack|tracked across|object track|tracker[- ]id' }
+  Face embeddings: { area: cv, match: 'face[- ]embedding|facenet|insightface|face[- ]recognition' }
+  Model training: { area: cv, match: '\btrained\b|fine-tun|by training|training (yolo|rf-detr)' }
+  Gaze and attention: { area: cv, match: 'gaze|student attention|attention scor' }
+  Crowd heatmaps: { area: cv, match: 'heat ?map' }
+  Brand recognition: { area: cv, match: 'brand (recogni|matching)' }
+  OCR: { area: cv, match: '\bocr\b' }
+  Video processing: { area: cv, match: 'ffmpeg|video (job|re-render|worker)|webcam recording' }
+  # data science
+  RFM segmentation: { area: ds, match: '\brfm\b' }
+  Clustering: { area: ds, match: 'cluster(ing|s)\b|hdbscan|leiden' }
+  Model evaluation: { area: ds, match: 'recall@|top-1|confusion matri|\bap50\b|benchmark|ttft' }
+  Topic modelling: { area: ds, match: '\blda\b|topic model' }
+  Embeddings and vector search: { area: ds, match: 'pgvector|qdrant|chromadb|weaviate|vector (search|index)|cosine' }
+  # Thai NLP
+  Thai n-grams and word clouds: { area: nlp, match: 'word ?cloud' }
+  Sentiment analysis: { area: nlp, match: 'sentiment' }
+  # LLM
+  RAG: { area: llm, match: '\brag\b|retrieval' }
+  Knowledge graph: { area: llm, match: 'knowledge[- ]graph|graphrag' }
+  Agents and tool calling: { area: llm, match: '\bagent (loop|answer|framework)|tool loop|agent frameworks' }
+  Guardrails: { area: llm, match: 'guardrail' }
+  Decision models: { area: llm, match: 'decision model' }
+  LLM serving and batching: { area: llm, match: 'continuous[- ]batching|serving engine' }
+  Local LLMs: { area: llm, match: 'ollama|local[- ]llm|typhoon2' }
+  Token and cost tracking: { area: llm, match: 'token (and|usage)|cost per|cost tracking|per-call token' }
+  # data engineering
+  ETL / ELT: { area: de, match: '\betl\b|\belt\b|airflow' }
+  Stream processing: { area: de, match: 'kafka|flink|stream(ing)? (frames|processing)' }
+  Change data capture: { area: de, match: 'change data capture|debezium' }
+  Time-series aggregation: { area: de, match: 'timescaledb|continuous aggregate|hypertable' }
+  Pre-aggregation: { area: de, match: 'pre-?aggregat|precomputed' }
+  Web scraping: { area: de, match: 'scraper|scraping|scrape (job|result)' }
+  # backend
+  REST APIs: { area: be, match: 'rest (api|framework)|django rest|fastapi' }
+  Job queues and workers: { area: be, match: 'rabbitmq|celery|task queue|job queue|worker pipeline' }
+  Realtime (SSE, WebSocket): { area: be, match: '\bsse\b|server-sent|websocket live|live feed|socketio|pub/sub' }
+  Auth and RBAC: { area: be, match: 'role-based|authentication|\bjwt\b|permission' }
+  Multi-tenancy: { area: be, match: 'multi-tenant|cross-tenant' }
+  CMS: { area: be, match: 'website cms|cms backend|specification cms|content apis' }
+  PDF generation: { area: be, match: 'pdf generation|weasyprint' }
+  Library design: { area: be, match: 'internal python detection library|reusable (python )?chatbot core|reusable long-running' }
+  Test-first: { area: be, match: 'tests first|test-first' }
+  # frontend
+  Dashboards: { area: fe, match: 'dashboard' }
+  Desktop app: { area: fe, match: 'desktop recorder|pyqt' }
+  Theming and design systems: { area: fe, match: 'theme system|design[- ]system|colour preset' }
+  # devops
+  CI/CD: { area: devops, match: '\bci\b|pipelines? deploy|deploy pipeline' }
+  Monitoring and alerts: { area: devops, match: 'prometheus|grafana|alerts?\b|heartbeat dag|langfuse' }
+  GPU workloads: { area: devops, match: '\bgpu' }
+  Performance profiling: { area: devops, match: 'cprofile|pyinstrument|profil(ed|ing)|load tester' }
+  Production debugging: { area: devops, match: 'production (task|login) failure|diagnosed a production|traced intermittent' }
+  On-prem deployment: { area: devops, match: "on-premises|client's server" }
+  Supply-chain security: { area: devops, match: 'minimum release age' }

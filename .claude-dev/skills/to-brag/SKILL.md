@@ -204,7 +204,10 @@ verify asks about it.") and stays in the document, so the gap is visible.
    4. Check each sentence against the `resume` skill's grammar and spelling rules.
    _Done when_ the search returns zero hits and every citation resolves.
 
-7. **Show the user.** Give the path and a short account: the themes, the stories picked, the
+7. **Show the user.** Rebuild the skill graph with `uv run scripts/skill_graph.py <company>`
+   (`evidence/<company>/skill-graph.html`, a view like this one). If it stops on a missing
+   project, add the project to `evidence/<company>/skill-graph.yml`: a label, its areas and a
+   10–20 word description that restates the file's bullets. Give the path and a short account: the themes, the stories picked, the
    sections with nothing behind them yet, and how many claims sit under Not yet confirmed.
    Suggest `/resume-evidence:verify` for the files those rest on. Commit only when the user
    asks.

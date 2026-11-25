@@ -31,7 +31,10 @@ One source at a time, with the user in the loop, unless the user asks for a batc
 1. **Pick the source.** Take the file from the message, or the oldest from
    `uv run scripts/wiki.py pending`. If the user pasted content or a URL instead, save it to
    `wiki/raw/<yyyy-mm-dd>-<slug>.md` first (today's date), with the URL at the top. Name the
-   file by its topic, never by a client or private name.
+   file by its topic, never by a client or private name. `wiki/raw/` is committed: if the
+   source is private (a call transcript, an internal doc, anything from the user's job), do
+   not save it; ask whether to keep its lesson in a note with `sources: []`, as
+   "Sensitive data" in `wiki/CLAUDE.md` says.
 2. **Read it** in full. For a PDF over 20 pages, read it in page ranges. For images it links,
    read the text first, then view the images that matter.
 3. **Discuss.** Tell the user the 3–5 key takeaways and what they would change in the wiki:

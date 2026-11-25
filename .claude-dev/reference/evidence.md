@@ -4,6 +4,10 @@ Read by the `distill` and `verify` skills. One file per project at
 `evidence/<company>/<yyyy>-<id>.md`, plus an optional [private note](#private-notes) at
 `raw/<company>/notes/<id>.md`.
 
+`evidence/<company>/brag-document.md` is not an evidence file: `/resume-evidence:to-brag` builds
+it from the evidence files as a readable view. Skills that list `evidence/*/*.md` skip it, and
+no resume claim may rest on it.
+
 ## Schema
 
 Distill writes every section, including a **draft** `## Summary`. Verify confirms the Summary
@@ -66,6 +70,7 @@ What the work changed, whether it has a number or not. See Numbers & Impact rule
 ## Tools
 tools: <only tech actually used: dependency files, scripts, commands really run>
 Studied, not used: <researched or compared only>
+Learned: <skills, not tools, the user says they gained here> [me: yyyy-mm-dd]   # optional; verify asks
 
 ## Architecture
 A Mermaid diagram of the system or data flow, plus a short explanation.
@@ -179,6 +184,7 @@ One row per thing the work changed, `I1`, `I2`, … Every row has a Kind:
   | governance / compliance | approval obtained before sending data to an outside service | ADRs, tickets |
   | knowledge transfer | taught labelling; wrote handoffs | docs, tickets, the user |
   | rescue / takeover | took over legacy code and stabilised it | authorship history, tickets |
+  | recognition | client or team praise; asked to repeat the work elsewhere | the user, tickets, review notes |
 
 ## Private notes
 

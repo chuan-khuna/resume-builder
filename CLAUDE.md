@@ -14,7 +14,9 @@ This repo helps the user build their resume.
   evidence) → `resume-evidence:verify` (interview the user, add resume bullets) →
   `resume-evidence:to-resume` (evidence → resume YAML) → `resume-evidence:review-resume`
   (review the built PDF). `resume-evidence:steer` changes the resume YAML as the user directs,
-  backing each work claim with evidence. Shared rules: `.claude-dev/reference/workflow.md` and
+  backing each work claim with evidence. `resume-evidence:to-brag` builds
+  `evidence/<company>/brag-document.md`, a readable account of one company's evidence for
+  interviews: a view, never a source. Shared rules: `.claude-dev/reference/workflow.md` and
   `.claude-dev/reference/evidence.md`.
 - Every piece of resume or evidence prose follows the writing rules in the
   `resume-evidence:resume` skill (`.claude-dev/skills/resume/SKILL.md`), including edits made

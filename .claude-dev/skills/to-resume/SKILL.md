@@ -46,7 +46,7 @@ into the YAML.
 
    Read the current YAML for the target and, for a version, the base YAML under it.
 
-2. **Pick the evidence.** List `evidence/*/*.md` with each file's `title`, `period`, `status`
+2. **Pick the evidence.** List `evidence/*/*.md`, except `brag-document.md`, with each file's `title`, `period`, `status`
    and whether `reviewed:` is set. Use every reviewed file. For each file without `reviewed:`,
    ask the user: verify it first (recommended), include its draft bullets, or leave it out.
    Read each file used in full: Summary and Remarks first, then the sections they rest on.

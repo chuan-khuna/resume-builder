@@ -7,7 +7,7 @@ Commands:
   with one bullet per --line. Creates the day's file if missing.
 - lint: check the notes. Errors (exit 1): broken [[links]], notes missing from index.md,
   index entries with no note, bad frontmatter, `sources:` paths that do not exist, and
-  sensitive terms in notes, logs or wiki/raw file names. The terms come from every
+  sensitive terms in notes, logs, wiki/raw file names or wiki/raw text files. The terms come from every
   raw/<company>/mapping.yml: the company slug, internal names, repo names, source orgs and
   private hosts, the Jira site and email, `me.emails`, and the API token. A hit prints the
   file and line with the term masked, so lint output is safe to paste.
@@ -107,7 +107,7 @@ def mask(term: str) -> str:
 
 
 def sensitive_hits(terms: set[str]) -> list[str]:
-    """Find each term in notes, logs and wiki/raw file names; mask it in the report."""
+    """Find each term in notes, logs, wiki/raw file names and text files; mask it in the report."""
     if not terms:
         return []
     pattern = re.compile(
@@ -122,6 +122,13 @@ def sensitive_hits(terms: set[str]) -> list[str]:
     for name in raw_files():
         for m in pattern.finditer(name):
             hits.append(f"{name}: sensitive term {mask(m.group(1))} in the file name")
+        try:
+            text = (WIKI / name).read_text()
+        except (UnicodeDecodeError, OSError):
+            continue  # binary sources (PDF, images): check them by reading, as the skill says
+        for n, line in enumerate(text.splitlines(), 1):
+            for m in pattern.finditer(line):
+                hits.append(f"{name}:{n}: sensitive term {mask(m.group(1))}")
     return hits
 
 

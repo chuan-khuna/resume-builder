@@ -1,9 +1,3 @@
----
-name: resume
-description: Write and proofread resume content in British English, by the Harvard and Guardian CV rules, with technical-writing and unslop.
-disable-model-invocation: true
----
-
 <!-- Copied from github.com/chuan-khuna/altr-stack, skills/writing/resume/SKILL.md at bcb0f1c. Edit here; this copy is not synced. -->
 
 # Resume

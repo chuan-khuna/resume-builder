@@ -32,7 +32,7 @@ and no evidence file for this.
   <li>Open <code>resume/build/base/classic.pdf</code>.</li>
 </ol>
 <code>raw/</code> and <code>evidence/</code> are reference data for you: what you did, with proof.
-Read them to find and check your claims, or type <code>/resume-evidence:steer</code> to get
+Read them to find and check your claims, or type <code>/resume-builder:resume-auto-mode steer</code> to get
 suggestions backed by them. Steps 1–5 below build that reference data.</blockquote>
 
 <figure class="diagram" data-diagram data-title="From repositories to a reviewed resume" data-height="360">
@@ -90,7 +90,7 @@ URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or
   <li>Install the Python dependencies: <code>uv sync</code>.</li>
   <li>Install the <a class="term" href="#term-plugin">plugin</a> for this repository: <code>mise run plugins</code>.</li>
   <li>Start Claude Code: <code>claude</code>.</li>
-  <li>Type <code>/resume-evidence</code> and make sure the eight skills appear: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-brag</code>, <code>to-resume</code>, <code>steer</code>, <code>resume</code>, <code>review-resume</code>.</li>
+  <li>Type <code>/resume-builder</code> and make sure <code>resume-auto-mode</code> appears. It holds one playbook for each step: <code>ingest</code>, <code>distill</code>, <code>verify</code>, <code>to-brag</code>, <code>to-resume</code>, <code>steer</code>, <code>resume</code>, <code>review-resume</code>, <code>wiki</code>.</li>
 </ol>
 <p>To try the plugin for one session without installing it, start Claude Code with
 <code>claude --plugin-dir ./.claude-dev</code>.</p>
@@ -100,7 +100,7 @@ URLs, make sure your SSH key is loaded: <code>ssh -T git@bitbucket.org</code> or
 <p>The LLM runs a <a class="term" href="#term-skill">skill</a> only when you type its command. A request in
 plain words, such as "distill my project", does not start the skill. Write the command first, then
 its arguments, then any context in plain words on the same message:</p>
-<pre><code class="language-text">/resume-evidence:&lt;skill&gt; &lt;arguments&gt; &lt;context for the LLM&gt;</code></pre>
+<pre><code class="language-text">/resume-builder:&lt;skill&gt; &lt;arguments&gt; &lt;context for the LLM&gt;</code></pre>
 <p>Context helps the LLM ask fewer questions: what you know about the project, what to focus on,
 what to leave out. Each step below gives example prompts. Replace <code>company-a</code> and
 <code>retail-shelf-cv</code> with your own company slug and project <code>id</code>.</p>
@@ -167,7 +167,7 @@ projects:
 </table>
 
 <h4>Example prompts: configure</h4>
-<pre><code class="language-text">/resume-evidence:ingest company-a
+<pre><code class="language-text">/resume-builder:resume-auto-mode ingest company-a
 
 Check raw/company-a/mapping.yml before you clone. List each field that is
 missing or still holds an example value.
@@ -177,7 +177,7 @@ which repos show zero commits from either.</code></pre>
 
 <h3>Run ingest</h3>
 <ol>
-  <li>In Claude Code, type <code>/resume-evidence:ingest company-a</code>.</li>
+  <li>In Claude Code, type <code>/resume-builder:resume-auto-mode ingest company-a</code>.</li>
   <li>Wait for the report. It shows one table per project.</li>
   <li>For each repository marked <em>failed</em>, fix the URL or your git access.</li>
   <li>For each repository with zero commits of yours, add the missing name or email to <code>me</code>, or fix the URL.</li>
@@ -200,16 +200,16 @@ uv run scripts/jira_tickets.py company-a retail-shelf-cv   # one project's ticke
 uv run scripts/jira_tickets.py company-a --unmapped        # tickets no project selects
 uv run scripts/my_commits.py company-a                     # your commits as CSV, in raw/company-a/</code></pre>
 <h4>Example prompts: ingest</h4>
-<pre><code class="language-text">/resume-evidence:ingest company-a
+<pre><code class="language-text">/resume-builder:resume-auto-mode ingest company-a
 
-/resume-evidence:ingest company-a
+/resume-builder:resume-auto-mode ingest company-a
 I added two repos to the retail-shelf-cv project. Fetch only what is new
 and show me the commit counts for that project.
 
-/resume-evidence:ingest company-a
+/resume-builder:resume-auto-mode ingest company-a
 The shelf-dashboard clone failed last time. I fixed my SSH key; try again.
 
-/resume-evidence:ingest company-a
+/resume-builder:resume-auto-mode ingest company-a
 I have no Jira API token. Download my Jira tickets through the Atlassian MCP.
 My Jira account name matches the names in me. Older projects each have their
 own Jira project, named after the project. Newer work is in the TT (Tech Team)
@@ -223,7 +223,7 @@ project in mapping.yml.</code></pre>
 claim, and no real names. Run it once per project.</p>
 
 <ol>
-  <li>Type <code>/resume-evidence:distill company-a retail-shelf-cv</code>.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode distill company-a retail-shelf-cv</code>.</li>
   <li>If you leave out the company or the project, pick one from the list the LLM shows.</li>
   <li>Wait while the LLM measures your <a class="term" href="#term-authorship">authorship</a>, reads the code and reads the tickets.</li>
   <li>Read the draft <a class="term" href="#term-summary">Summary</a> the LLM shows first.</li>
@@ -239,7 +239,7 @@ claim, and no real names. Run it once per project.</p>
 <p>Use interview mode for work you cannot ingest, such as a job where you lost repository access.</p>
 <ol>
   <li>Add the project to <code>mapping.yml</code> with its <code>id</code>, <code>internal_name</code> and <code>title</code>, and no <code>sources</code>.</li>
-  <li>Type <code>/resume-evidence:distill company-b ops-dashboard</code>.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode distill company-b ops-dashboard</code>.</li>
   <li>When the LLM finds no repositories, choose the interview.</li>
   <li>Answer each round of questions: the context, then each of your responsibilities, then outcomes, tools and what held the work back.</li>
   <li>Describe each responsibility clearly: what you owned, how you built it, and the trade-off. The LLM sends a vague answer to open questions.</li>
@@ -247,14 +247,14 @@ claim, and no real names. Run it once per project.</p>
 </ol>
 <p>Each responsibility becomes a What I Did bullet cited <code>[me: yyyy-mm-dd]</code>. The year in the file name is the first year of the period you give.</p>
 <h4>Example prompts: distill</h4>
-<pre><code class="language-text">/resume-evidence:distill company-a retail-shelf-cv
+<pre><code class="language-text">/resume-builder:resume-auto-mode distill company-a retail-shelf-cv
 
-/resume-evidence:distill company-a retail-shelf-cv
+/resume-builder:resume-auto-mode distill company-a retail-shelf-cv
 I joined this project in March 2025, after the first version shipped.
 I owned the detection pipeline and the ingestion service. A teammate built
 the dashboard, even where my name is on the merge commits.
 
-/resume-evidence:distill company-a
+/resume-builder:resume-auto-mode distill company-a
 Which projects in mapping.yml have no evidence file yet? Start with the
 one where I have the most commits.</code></pre>
 
@@ -297,7 +297,7 @@ first commit in the project. Its sections:</p>
 and keeps the existing ones. If the Summary is already confirmed, new bullets are marked
 <code>(draft)</code>. Run verify again to confirm them.</p>
 <h4>Example prompts: distill again</h4>
-<pre><code class="language-text">/resume-evidence:distill company-a retail-shelf-cv
+<pre><code class="language-text">/resume-builder:resume-auto-mode distill company-a retail-shelf-cv
 I ingested the commits from the last three months. Add the new work only;
 keep the confirmed bullets as they are.</code></pre>
 
@@ -307,7 +307,7 @@ keep the confirmed bullets as they are.</code></pre>
 It then rewrites the <a class="term" href="#term-summary">Summary</a> as confirmed resume bullets.</p>
 
 <ol>
-  <li>Type <code>/resume-evidence:verify company-a retail-shelf-cv</code>.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode verify company-a retail-shelf-cv</code>.</li>
   <li>If you leave out the arguments, pick a file from the list. The list shows which files are reviewed and how many open questions each has.</li>
   <li>Answer each round of questions. A round has four questions or fewer.</li>
   <li>If you do not know an answer, say "don't know".</li>
@@ -320,13 +320,13 @@ It then rewrites the <a class="term" href="#term-summary">Summary</a> as confirm
 </ol>
 
 <h4>Example prompts: verify</h4>
-<pre><code class="language-text">/resume-evidence:verify company-a retail-shelf-cv
+<pre><code class="language-text">/resume-builder:resume-auto-mode verify company-a retail-shelf-cv
 
-/resume-evidence:verify
+/resume-builder:resume-auto-mode verify
 Show me which evidence files are not reviewed yet, and how many open
 questions each has.
 
-/resume-evidence:verify company-a retail-shelf-cv
+/resume-builder:resume-auto-mode verify company-a retail-shelf-cv
 Ask about outcomes first: what shipped, and the numbers. I have the
 production latency figures from our monitoring dashboard.</code></pre>
 
@@ -364,8 +364,8 @@ job titles, dates and education come from you.</p>
 
 <ol>
   <li>Verify every evidence file you want on the resume.</li>
-  <li>For the base resume, type <code>/resume-evidence:to-resume</code>.</li>
-  <li>For one job application, type <code>/resume-evidence:to-resume 2026-dec-acme-ml</code>, and paste the job ad when the LLM asks.</li>
+  <li>For the base resume, type <code>/resume-builder:resume-auto-mode to-resume</code>.</li>
+  <li>For one job application, type <code>/resume-builder:resume-auto-mode to-resume 2026-dec-acme-ml</code>, and paste the job ad when the LLM asks.</li>
   <li>If the LLM lists unreviewed evidence files, choose: verify first, include as draft, or leave out.</li>
   <li>Give the employer name, job title and dates for each company when the LLM asks.</li>
   <li>Read the plan. Approve it, or tell the LLM what to change.</li>
@@ -375,20 +375,20 @@ job titles, dates and education come from you.</p>
 <p>Each bullet in the YAML has a <a class="term" href="#term-trace-comment">trace comment</a> above it, such as
 <code># evidence/company-a/2025-retail-shelf-cv.md B2</code>. It names the evidence file and the
 Summary bullet the claim comes from. Keep the comment when you edit the bullet. To reword text
-without the full pipeline, use <code>/resume-evidence:resume</code>.</p>
+without the full pipeline, use <code>/resume-builder:resume-auto-mode resume</code>.</p>
 <h4>Example prompts: write the resume</h4>
-<pre><code class="language-text">/resume-evidence:to-resume
+<pre><code class="language-text">/resume-builder:resume-auto-mode to-resume
 
-/resume-evidence:to-resume
+/resume-builder:resume-auto-mode to-resume
 Use only reviewed evidence files. Put backend, data and LLM work first and
 keep computer vision as supporting work. Fit one page.
 
-/resume-evidence:to-resume 2026-dec-acme-ml
+/resume-builder:resume-auto-mode to-resume 2026-dec-acme-ml
 Here is the job ad:
 &lt;paste the job ad&gt;
 Aim the headline at "ML engineer". Tell me each requirement I can't show.
 
-/resume-evidence:resume
+/resume-builder:resume-auto-mode resume
 Proofread the experience bullets in resume/data/resume.yml. Keep every
 trace comment and change no facts.</code></pre>
 
@@ -416,14 +416,14 @@ else. Change the evidence through verify or steer instead.</blockquote>
 
 <ol>
   <li>Verify the <a class="term" href="#term-evidence-file">evidence files</a> of the company first.</li>
-  <li>Type <code>/resume-evidence:to-brag company-a</code>.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode to-brag company-a</code>.</li>
   <li>If you leave out the company, pick one from the list the LLM shows.</li>
   <li>When the LLM asks, give your goals for this year and next, and your work outside the job.</li>
   <li>If you tell the LLM about a project's work, verify that project's evidence file before you continue.</li>
   <li>Open <code>evidence/company-a/brag-document.md</code>.</li>
   <li>Read the themes and the interview stories.</li>
   <li>Read the Not yet confirmed section.</li>
-  <li>For each claim under Not yet confirmed, run <code>/resume-evidence:verify</code> on its evidence file.</li>
+  <li>For each claim under Not yet confirmed, run <code>/resume-builder:resume-auto-mode verify</code> on its evidence file.</li>
   <li>If a claim is wrong, correct its evidence file through verify or steer.</li>
   <li>After each change to the evidence, run to-brag again.</li>
   <li>Commit the brag document when it is correct.</li>
@@ -450,35 +450,35 @@ else. Change the evidence through verify or steer instead.</blockquote>
   </tbody>
 </table>
 <h4>Example prompts: brag document</h4>
-<pre><code class="language-text">/resume-evidence:to-brag company-a
+<pre><code class="language-text">/resume-builder:resume-auto-mode to-brag company-a
 
-/resume-evidence:to-brag company-a
+/resume-builder:resume-auto-mode to-brag company-a
 I have a backend interview next week. Pick the interview stories from the
 backend and data work first.
 
-/resume-evidence:to-brag company-a
+/resume-builder:resume-auto-mode to-brag company-a
 I verified two more files since the last run. Rebuild the document and
 tell me what moved out of Not yet confirmed.</code></pre>
 
 <h2 id="review">5 · Review the resume</h2>
 <ol>
-  <li>Type <code>/resume-evidence:review-resume</code> for the base resume, or <code>/resume-evidence:review-resume &lt;slug&gt;</code> for a version.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode review-resume</code> for the base resume, or <code>/resume-builder:resume-auto-mode review-resume &lt;slug&gt;</code> for a version.</li>
   <li>Open <code>resume/review/&lt;slug&gt;.html</code> in a browser. The base resume writes <code>index.html</code>.</li>
   <li>Fix every <code>fail</code> row first. Start with the Evidence traceability group.</li>
-  <li>Apply the fixes you agree with through <code>/resume-evidence:to-resume</code> or <code>/resume-evidence:steer</code>.</li>
+  <li>Apply the fixes you agree with through <code>/resume-builder:resume-auto-mode to-resume</code> or <code>/resume-builder:resume-auto-mode steer</code>.</li>
   <li>Run the review again.</li>
 </ol>
 <p>The review measures the PDF for screening, CV standards, readability, format, ATS, contrast and
 accessibility. It also checks that every bullet has a trace comment, claims no more than its
 evidence, and quotes only numbers from the evidence.</p>
 <h4>Example prompts: review</h4>
-<pre><code class="language-text">/resume-evidence:review-resume
+<pre><code class="language-text">/resume-builder:resume-auto-mode review-resume
 
-/resume-evidence:review-resume 2026-dec-acme-ml rail
+/resume-builder:resume-auto-mode review-resume 2026-dec-acme-ml rail
 Compare the rail template with classic for this version. Focus on the
 keyword match with the job ad.
 
-/resume-evidence:to-resume 2026-dec-acme-ml
+/resume-builder:resume-auto-mode to-resume 2026-dec-acme-ml
 Apply fixes 1 to 3 from resume/review/2026-dec-acme-ml.html. Skip fix 4:
 I keep the projects section.</code></pre>
 
@@ -488,7 +488,7 @@ I keep the projects section.</code></pre>
 or the experience bullet you want to write. The LLM checks each work claim against the evidence
 and suggests wording the evidence supports.</p>
 <ol>
-  <li>Type <code>/resume-evidence:steer</code>, then the change you want. Add a slug to change a version.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode steer</code>, then the change you want. Add a slug to change a version.</li>
   <li>Read the grade of each work claim: backed, stretched or unbacked.</li>
   <li>For a stretched claim, choose the suggested rewrite or leave the claim out.</li>
   <li>For an unbacked claim, give your account to record in evidence, or leave the claim out.</li>
@@ -496,15 +496,15 @@ and suggests wording the evidence supports.</p>
 </ol>
 <p>Sections, education, activities, interests and personal projects need no evidence. A claim
 about your work always traces to an evidence file. If no evidence file fits, run
-<code>/resume-evidence:distill</code> in interview mode first.</p>
+<code>/resume-builder:resume-auto-mode distill</code> in interview mode first.</p>
 <h4>Example prompts: steer</h4>
-<pre><code class="language-text">/resume-evidence:steer
+<pre><code class="language-text">/resume-builder:resume-auto-mode steer
 Put Projects above Experience, and hide the POS rewrite project.
 
-/resume-evidence:steer
+/resume-builder:resume-auto-mode steer
 Add a bullet: "Led the move from Kafka to RabbitMQ, cutting failed jobs by half."
 
-/resume-evidence:steer 2026-dec-acme-ml
+/resume-builder:resume-auto-mode steer 2026-dec-acme-ml
 Add a data-engineering bullet. Suggest the strongest one the evidence supports.</code></pre>
 
 <h3 id="learning">How the pipeline learns your preferences</h3>
@@ -529,9 +529,9 @@ committed, so they never hold client names, credentials or anything else from
 <ol>
   <li>Save a public source to <code>wiki/raw/</code> as <code>&lt;yyyy-mm-dd&gt;-&lt;slug&gt;.&lt;ext&gt;</code>. The LLM never edits this folder.</li>
   <li>If a source is private, such as a call transcript or an internal doc, do not save it. <code>wiki/raw/</code> is committed.</li>
-  <li>Type <code>/resume-evidence:wiki ingest</code>. The LLM tells you the key points; say what to emphasise.</li>
-  <li>To ask a question, type <code>/resume-evidence:wiki query</code>, then the question. Keep a good answer as a note.</li>
-  <li>From time to time, type <code>/resume-evidence:wiki lint</code> to find contradictions, orphans and gaps.</li>
+  <li>Type <code>/resume-builder:resume-auto-mode wiki ingest</code>. The LLM tells you the key points; say what to emphasise.</li>
+  <li>To ask a question, type <code>/resume-builder:resume-auto-mode wiki query</code>, then the question. Keep a good answer as a note.</li>
+  <li>From time to time, type <code>/resume-builder:resume-auto-mode wiki lint</code> to find contradictions, orphans and gaps.</li>
 </ol>
 <pre><code class="language-sh">uv run scripts/wiki.py pending   # sources not yet ingested
 uv run scripts/wiki.py lint      # broken links, index gaps, bad frontmatter, sensitive terms
@@ -547,7 +547,7 @@ grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></
     <tr><td>A real name appears in an evidence file</td><td>The banned-term search missed a term</td><td>Tell the LLM the term. It replaces it with a placeholder and runs the search again.</td></tr>
     <tr><td>The resume build says it is 2 pages</td><td>Too much text</td><td>Hide or cut the lowest-ranked bullets. Raise <code>maxPages</code> only if you want two pages.</td></tr>
     <tr><td><code>mise -C resume</code> says the config is not trusted</td><td>mise has not trusted <code>resume/mise.toml</code></td><td>Run <code>mise trust resume</code>.</td></tr>
-    <tr><td>Skills do not appear under <code>/resume-evidence</code></td><td>The plugin is not installed</td><td>Run <code>mise run plugins</code>, then restart Claude Code.</td></tr>
+    <tr><td>The skill does not appear under <code>/resume-builder</code></td><td>The plugin is not installed</td><td>Run <code>mise run plugins</code>, then restart Claude Code.</td></tr>
   </tbody>
 </table>
 
@@ -568,11 +568,11 @@ grep -h '^## \[' wiki/logs/*.md | tail -5   # the last five log entries</code></
   <dt id="term-impact-item">Impact item</dt>
   <dd>A row under <code>## Numbers &amp; Impact → ### Impact</code> in an evidence file: one thing the work changed, such as faster, cheaper, safer, adopted or delivered under a deadline. Its kind is <code>fact</code> (the sources prove it), <code>assessed</code> (the LLM's reading of the facts, usable only after you confirm it in verify) or <code>user</code> (your account).</dd>
   <dt id="term-plugin">Plugin</dt>
-  <dd><code>resume-evidence</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the eight skills.</dd>
+  <dd><code>resume-builder</code>, the local Claude Code plugin in <code>.claude-dev/</code> that holds the <code>resume-auto-mode</code> skill and its playbooks.</dd>
   <dt id="term-private-note">Private note</dt>
   <dd><code>raw/&lt;company&gt;/notes/&lt;id&gt;.md</code>: the honest account of what held your work back on one project. It stays local and never reaches the resume. It records facts, never blame of others.</dd>
   <dt id="term-skill">Skill</dt>
-  <dd>A set of instructions the LLM follows when you type its command, for example <code>/resume-evidence:distill</code>.</dd>
+  <dd>A playbook is a step list the LLM follows when you type its name after <code>/resume-builder:resume-auto-mode</code>, for example <code>/resume-builder:resume-auto-mode distill</code>.</dd>
   <dt id="term-trace-comment">Trace comment</dt>
   <dd>A YAML comment above a resume bullet that names its evidence file and Summary bullet, for example <code># evidence/company-a/2025-retail-shelf-cv.md B2</code>.</dd>
   <dt id="term-summary">Summary</dt>

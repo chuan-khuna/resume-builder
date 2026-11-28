@@ -1,18 +1,12 @@
----
-name: distill
-description: Distill one project's raw repositories and Jira tickets, or an interview with the user when there are none, into an anonymised, cited evidence file.
-disable-model-invocation: true
----
-
-# Distill
+# Distill playbook
 
 Turn one project's data in `raw/<company>/` into `evidence/<company>/<yyyy>-<id>.md`: the
 ground truth of **what I did** and what it changed, where every claim cites its evidence and no
 real name leaks, topped by a draft Summary: the resume bullets it supports, grouped by area.
 
-Read [`../../reference/workflow.md`](../../reference/workflow.md) first: it defines the layout,
+Read [`../references/workflow.md`](../references/workflow.md) first: it defines the layout,
 the mapping schema and the rules for scripts. The evidence file's schema, citation forms and
-anonymisation rules are in [`../../reference/evidence.md`](../../reference/evidence.md).
+anonymisation rules are in [`../references/evidence.md`](../references/evidence.md).
 
 ## Steps
 
@@ -123,12 +117,12 @@ anonymisation rules are in [`../../reference/evidence.md`](../../reference/evide
    file, and list the Open questions. Fold in any account the
    user gives with a `[me: yyyy-mm-dd]` citation; a limit of my own work goes in the private
    note, by the Private notes rules in `evidence.md`. _Done when_ the user confirms the file; the
-   Open questions left are for `/resume-evidence:verify`.
+   Open questions left are for `/resume-builder:resume-auto-mode verify`.
 
 9. **Update `raw/<company>/TODO.md`.** Move this project's leads to Done, each noting whether
    it went into the file or into Open questions.
 
-10. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+10. **Learn.** Apply [`../references/learning.md`](../references/learning.md). Typical
     lessons here: how the user wants work anonymised or described, which kinds of work they
     want claimed or left out, and authorship cases the script misread.
 

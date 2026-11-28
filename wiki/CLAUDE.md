@@ -25,7 +25,7 @@ wiki/
 ```
 
 - `me.md` is not a note: the root `CLAUDE.md` loads it each session, and
-  `.claude-dev/reference/learning.md` says how to keep it. Follow it here too.
+  `.claude-dev/skills/resume-auto-mode/references/learning.md` says how to keep it. Follow it here too.
 - Everything here except `me.md` is committed and pushed: `raw/`, `notes/` and `logs/`. So
   `raw/` holds only public sources, saved in full, and nothing in the wiki carries a sensitive
   detail: see [Sensitive data](#sensitive-data).
@@ -71,7 +71,7 @@ Rules for every note:
 - **Contradictions.** When sources disagree, keep both claims, each cited, under a
   `> [!warning] Contradiction` callout, and add the question to Open questions. Never
   silently overwrite an older claim; mark it superseded and cite what superseded it.
-- Write in British English, plain and specific, by the `resume` skill's Grammar rules.
+- Write in British English, plain and specific, by the `resume` playbook's Grammar rules.
 
 ## Sensitive data
 
@@ -102,7 +102,7 @@ it.
    the user's job. If the user wants the lesson of a private source kept, write it straight
    into a note with `sources: []`, cited as the user's account (`(user, yyyy-mm-dd)`), with
    no identifiers. Name each raw file by its topic.
-5. **Replace, don't hint.** Use the placeholders from `.claude-dev/reference/evidence.md`
+5. **Replace, don't hint.** Use the placeholders from `.claude-dev/skills/resume-auto-mode/references/evidence.md`
    "Anonymisation": a client → "a retail client"; a repo → its role ("the backend repo").
    No initials, partial names or nicknames that point back.
 6. **Check before you finish.** `uv run scripts/wiki.py lint` searches notes, logs and the text
@@ -136,5 +136,5 @@ Operations: `ingest`, `query`, `lint`, `schema` (a change to this file). Write e
 
 ## Operations
 
-Run them through the `wiki` skill: `/resume-evidence:wiki ingest | query | lint`. The skill
+Run them through the `wiki` skill: `/resume-builder:resume-auto-mode wiki ingest | query | lint`. The skill
 holds the steps; this file holds the rules they follow.

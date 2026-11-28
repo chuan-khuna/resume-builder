@@ -33,7 +33,7 @@ Kami is the style guide. Where it disagrees with the rules below, follow the rul
 | Topic | Kami | This repo |
 | ----- | ---- | --------- |
 | Content | Writes from the material it is given | Every claim traces to an evidence file (`evidence.md`) |
-| Writing | Its own writing guide | The `resume` skill: British English, plain verbs, 25 words or fewer |
+| Writing | Its own writing guide | The `resume` playbook: British English, plain verbs, 25 words or fewer |
 | Length | Exactly 2 pages | `maxPages` in the YAML (default 1) |
 | Margins | Resume 11 · 13 · 11 · 13 mm | 12.7 mm or more (`review-resume`, Format and typography) |
 | Type size | Body ≥ 9 pt; dense resume text 8–8.5 pt | `review-resume` thresholds: body ≥ 9.5 pt, nothing below 8.5 pt |

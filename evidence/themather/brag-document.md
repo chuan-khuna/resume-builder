@@ -8,7 +8,7 @@ updated: 2026-11-24
 
 # Brag document: themather
 
-> Built from `evidence/themather/*.md` by `/resume-evidence:to-brag`, after Julia Evans's
+> Built from `evidence/themather/*.md` by `/resume-builder:resume-auto-mode to-brag`, after Julia Evans's
 > brag-document template. Do not edit by hand, except inside the `user:` blocks: change the
 > evidence and rebuild. Draft: 22 of 22 evidence files are not yet verified, so
 > every line below is a draft claim. The files use the older evidence format, with no
@@ -29,7 +29,7 @@ switched off when it scored 56.8% recall@1 against 91.3%.
 
 ### This year
 
-- Not written yet: run `/resume-evidence:to-brag themather` and answer, or write your goals
+- Not written yet: run `/resume-builder:resume-auto-mode to-brag themather` and answer, or write your goals
   here in your own words.
 
 ### Next year
@@ -716,7 +716,7 @@ Numbers rows 3–4, B1–B4
 
 ## Not yet confirmed
 
-All 22 evidence files are drafts. Run `/resume-evidence:verify themather <id>` to confirm them.
+All 22 evidence files are drafts. Run `/resume-builder:resume-auto-mode verify themather <id>` to confirm them.
 The files use the older format, so no `assessed` Impact rows exist yet. Collaboration,
 mentorship and what I learned have no answers yet: verify asks about them. These outcomes are
 marked "to confirm" in the files and matter most:

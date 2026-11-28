@@ -1,11 +1,4 @@
----
-name: wiki
-description: Keep the LLM wiki in wiki/: ingest a raw source into notes, answer a question from the notes and file the answer, or lint the wiki.
-disable-model-invocation: true
-argument-hint: "ingest [<raw file>] | query <question> | lint"
----
-
-# Wiki
+# Wiki playbook
 
 Maintain `wiki/`: a knowledge base the LLM writes from the sources the user drops into
 `wiki/raw/`. Knowledge is compiled once into `wiki/notes/` and kept current, so each source and
@@ -93,7 +86,7 @@ and this skill together, and log it with `log schema`.
 
 ## Learn
 
-Apply [`../../reference/learning.md`](../../reference/learning.md). Typical lessons here:
+Apply [`../references/learning.md`](../references/learning.md). Typical lessons here:
 what the user wants emphasised, which note types or sections they use, how much to ask before
 writing. A wiki convention goes into `wiki/CLAUDE.md`.
 

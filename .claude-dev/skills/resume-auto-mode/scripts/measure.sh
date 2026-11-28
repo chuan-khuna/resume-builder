@@ -2,7 +2,7 @@
 # Measure a built resume for /review-resume. Prints a plain-text report;
 # every number in a review must come from here or another command, not an estimate.
 #
-#   bash .claude-dev/skills/review-resume/measure.sh [slug] [template]   (from the repo root)
+#   bash .claude-dev/skills/resume-auto-mode/scripts/measure.sh [slug] [template]   (from the repo root)
 #   slug: "base" (resume/data/resume.yml) or a folder in resume/versions/   default: base
 #   template: a file in resume/templates/, without .typ               default: classic
 #

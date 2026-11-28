@@ -42,7 +42,7 @@ adds three things the per-project files cannot:
 change they would read the brag document as one more project, with no `id:`, no `period:` and no
 evidence sections behind it.
 
-**Fix:** add one rule to each of the three skills and to `.claude-dev/reference/evidence.md`:
+**Fix:** add one rule to each of the three skills and to `.claude-dev/skills/resume-auto-mode/references/evidence.md`:
 "Skip `brag-document.md`: it is a view built from evidence, not evidence."
 
 ## Format
@@ -125,7 +125,7 @@ Each claim that rests on a draft file or an `assessed` Impact row, as a to-do fo
    Timeline before Themes)?
 2. **Path:** keep `evidence/<company>/brag-document.md` and add the skip rule to `verify`,
    `to-resume`, `steer` and `evidence.md`?
-3. **One-off or skill:** write it once now, or add a `resume-evidence:to-brag` skill you rerun
+3. **One-off or skill:** write it once now, or add a `resume-builder:resume-auto-mode to-brag` skill you rerun
    after verify? Recommended: the skill, because the doc goes stale each time evidence changes.
    A skill also means updating `CLAUDE.md`'s pipeline line and `docs/documents/` in the same
    change.

@@ -1,11 +1,4 @@
----
-name: to-brag
-description: Build or rebuild evidence/<company>/brag-document.md, a readable account of everything done at one company, from its evidence files.
-disable-model-invocation: true
-argument-hint: "<company>"
----
-
-# To brag
+# To brag playbook
 
 Turn one company's evidence files into `evidence/<company>/brag-document.md`: a brag document
 that a person reads in one sitting, for interviews, reviews, LinkedIn or cover letters. The
@@ -21,9 +14,9 @@ they list `evidence/*/*.md`.
 
 Read these first:
 
-- [`../../reference/evidence.md`](../../reference/evidence.md): the evidence schema, the
+- [`../references/evidence.md`](../references/evidence.md): the evidence schema, the
   Summary, Numbers & Impact rules, and the anonymisation rules.
-- The `resume` skill (`.claude-dev/skills/resume/SKILL.md`): the writing rules for every
+- The `resume` playbook (`.claude-dev/skills/resume-auto-mode/playbooks/resume.md`): the writing rules for every
   sentence of the brag document.
 
 ## Format
@@ -44,7 +37,7 @@ updated: yyyy-mm-dd
 
 # Brag document: <company>
 
-> Built from `evidence/<company>/*.md` by `/resume-evidence:to-brag`. Do not edit by hand,
+> Built from `evidence/<company>/*.md` by `/resume-builder:resume-auto-mode to-brag`. Do not edit by hand,
 > except inside the `user:` blocks: change the evidence and rebuild. Draft: <n − m> of <n>
 > evidence files are not yet verified.
 
@@ -146,11 +139,11 @@ verify asks about it.") and stays in the document, so the gap is visible.
    recognition). Then ask the template's prompts: "If you were trying to convince a friend to
    join your team, what would you tell them about your work?" and "Did anybody tell you that
    you did something well recently?" Answers about a project's work are work claims: they go
-   into its evidence file through `/resume-evidence:verify` first, never straight into the
+   into its evidence file through `/resume-builder:resume-auto-mode verify` first, never straight into the
    brag document. An empty answer leaves the block with one line saying it is empty.
 
 3. **Group the themes.** Sort every Summary bullet into themes across projects: two to six
-   areas of work that do not overlap, split on one axis, as the `resume` skill's Labels rule
+   areas of work that do not overlap, split on one axis, as the `resume` playbook's Labels rule
    asks. Start from the files' own Summary areas and merge those that name the same work. A
    theme spans the years of its projects. Order themes by their strongest bullets.
    Inside a theme, group bullets under a project line, strongest project first; a project
@@ -167,7 +160,7 @@ verify asks about it.") and stays in the document, so the gap is visible.
    - **Trace.** Every bullet, pointer, Timeline row and story names its evidence file and the
      IDs it uses (`B2`, `N1`, `I3`, `What I Did 4`). Link the file by its relative name.
    - **Wording.** Keep each Summary bullet's wording, stars and caveats, apart from a fix the
-     `resume` skill's rules require. Theme intros, My part, At a glance and stories are new
+     `resume` playbook's rules require. Theme intros, My part, At a glance and stories are new
      prose: first person, past tense for finished work, British English. They join facts the
      evidence already states and add none.
    - **Pointers.** Decisions, Collaboration, Design & documentation and Company building point
@@ -201,7 +194,7 @@ verify asks about it.") and stays in the document, so the gap is visible.
       to-resume.
    2. Check every citation: the file exists and holds each ID it names.
    3. Check that each `user:` block is unchanged from step 1, or holds only the user's answers.
-   4. Check each sentence against the `resume` skill's grammar and spelling rules.
+   4. Check each sentence against the `resume` playbook's grammar and spelling rules.
    _Done when_ the search returns zero hits and every citation resolves.
 
 7. **Show the user.** Rebuild the skill graph with `uv run scripts/skill_graph.py <company>`
@@ -209,10 +202,10 @@ verify asks about it.") and stays in the document, so the gap is visible.
    project, add the project to `evidence/<company>/skill-graph.yml`: a label, its areas and a
    10–20 word description that restates the file's bullets. Give the path and a short account: the themes, the stories picked, the
    sections with nothing behind them yet, and how many claims sit under Not yet confirmed.
-   Suggest `/resume-evidence:verify` for the files those rest on. Commit only when the user
+   Suggest `/resume-builder:resume-auto-mode verify` for the files those rest on. Commit only when the user
    asks.
 
-8. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+8. **Learn.** Apply [`../references/learning.md`](../references/learning.md). Typical
    lessons here: themes the user renames or merges, stories they swap, sections they want
    added or dropped.
 

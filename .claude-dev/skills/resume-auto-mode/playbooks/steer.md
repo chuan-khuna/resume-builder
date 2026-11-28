@@ -1,11 +1,4 @@
----
-name: steer
-description: Change the resume ground truth as the user directs (sections, projects, education, the experience bullets they want), backing each work claim with evidence and suggesting evidence-backed wording.
-disable-model-invocation: true
-argument-hint: "[base | <slug>] <what to change>"
----
-
-# Steer
+# Steer playbook
 
 The user steers `resume.yml`; evidence keeps it honest. The user says what the resume should
 hold: which sections print and in what order, a project, an education line, the experience
@@ -14,14 +7,14 @@ evidence behind it, and where the evidence is thinner or stronger than the user'
 suggest the wording it supports.
 
 Use it for targeted edits to an existing resume. A first build from the evidence is
-`/resume-evidence:to-resume`.
+`/resume-builder:resume-auto-mode to-resume`.
 
 Read these first:
 
-- [`../../reference/evidence.md`](../../reference/evidence.md): the Summary rules (numbers,
+- [`../references/evidence.md`](../references/evidence.md): the Summary rules (numbers,
   shared work, unfinished work) and the anonymisation rules.
 - `resume/README.md` and `resume/data/resume.schema.json`: the YAML keys and versions.
-- The `resume` skill (`.claude-dev/skills/resume/SKILL.md`): the writing rules for every bullet.
+- The `resume` playbook (`.claude-dev/skills/resume-auto-mode/playbooks/resume.md`): the writing rules for every bullet.
 
 ## Steps
 
@@ -72,14 +65,14 @@ Read these first:
    user-reported Numbers row with its ID, Kind and scope, an outcome as a `user` Impact item. If the file has `reviewed:` set, add an Open
    question that its Summary predates the new account. If no evidence file fits (a project or
    employer with none), stop for that item and point the user to
-   `/resume-evidence:distill` in interview mode. Run the banned-term search from `evidence.md`
+   `/resume-builder:resume-auto-mode distill` in interview mode. Run the banned-term search from `evidence.md`
    on every evidence file you edit.
    _Done when_ each recorded account is cited and each edited file returns zero banned-term hits.
 
 6. **Write the YAML.** Apply every change the user approved. Leave the rest of the file as it
    is.
    - User facts: write them as given; quote values YAML would misread (`time: "2025"`).
-   - Work bullets: follow the `resume` skill's writing rules, including its Labels rule, and
+   - Work bullets: follow the `resume` playbook's writing rules, including its Labels rule, and
      the `{label, text}` form when the entry's other bullets use it. A new label must not
      overlap the entry's other labels. Put a trace comment above each bullet, as to-resume
      does: `# evidence/<company>/<file>.md B2`, or `What I Did: <short> [me: yyyy-mm-dd]` for an
@@ -97,7 +90,7 @@ Read these first:
 8. **Show the result.** Show the YAML diff, the page images, and any item the user left out or
    routed to distill. Commit only when the user asks.
 
-9. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Every steer
+9. **Learn.** Apply [`../references/learning.md`](../references/learning.md). Every steer
    shows a preference: record each wording, label, order or emphasis the user chose or
    rejected. When the same lesson would help any user, fix the skill it belongs to as well.
 

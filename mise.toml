@@ -15,9 +15,9 @@ run = [
 ]
 
 [tasks.plugins]
-description = "Install the local resume-evidence plugin from .claude-dev (resume-builder-local marketplace)"
+description = "Install the local resume-builder plugin from .claude-dev (resume-builder-local marketplace)"
 run = [
   "claude plugin marketplace add ./.claude-dev --scope local",
   "claude plugin marketplace update resume-builder-local",
-  "claude plugin install resume-evidence@resume-builder-local --scope local",
+  "claude plugin install resume-builder@resume-builder-local --scope local",
 ]

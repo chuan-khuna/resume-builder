@@ -1,16 +1,10 @@
----
-name: verify
-description: Interview the user on a distilled evidence file, fold the answers in, and confirm its Summary (resume bullets and remarks).
-disable-model-invocation: true
----
-
-# Verify
+# Verify playbook
 
 Turn one distilled evidence file into a confirmed one: close its gaps by asking the user, then
 confirm the `## Summary` (resume bullets and remarks) at the top of it. Git told distill what I
 did; verify asks me what it was worth.
 
-Read [`../../reference/evidence.md`](../../reference/evidence.md) first: it holds the schema,
+Read [`../references/evidence.md`](../references/evidence.md) first: it holds the schema,
 the citation forms and the anonymisation rules. Evidence stays the ground truth: every resume
 bullet traces to a What I Did bullet, and every answer the user gives lands in the evidence
 sections before it reaches a bullet.
@@ -79,7 +73,7 @@ sections before it reaches a bullet.
    private note.
    Apply corrections, then set `reviewed:` to today. _Done when_ the user confirms the file.
 
-8. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). The facts the
+8. **Learn.** Apply [`../references/learning.md`](../references/learning.md). The facts the
    user gives go into the evidence file, not `wiki/me.md`. Typical lessons here: how they like to be
    interviewed (round size, which questions to skip), and Summary wording they rewrote.
 

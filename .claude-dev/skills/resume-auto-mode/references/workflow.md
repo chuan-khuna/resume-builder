@@ -8,15 +8,15 @@ Read by the `ingest`, `distill` and `verify` skills. The evidence file's own for
 
 | Step | Skill | Reads | Writes |
 | ---- | ----- | ----- | ------ |
-| 1. Ingest | `/resume-evidence:ingest <company>` | `raw/<company>/mapping.yml` | `raw/<company>/repos/<id>/<slug>/`, `commit-summary.json`, `jira/<yyyy>.json`, `jira/merged.json`, `TODO.md` |
-| 2. Distill | `/resume-evidence:distill <company> <id>` | the project's repos and Jira tickets, or, with no repos, the user's account in an interview | `evidence/<company>/<yyyy>-<id>.md` with a draft Summary |
-| 3. Verify | `/resume-evidence:verify <company> <id>` | the evidence file, the user's answers | the same file, Summary confirmed, `reviewed:` set |
-| 4. To resume | `/resume-evidence:to-resume [base \| <slug>]` | evidence files, the user's job facts | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, built PDF |
-| 4b. To brag | `/resume-evidence:to-brag <company>` | one company's evidence files | `evidence/<company>/brag-document.md`, a readable view; never a source |
-| 5. Review resume | `/resume-evidence:review-resume [slug] [template]` | the built PDF and its YAML | `resume/review/<slug>.html` (`index.html` for base) |
-| 6. Steer | `/resume-evidence:steer [base \| <slug>] <what to change>` | the user's changes, evidence files | the target `resume.yml`; evidence files, for accounts the user gives |
+| 1. Ingest | `/resume-builder:resume-auto-mode ingest <company>` | `raw/<company>/mapping.yml` | `raw/<company>/repos/<id>/<slug>/`, `commit-summary.json`, `jira/<yyyy>.json`, `jira/merged.json`, `TODO.md` |
+| 2. Distill | `/resume-builder:resume-auto-mode distill <company> <id>` | the project's repos and Jira tickets, or, with no repos, the user's account in an interview | `evidence/<company>/<yyyy>-<id>.md` with a draft Summary |
+| 3. Verify | `/resume-builder:resume-auto-mode verify <company> <id>` | the evidence file, the user's answers | the same file, Summary confirmed, `reviewed:` set |
+| 4. To resume | `/resume-builder:resume-auto-mode to-resume [base \| <slug>]` | evidence files, the user's job facts | `resume/data/resume.yml` or `resume/versions/<slug>/resume.yml`, built PDF |
+| 4b. To brag | `/resume-builder:resume-auto-mode to-brag <company>` | one company's evidence files | `evidence/<company>/brag-document.md`, a readable view; never a source |
+| 5. Review resume | `/resume-builder:resume-auto-mode review-resume [slug] [template]` | the built PDF and its YAML | `resume/review/<slug>.html` (`index.html` for base) |
+| 6. Steer | `/resume-builder:resume-auto-mode steer [base \| <slug>] <what to change>` | the user's changes, evidence files | the target `resume.yml`; evidence files, for accounts the user gives |
 
-Steps 4–6 use the `resume` skill for wording. Their rules are in each skill and in
+Steps 4–6 use the `resume` playbook for wording. Their rules are in each skill and in
 `resume/README.md`.
 
 ## Layout

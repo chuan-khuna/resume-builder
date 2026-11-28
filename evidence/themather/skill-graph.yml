@@ -1,7 +1,7 @@
 # Project settings for scripts/skill_graph.py: a short label, the areas (the first is the main
 # one) and a 10-20 word description for each project's hover text. Keys are evidence `id:`s.
 # A view of the evidence, like brag-document.md: each description restates that file's bullets.
-# Areas and colours: .claude-dev/reference/skill-taxonomy.yml.
+# Areas and colours: .claude-dev/skills/resume-auto-mode/references/skill-taxonomy.yml.
 projects:
   retail-shelf-computer-vision-analytics-platform:
     label: Retail shelf analytics

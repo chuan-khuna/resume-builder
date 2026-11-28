@@ -1,15 +1,9 @@
----
-name: ingest
-description: Load a company's repositories and Jira tickets into raw/<company>/ from its mapping.yml.
-disable-model-invocation: true
----
-
-# Ingest
+# Ingest playbook
 
 Load everything `raw/<company>/mapping.yml` names into `raw/<company>/`. Ingest only
 copies data; reading it is the distill skill's job.
 
-Read [`../../reference/workflow.md`](../../reference/workflow.md) first: it defines the layout,
+Read [`../references/workflow.md`](../references/workflow.md) first: it defines the layout,
 the mapping schema and the rules for scripts.
 
 ## Steps
@@ -78,7 +72,7 @@ the mapping schema and the rules for scripts.
    existing project in `mapping.yml`, or add it to "Projects to add" with its ticket count and
    date range.
 
-7. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+7. **Learn.** Apply [`../references/learning.md`](../references/learning.md). Typical
    lessons here: a script that failed on a source or a Jira response (fix the script), and
    how the user wants projects split or named.
 

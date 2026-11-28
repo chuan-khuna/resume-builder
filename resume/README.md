@@ -4,8 +4,8 @@ The resume, typeset with [Typst](https://typst.app) from structured YAML. Copied
 [chuan-khuna/typst-resume](https://github.com/chuan-khuna/typst-resume) at `9f299b1`.
 
 Every work claim in the YAML traces to an evidence file in `../evidence/`. The
-`/resume-evidence:to-resume` skill writes the YAML from the evidence, and
-`/resume-evidence:review-resume` reviews the built PDF. See
+`/resume-builder:resume-auto-mode to-resume` skill writes the YAML from the evidence, and
+`/resume-builder:resume-auto-mode review-resume` reviews the built PDF. See
 `../docs/documents/user-manual.html`.
 The content lives in YAML files and the layout lives in Typst templates, so you
 can make a version for each job application without touching the design.
@@ -138,16 +138,16 @@ a folder that already exists, because Typst doesn't create folders.
 
 ## Agent skills
 
-The skills are in the `resume-evidence` plugin in `../.claude-dev/skills/`:
+The skills are in the `resume-builder` plugin in `../.claude-dev/skills/`:
 
-- `/resume-evidence:to-resume [base | <slug>]` writes `data/resume.yml` or a
+- `/resume-builder:resume-auto-mode to-resume [base | <slug>]` writes `data/resume.yml` or a
   version from the evidence files, with a trace comment above each bullet.
-- `/resume-evidence:steer [base | <slug>] <what to change>` changes the YAML
+- `/resume-builder:resume-auto-mode steer [base | <slug>] <what to change>` changes the YAML
   as you direct (sections, projects, education, the bullets you want) and
   checks each work claim against the evidence, suggesting wording it supports.
-- `/resume-evidence:resume` writes and proofreads resume text in British
+- `/resume-builder:resume-auto-mode resume` writes and proofreads resume text in British
   English. Copied from [chuan-khuna/altr-stack](https://github.com/chuan-khuna/altr-stack).
-- `/resume-evidence:review-resume [slug] [template]` measures a built resume
+- `/resume-builder:resume-auto-mode review-resume [slug] [template]` measures a built resume
   and writes an HTML review to `review/`.
 
 `kami`, the design system this styling is based on, installs with the other

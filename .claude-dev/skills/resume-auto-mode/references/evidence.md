@@ -4,7 +4,7 @@ Read by the `distill` and `verify` skills. One file per project at
 `evidence/<company>/<yyyy>-<id>.md`, plus an optional [private note](#private-notes) at
 `raw/<company>/notes/<id>.md`.
 
-`evidence/<company>/brag-document.md` is not an evidence file: `/resume-evidence:to-brag` builds
+`evidence/<company>/brag-document.md` is not an evidence file: `/resume-builder:resume-auto-mode to-brag` builds
 it from the evidence files as a readable view. Skills that list `evidence/*/*.md` skip it, and
 no resume claim may rest on it.
 

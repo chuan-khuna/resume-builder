@@ -102,7 +102,7 @@ Ordered by relevance to a data scientist / AI role. Word counts include the labe
 
 ## Skill change (needs approval)
 
-The new format conflicts with two rules in `.claude-dev/skills/resume/SKILL.md`. `to-resume`
+The new format conflicts with two rules in `.claude-dev/skills/resume-auto-mode/playbooks/resume.md`. `to-resume`
 and `steer` point to the `resume` skill's rules and restate none of them, so this one file is
 the whole change.
 

@@ -1,11 +1,4 @@
----
-name: to-resume
-description: Write the resume ground truth, resume/data/resume.yml or a version for one job ad, from the evidence files, then build and check it.
-disable-model-invocation: true
-argument-hint: "[base | <slug>]"
----
-
-# To resume
+# To resume playbook
 
 Turn the evidence files into the resume's content: `resume/data/resume.yml` (the base resume)
 or `resume/versions/<slug>/resume.yml` (one version, for one job ad). The YAML is the ground
@@ -13,11 +6,11 @@ truth for the printed resume, and every work claim in it traces to an evidence f
 
 Read these first:
 
-- [`../../reference/evidence.md`](../../reference/evidence.md): the evidence schema, the
+- [`../references/evidence.md`](../references/evidence.md): the evidence schema, the
   Summary rules and the anonymisation rules.
 - `resume/README.md`: the resume layout, the YAML keys, versions and the build commands.
 - `resume/data/resume.schema.json`: the fields the YAML may hold.
-- [`../../reference/kami.md`](../../reference/kami.md): how to use the Kami skill's design
+- [`../references/kami.md`](../references/kami.md): how to use the Kami skill's design
   rules on the Typst resume. Read it before you change the layout or fit content to the page.
 
 Run every `mise` command from the repo root as `mise -C resume …`, or from inside `resume/`.
@@ -33,7 +26,7 @@ Run every `mise` command from the repo root as `mise -C resume …`, or from ins
 | `projects` | An evidence file when one exists; otherwise the user |
 
 Never take a claim from memory, from `raw/`, or from an old resume. If the user gives a new fact
-about work, it goes into the evidence file first, through `/resume-evidence:verify`, and then
+about work, it goes into the evidence file first, through `/resume-builder:resume-auto-mode verify`, and then
 into the YAML.
 
 ## Steps
@@ -64,19 +57,19 @@ into the YAML.
    - each experience entry, and the evidence bullets picked for it, strongest first: start
      from the ★★★ bullets, then ★★ ones the role or job ad calls for; a ★ bullet only when it
      fills a gap;
-   - for each entry, whether it uses labels, by the `resume` skill's Labels rule. When it
+   - for each entry, whether it uses labels, by the `resume` playbook's Labels rule. When it
      does, list its labels: areas of work that do not overlap, with each evidence bullet
      under exactly one. Start from the evidence areas, merging areas across projects that
      name the same work;
    - for a version, the `job-ad.md` requirements sorted as Direct, Bridge or Gap, as the
-     `resume` skill's Tailoring steps define. A Gap is a question, never a bullet;
+     `resume` playbook's Tailoring steps define. A Gap is a question, never a bullet;
    - the Remarks that limit a bullet (a scope caveat, a number not to quote, a role it fits);
    - what to leave out or set `hidden: true` to fit `maxPages`.
 
    Stop until the user approves the plan.
 
 5. **Write the bullets.** For each planned bullet, start from its evidence Summary bullet and
-   apply the `resume` skill (`.claude-dev/skills/resume/SKILL.md`): British English, a plain
+   apply the `resume` playbook (`.claude-dev/skills/resume-auto-mode/playbooks/resume.md`): British English, a plain
    verb first, one result, 25 words or fewer, present tense for the current role and past for
    the rest. Use the `{label, text}` form for an entry the plan labels, and `{text}` alone
    for one it does not. Then check each bullet against its source:
@@ -124,9 +117,9 @@ into the YAML.
 
 9. **Review with the user.** Show the diff of the YAML and the page images. Apply
    corrections; each changed bullet keeps its trace comment. Then suggest
-   `/resume-evidence:review-resume <slug>`. Commit only when the user asks.
+   `/resume-builder:resume-auto-mode review-resume <slug>`. Commit only when the user asks.
 
-10. **Learn.** Apply [`../../reference/learning.md`](../../reference/learning.md). Typical
+10. **Learn.** Apply [`../references/learning.md`](../references/learning.md). Typical
     lessons here: changes the user made to the plan (order, labels, what to cut), bullet
     wording they rewrote, and the roles or job ads they target.
 

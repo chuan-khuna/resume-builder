@@ -2,7 +2,7 @@
 
 Nodes are areas, projects (one per evidence file), tools and keywords; colour shows the area.
 Tools come from each evidence file's `tools:` line, keywords from its Summary and What I Did
-sections, both matched against the shared taxonomy in .claude-dev/reference/skill-taxonomy.yml.
+sections, both matched against the shared taxonomy in .claude-dev/skills/resume-auto-mode/references/skill-taxonomy.yml.
 Each project's label, areas and hover description come from evidence/<company>/skill-graph.yml.
 
 The graph is built and laid out with networkx (area hubs fixed on a ring, each node pulled to its

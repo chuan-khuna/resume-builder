@@ -10,27 +10,27 @@ This repo helps the user build their resume.
 - `evidence/<company>/` holds what is distilled from `raw/`, anonymised. **Evidence is the
   ground truth for the resume**: every resume claim must trace to an evidence file, never to
   memory or to `raw/` directly.
-- Pipeline: `resume-evidence:ingest` (load raw data) → `resume-evidence:distill` (raw →
-  evidence) → `resume-evidence:verify` (interview the user, add resume bullets) →
-  `resume-evidence:to-resume` (evidence → resume YAML) → `resume-evidence:review-resume`
-  (review the built PDF). `resume-evidence:steer` changes the resume YAML as the user directs,
-  backing each work claim with evidence. `resume-evidence:to-brag` builds
+- Pipeline: `resume-builder:resume-auto-mode ingest` (load raw data) → `resume-builder:resume-auto-mode distill` (raw →
+  evidence) → `resume-builder:resume-auto-mode verify` (interview the user, add resume bullets) →
+  `resume-builder:resume-auto-mode to-resume` (evidence → resume YAML) → `resume-builder:resume-auto-mode review-resume`
+  (review the built PDF). `resume-builder:resume-auto-mode steer` changes the resume YAML as the user directs,
+  backing each work claim with evidence. `resume-builder:resume-auto-mode to-brag` builds
   `evidence/<company>/brag-document.md`, a readable account of one company's evidence for
-  interviews: a view, never a source. Shared rules: `.claude-dev/reference/workflow.md` and
-  `.claude-dev/reference/evidence.md`.
+  interviews: a view, never a source. Shared rules: `.claude-dev/skills/resume-auto-mode/references/workflow.md` and
+  `.claude-dev/skills/resume-auto-mode/references/evidence.md`.
 - Every piece of resume or evidence prose follows the writing rules in the
-  `resume-evidence:resume` skill (`.claude-dev/skills/resume/SKILL.md`), including edits made
+  `resume` playbook of `resume-builder:resume-auto-mode` (`.claude-dev/skills/resume-auto-mode/playbooks/resume.md`), including edits made
   outside the pipeline.
 - `resume/` holds the Typst resume: `data/resume.yml` is the resume's ground truth, built with
   `mise -C resume run build`. See `resume/README.md`. `.reference/` holds gitignored reference
   clones.
 - When you format the Typst resume, use the Kami skill's design rules (`.claude/skills/kami/`)
-  as `.claude-dev/reference/kami.md` describes. This repo's evidence, writing and review rules
+  as `.claude-dev/skills/resume-auto-mode/references/kami.md` describes. This repo's evidence, writing and review rules
   win over Kami's.
 - Python helpers live in `scripts/`; their dependencies are declared in `pyproject.toml`.
 - `wiki/` is an LLM-maintained knowledge base on the job search and the user's field:
   sources in `wiki/raw/` (never edited), notes in `wiki/notes/` (entry point `index.md`),
-  daily logs in `wiki/logs/`. Run it with `resume-evidence:wiki`; its rules are in
+  daily logs in `wiki/logs/`. Run it with `resume-builder:resume-auto-mode wiki`; its rules are in
   `wiki/CLAUDE.md`. A wiki note never backs a resume claim: only evidence does.
 
 ## Self-evolving
@@ -50,8 +50,8 @@ The user's preferences and needs (gitignored, may be missing):
    pipeline (a rule a skill missed, a step that failed, a check worth adding), fix the skill,
    reference file or script it belongs to. Tell the user in one line what you changed.
 
-The full rules are in `.claude-dev/reference/learning.md`; every skill ends with a step that
-applies them. They hold outside the skills too. Skills are committed, so they never hold the
+The full rules are in `.claude-dev/skills/resume-auto-mode/references/learning.md`; every playbook ends with a step that
+applies them. They hold outside the playbooks too. Playbooks are committed, so they never hold the
 user's personal details, client names or anything `wiki/me.md` alone should know.
 
 ## Agent skills

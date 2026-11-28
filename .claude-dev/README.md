@@ -8,6 +8,9 @@ A local Claude Code plugin, `resume-builder`, in the marketplace `resume-builder
 │   ├── plugin.json
 │   └── marketplace.json
 └── skills/
+    ├── help/                 # /resume-builder:help [<company> | <question>]: reads the repo state, names the next step, writes the prompt
+    │   ├── SKILL.md
+    │   └── references/       # prompting.md, recipes.md
     └── resume-auto-mode/     # /resume-builder:resume-auto-mode <playbook> <arguments>
         ├── SKILL.md          # matches the request to a playbook
         ├── playbooks/
